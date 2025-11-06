@@ -31,7 +31,10 @@ public class calatoriiServiceImpl implements calatoriiService {
                         c.getName(),
                         c.getLastname(),
                         c.getEmail(),
-                        c.getPhone()
+                        c.getPhone(),
+                        c.getDescription(),
+                        c.getImage(),
+                        c.getTitle()
                 ))
                 .collect(Collectors.toList());
     }
@@ -42,7 +45,10 @@ public class calatoriiServiceImpl implements calatoriiService {
                         c.getName(),
                         c.getLastname(),
                         c.getEmail(),
-                        c.getPhone()
+                        c.getPhone(),
+                        c.getDescription(),
+                        c.getImage(),
+                        c.getTitle()
                 ))
                 .collect(Collectors.toList());
     }
@@ -58,7 +64,10 @@ public class calatoriiServiceImpl implements calatoriiService {
                         c.getName(),
                         c.getLastname(),
                         c.getEmail(),
-                        c.getPhone()
+                        c.getPhone(),
+                        c.getDescription(),
+                        c.getImage(),
+                        c.getTitle()
                 ))
                 .collect(Collectors.toList());
     }

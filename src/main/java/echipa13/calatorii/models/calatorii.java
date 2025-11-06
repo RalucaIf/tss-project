@@ -27,4 +27,9 @@ public class calatorii {
     private String email;
 
     private String phone;
+    @Column(length = 2000)
+    private String description;
+
+    private String image;
+    private String title;
 }

@@ -8,50 +8,41 @@
 
     <!-- Contenutul care va fi injectat în layout -->
     <div layout:fragment="content">
+
         <main class="flex-shrink-0">
 
-            <!-- Section Features -->
             <section class="py-5" id="features">
                 <div class="container px-5 my-5">
                     <div class="row gx-5">
+                        <!-- Coloana stânga cu titlul -->
                         <div class="col-lg-4 mb-5 mb-lg-0">
                             <h2 class="fw-bolder mb-0">A better way to start building.</h2>
                         </div>
+                        <!-- Coloana dreapta cu imaginile -->
                         <div class="col-lg-8">
-                            <div class="row gx-5 row-cols-1 row-cols-md-2">
-                                <div class="col mb-5 h-100">
-                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3">
-                                        <i class="bi bi-collection"></i>
+                            <div class="row gx-4 gy-4">  <!-- gx=gap pe orizontală, gy=gap pe verticală -->
+                                <div class="col-6" th:each="c : ${calatorii}">
+                                    <div class="card h-100 shadow-sm">
+                                        <img th:src="@{'/imagini/' + ${c.image}}" alt="Imagine călătorie"
+                                             style="height: 200px; object-fit: cover;" class="card-img-top" />
+                                        <div class="card-body">
+                                            <h5 class="card-title" th:text="${c.title}">Titlu implicit</h5>
+                                            <p class="card-text" th:text="${c.description}">Descriere implicită</p>
+
+                                        </div>
                                     </div>
-                                    <h2 class="h5">Featured title 1</h2>
-                                    <p class="mb-0">Paragraph beneath the heading to explain the heading.</p>
                                 </div>
-                                <div class="col mb-5 h-100">
-                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3">
-                                        <i class="bi bi-building"></i>
-                                    </div>
-                                    <h2 class="h5">Featured title 2</h2>
-                                    <p class="mb-0">Paragraph beneath the heading to explain the heading.</p>
-                                </div>
-                                <div class="col mb-5 mb-md-0 h-100">
-                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3">
-                                        <i class="bi bi-toggles2"></i>
-                                    </div>
-                                    <h2 class="h5">Featured title 3</h2>
-                                    <p class="mb-0">Paragraph beneath the heading to explain the heading.</p>
-                                </div>
-                                <div class="col h-100">
-                                    <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3">
-                                        <i class="bi bi-camera"></i>
-                                    </div>
-                                    <h2 class="h5">Featured title 4</h2>
-                                    <p class="mb-0">Paragraph beneath the heading to explain the heading.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                            </div> <!-- end row imagini -->
+                        </div> <!-- end col dreapta -->
+                    </div> <!-- end row principal -->
+                </div> <!-- end container -->
             </section>
+
+
+
+
+
+
 
             <!-- Call to Action Section -->
             <section class="py-5 bg-light">
@@ -63,6 +54,7 @@
 
         </main>
     </div>
+
 
 
 </html>
