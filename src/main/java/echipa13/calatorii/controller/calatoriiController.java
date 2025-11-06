@@ -26,16 +26,23 @@ public class calatoriiController {
 
 
 
-    @GetMapping("/Itravel")
-    public String Itravel( Model model) {
-//        List<calatoriiDto> calatorii = new ArrayList<>();
-//        calatorii.addAll(calatoriiService.findByEmail(email));
-//        calatorii.addAll(calatoriiService.findByName(nume));
-//
-//        System.out.println(calatorii); // verifică ce ajunge aici
-        List<calatoriiDto> calatorii = calatoriiService.findAll();
-        model.addAttribute("calatorii", calatorii);
-        return "Itravel-list";
-    }
+//    @GetMapping("/Itravel")
+//    public String Itravel( Model model) {
+////        List<calatoriiDto> calatorii = new ArrayList<>();
+////        calatorii.addAll(calatoriiService.findByEmail(email));
+////        calatorii.addAll(calatoriiService.findByName(nume));
+////
+////        System.out.println(calatorii); // verifică ce ajunge aici
+//        List<calatoriiDto> calatorii = calatoriiService.findAll();
+//        model.addAttribute("calatorii", calatorii);
+//        return "Itravel";
+//    }
 
+
+@GetMapping("/Itravel")
+public String Itravel(Model model) {
+    List<calatoriiDto> calatorii = calatoriiService.findAll();
+    model.addAttribute("calatorii", calatorii);
+    return "Itravel-list";
+}
 }
