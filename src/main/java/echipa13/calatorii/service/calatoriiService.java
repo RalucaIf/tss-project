@@ -11,5 +11,5 @@ public interface calatoriiService {
  List<calatoriiDto> findByEmail(String email);
  List<calatoriiDto> findByName(String name);
 List<calatoriiDto> findAll();
-
+ calatorii saveCalatorie(calatorii c);
 }

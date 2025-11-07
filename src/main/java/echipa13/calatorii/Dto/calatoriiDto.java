@@ -35,6 +35,11 @@ public class calatoriiDto {
     public String getImage() { return image; }
     public String getTitle() { return title; }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLastname(String lastname) {}
 }
 
 

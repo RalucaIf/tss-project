@@ -3,7 +3,6 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 
-<!-- Decoram layout-ul -->
 
 
     <!-- Contenutul care va fi injectat în layout -->
@@ -27,7 +26,7 @@
                                              style="height: 200px; object-fit: cover;" class="card-img-top" />
                                         <div class="card-body">
                                             <h5 class="card-title" th:text="${c.title}">Titlu implicit</h5>
-                                            <p class="card-text" th:text="${c.description}">Descriere implicită</p>
+                                            <p class="card-text" th:text="${#strings.length(c.description) > 100} ? ${#strings.substring(c.description, 0, 100)} + '...' : ${c.description}">">Descriere implicită</p>
 
                                         </div>
                                     </div>

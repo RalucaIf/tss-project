@@ -24,7 +24,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/Itravel}">Home</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/about}">Despre noi</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/destinatii}">Destinatii</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/cauta}">Cauta</a></li>
@@ -34,6 +34,12 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
                         <li><a class="dropdown-item" href="blog-home.html">Register</a></li>
                         <li><a class="dropdown-item" href="blog-post.html">Logout</a></li>
+                    </ul>
+                        <a class="nav-link dropdown-toggle" id="navbarDropdownCreate" href="#" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">Adventure</a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownCreate">
+                            <li><a class="dropdown-item" th:href="@{/Itravel/new}">Create</a></li>
+                            <li><a class="dropdown-item" th:href="@{/Itravel/update}">Update</a></li>
                     </ul>
                 </li>
             </ul>

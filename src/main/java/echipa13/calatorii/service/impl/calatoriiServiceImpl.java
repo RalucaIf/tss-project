@@ -52,6 +52,10 @@ public class calatoriiServiceImpl implements calatoriiService {
                 ))
                 .collect(Collectors.toList());
     }
+    public calatorii saveCalatorie(calatorii c) {
+        return calatoriiRepository.save(c);
+    }
+
 
 
 
