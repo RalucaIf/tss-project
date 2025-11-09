@@ -5,6 +5,19 @@
 
 <div layout:fragment="content">
 
+    <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/walpaper-image.jpg}');|">
+        <div class="container position-relative">
+            <h1>Destination Details</h1>
+            <p>Esse dolorum voluptatum ullam est sint nemo et est ipsa porro placeat quibusdam quia assumenda numquam molestias.</p>
+            <nav class="breadcrumbs">
+                <ol>
+                    <li><a th:href="@{/Itravel}">Home</a></li>
+                    <li class="current">Destination Details</li>
+                </ol>
+            </nav>
+        </div>
+    </div><!-- End Page Title -->
+
     <section  class="py-5">
 
  <form role="form" th:action="@{/Itravel/new}" th:object="${calatorii}" method="post" enctype="multipart/form-data">

@@ -36,6 +36,38 @@ public class calatoriiController {
         return "Itravel-list";  // numele HTML-ului de listare
     }
 
+
+    @GetMapping("/About")
+
+    public String About(Model model) {
+        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        model.addAttribute("calatorii", calatorii);
+        return "About-list";
+    }
+
+    @GetMapping("/Privacy")
+
+    public String Privacy(Model model) {
+        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        model.addAttribute("calatorii", calatorii);
+        return "privacy";
+    }
+
+    @GetMapping("/Terms")
+
+    public String Terms(Model model) {
+        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        model.addAttribute("calatorii", calatorii);
+        return "terms-list";
+    }
+
+    @GetMapping("/Error/404")
+
+    public String Error404(Model model) {
+        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        model.addAttribute("calatorii", calatorii);
+        return "404-list";
+    }
     // Formular pentru adăugarea unei noi călătorii
     @GetMapping("/Itravel/new")
     public String ItravelNew(Model model) {
