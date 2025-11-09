@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<div layout:fragment="content">
+  <!-- Page Title -->
+  <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
+    <div class="container position-relative">
+      <h1>Welcome to ITravel</h1>
+      <p>Create memorable moments with us.</p>
+
+    </div>
+  </div><!-- End Page Title -->
+  <!-- Travel Destinations Section -->
+  <section id="travel-destinations" class="travel-destinations section">
+
+    <div class="container">
+
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+          <h2>Discover Amazing Travel Destinations</h2>
+          <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
+      </div>
+
+      <div class="isotope-layout" data-default-filter="*" data-layout="fitRows" data-sort="original-order">
+
+        <div class="filter-tabs">
+          <ul class="destination-filters isotope-filters">
+            <li data-filter="*" class="filter-active">All</li>
+            <li data-filter=".filter-asia">Asia</li>
+            <li data-filter=".filter-europe">Europe</li>
+            <li data-filter=".filter-africa">Africa</li>
+            <li data-filter=".filter-america">Americas</li>
+          </ul>
+        </div>
+
+        <div class="row gy-4 isotope-container destination-grid">
+
+          <div class="col-lg-12 destination-item isotope-item filter-europe">
+            <div class="destination-large">
+              <div class="destination-overlay">
+                <img src="assets/img/travel/destination-2.webp" alt="Paris, France" class="img-fluid" loading="lazy">
+                <div class="overlay-content">
+                  <div class="badge-wrapper">
+                    <span class="destination-tag featured">Featured</span>
+                  </div>
+                  <div class="content-wrapper">
+                    <h3>Paris, France</h3>
+                    <p class="destination-excerpt">City of lights and romance with iconic landmarks and world-class museums</p>
+                    <div class="destination-info">
+                      <div class="info-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <span>15 Tours</span>
+                      </div>
+                      <div class="price-tag">From $1,299</div>
+                    </div>
+                    <a href="destination-details.html" class="explore-btn">
+                      <span>Explore Now</span>
+                      <i class="bi bi-arrow-right"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Destination Item -->
+
+          <div class="col-lg-3 col-md-6 destination-item isotope-item filter-asia">
+            <div class="destination-small">
+              <div class="destination-overlay">
+                <img src="assets/img/travel/destination-4.webp" alt="Bali, Indonesia" class="img-fluid" loading="lazy">
+                <div class="overlay-content">
+                  <div class="badge-wrapper">
+                    <span class="destination-tag popular">Popular</span>
+                  </div>
+                  <div class="content-wrapper">
+                    <h4>Bali, Indonesia</h4>
+                    <div class="destination-info">
+                      <span class="tours-count">8 Tours</span>
+                      <span class="price">$899</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Destination Item -->
+
+          <div class="col-lg-3 col-md-6 destination-item isotope-item filter-america">
+            <div class="destination-small">
+              <div class="destination-overlay">
+                <img src="assets/img/travel/destination-6.webp" alt="Costa Rica" class="img-fluid" loading="lazy">
+                <div class="overlay-content">
+                  <div class="badge-wrapper">
+                    <span class="destination-tag adventure">Adventure</span>
+                  </div>
+                  <div class="content-wrapper">
+                    <h4>Costa Rica</h4>
+                    <div class="destination-info">
+                      <span class="tours-count">6 Tours</span>
+                      <span class="price">$1,199</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Destination Item -->
+
+          <div class="col-lg-3 col-md-6 destination-item isotope-item filter-africa">
+            <div class="destination-small">
+              <div class="destination-overlay">
+                <img src="assets/img/travel/destination-8.webp" alt="Cairo, Egypt" class="img-fluid" loading="lazy">
+                <div class="overlay-content">
+                  <div class="badge-wrapper">
+                    <span class="destination-tag culture">Culture</span>
+                  </div>
+                  <div class="content-wrapper">
+                    <h4>Cairo, Egypt</h4>
+                    <div class="destination-info">
+                      <span class="tours-count">7 Tours</span>
+                      <span class="price">$1,499</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Destination Item -->
+
+          <div class="col-lg-3 col-md-6 destination-item isotope-item filter-asia">
+            <div class="destination-small">
+              <div class="destination-overlay">
+                <img src="assets/img/travel/destination-9.webp" alt="Singapore" class="img-fluid" loading="lazy">
+                <div class="overlay-content">
+                  <div class="badge-wrapper">
+                    <span class="destination-tag luxury">Luxury</span>
+                  </div>
+                  <div class="content-wrapper">
+                    <h4>Singapore</h4>
+                    <div class="destination-info">
+                      <span class="tours-count">12 Tours</span>
+                      <span class="price">$1,799</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Destination Item -->
+
+          <div class="col-lg-4 col-md-6 destination-item isotope-item filter-europe">
+            <div class="destination-medium">
+              <div class="destination-overlay">
+                <img src="assets/img/travel/destination-10.webp" alt="Santorini, Greece" class="img-fluid" loading="lazy">
+                <div class="overlay-content">
+                  <div class="badge-wrapper">
+                    <span class="destination-tag romantic">Romantic</span>
+                  </div>
+                  <div class="content-wrapper">
+                    <h3>Santorini, Greece</h3>
+                    <p class="destination-excerpt">Stunning sunsets and white-washed buildings overlooking the Aegean Sea</p>
+                    <div class="destination-info">
+                      <div class="info-item">
+                        <i class="bi bi-heart"></i>
+                        <span>10 Tours</span>
+                      </div>
+                      <div class="price-tag">From $1,599</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Destination Item -->
+
+          <div class="col-lg-4 col-md-6 destination-item isotope-item filter-america">
+            <div class="destination-medium">
+              <div class="destination-overlay">
+                <img src="assets/img/travel/destination-12.webp" alt="Rio de Janeiro, Brazil" class="img-fluid" loading="lazy">
+                <div class="overlay-content">
+                  <div class="badge-wrapper">
+                    <span class="destination-tag vibrant">Vibrant</span>
+                  </div>
+                  <div class="content-wrapper">
+                    <h3>Rio de Janeiro</h3>
+                    <p class="destination-excerpt">Spectacular beaches, vibrant carnival culture, and iconic Christ statue</p>
+                    <div class="destination-info">
+                      <div class="info-item">
+                        <i class="bi bi-sun"></i>
+                        <span>9 Tours</span>
+                      </div>
+                      <div class="price-tag">From $1,799</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Destination Item -->
+
+          <div class="col-lg-4 col-md-6 destination-item isotope-item filter-africa">
+            <div class="destination-medium">
+              <div class="destination-overlay">
+                <img src="assets/img/travel/destination-14.webp" alt="Cape Town, South Africa" class="img-fluid" loading="lazy">
+                <div class="overlay-content">
+                  <div class="badge-wrapper">
+                    <span class="destination-tag scenic">Scenic</span>
+                  </div>
+                  <div class="content-wrapper">
+                    <h3>Cape Town</h3>
+                    <p class="destination-excerpt">Dramatic mountains, pristine beaches, and world-renowned wine regions</p>
+                    <div class="destination-info">
+                      <div class="info-item">
+                        <i class="bi bi-camera"></i>
+                        <span>11 Tours</span>
+                      </div>
+                      <div class="price-tag">From $1,699</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Destination Item -->
+
+        </div><!-- End Destination Items Container -->
+
+      </div>
+
+      <div class="row justify-content-center mt-5">
+        <div class="col-lg-6 text-center">
+          <div class="explore-more">
+            <h4>Ready to Start Your Journey?</h4>
+            <p class="mb-4">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat.</p>
+            <a href="#" class="btn-explore">
+              <span>View All Destinations</span>
+              <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+</div>
+</html>

@@ -61,6 +61,15 @@ public class calatoriiController {
         return "terms-list";
     }
 
+    @GetMapping("/Destinations")
+
+    public String Destinations(Model model) {
+        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        model.addAttribute("calatorii", calatorii);
+        return "destinations-list";
+    }
+
+
     @GetMapping("/Error/404")
 
     public String Error404(Model model) {
