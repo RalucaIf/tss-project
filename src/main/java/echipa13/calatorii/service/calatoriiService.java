@@ -12,4 +12,10 @@ public interface calatoriiService {
  List<calatoriiDto> findByName(String name);
 List<calatoriiDto> findAll();
  calatorii saveCalatorie(calatorii c);
+
+ calatoriiDto findCalatorieById(long id);
+
+ void delete(long id);
+
+ List<calatoriiDto> searchCalatorii(String query);
 }

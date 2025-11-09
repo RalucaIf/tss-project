@@ -4,11 +4,28 @@
       layout:decorate="~{layout}">
 
 
+<div layout:fragment="content">
+<div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/walpaper-image.jpg}');|">
+    <div class="container position-relative">
+        <h1>Destination Details</h1>
+        <p>Esse dolorum voluptatum ullam est sint nemo et est ipsa porro placeat quibusdam quia assumenda numquam molestias.</p>
+        <nav class="breadcrumbs">
+            <ol>
+                <li><a th:href="@{/Itravel}">Home</a></li>
+                <li class="current">Destination Details</li>
+            </ol>
+        </nav>
+    </div>
+</div><!-- End Page Title -->
 
     <!-- Contenutul care va fi injectat în layout -->
-    <div layout:fragment="content">
+
 
         <main class="flex-shrink-0">
+            <form th:action="@{/Itravel/search}" method="get" class="form-inline my-2 my-lg-0 mb-3">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query" th:value="${query}">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
 
             <section class="py-5" id="features">
                 <div class="container px-5 my-5">
@@ -19,18 +36,24 @@
                         </div>
                         <!-- Coloana dreapta cu imaginile -->
                         <div class="col-lg-8">
+
                             <div class="row gx-4 gy-4">  <!-- gx=gap pe orizontală, gy=gap pe verticală -->
                                 <div class="col-6" th:each="c : ${calatorii}">
                                     <div class="card h-100 shadow-sm">
-                                        <img th:src="@{'/imagini/' + ${c.image}}" alt="Imagine călătorie"
-                                             style="height: 200px; object-fit: cover;" class="card-img-top" />
+                                        <img class="img-fluid" th:src="@{/imagine/{img}(img=${c.image})}" alt="Imagine călătorie" />
+
                                         <div class="card-body">
                                             <h5 class="card-title" th:text="${c.title}">Titlu implicit</h5>
-                                            <p class="card-text" th:text="${#strings.length(c.description) > 100} ? ${#strings.substring(c.description, 0, 100)} + '...' : ${c.description}">">Descriere implicită</p>
+                                            <p class="card-text" th:text="${#strings.abbreviate(c.description, 100)}">Descriere implicită</p>
+                                            <a class="btn-getstarted " th:href="@{/Itravel/{id}(id=${c.id})}">
+                                                View Details
+                                            </a>
 
                                         </div>
                                     </div>
                                 </div>
+
+
                             </div> <!-- end row imagini -->
                         </div> <!-- end col dreapta -->
                     </div> <!-- end row principal -->
