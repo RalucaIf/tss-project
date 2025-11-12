@@ -69,6 +69,30 @@ public class calatoriiController {
         return "destinations-list";
     }
 
+    @GetMapping("/Contact")
+
+    public String Contact(Model model) {
+        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        model.addAttribute("calatorii", calatorii);
+        return "contact-list";
+    }
+
+    @GetMapping("/Tours")
+
+    public String Tours(Model model) {
+        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        model.addAttribute("calatorii", calatorii);
+        return "tours-list";
+    }
+
+    @GetMapping("/Tour_details")
+
+    public String Tour_details(Model model) {
+        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        model.addAttribute("calatorii", calatorii);
+        return "tour-details";
+    }
+
 
     @GetMapping("/Error/404")
 

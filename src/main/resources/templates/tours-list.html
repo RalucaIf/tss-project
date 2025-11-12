@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<div layout:fragment="content">
+    <!-- Page Title -->
+    <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
+        <div class="container position-relative">
+            <h1>Welcome to ITravel</h1>
+            <p>Create memorable moments with us.</p>
+
+        </div>
+    </div><!-- End Page Title -->
+
+
+
+    <!-- Travel Tours Section -->
+    <section id="travel-tours" class="travel-tours section">
+
+        <div class="container">
+
+            <!-- Hero Introduction -->
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="hero-title">Discover Your Next Adventure</h2>
+                    <p class="hero-description">Curated travel experiences that transform journeys into unforgettable stories. Filter by your preferences and find the perfect escape.</p>
+                </div>
+            </div>
+
+            <!-- Search & Filters -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-10">
+                    <div class="search-container">
+                        <div class="search-bar">
+                            <input type="text" class="form-control" placeholder="Where would you like to go?">
+                            <button class="search-btn">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                        <div class="filter-pills">
+                            <button class="filter-pill active" data-filter="all">All Tours</button>
+                            <button class="filter-pill" data-filter="adventure">Adventure</button>
+                            <button class="filter-pill" data-filter="luxury">Luxury</button>
+                            <button class="filter-pill" data-filter="cultural">Cultural</button>
+                            <button class="filter-pill" data-filter="family">Family</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Hero Tour -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="featured-hero-tour">
+                        <div class="featured-image">
+                            <img src="assets/img/travel/showcase-8.webp" alt="Featured Destination" class="img-fluid">
+                        </div>
+                        <div class="featured-content">
+                            <div class="featured-badge">Editor's Choice</div>
+                            <h3>Mystical Bhutan Journey</h3>
+                            <p>Discover the last Shangri-La with pristine monasteries, dramatic mountain vistas, and ancient traditions preserved in time.</p>
+                            <div class="featured-meta">
+                                <span class="duration">12 Days</span>
+                                <span class="group-size">Max 8 People</span>
+                                <span class="rating">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    4.9
+                  </span>
+                            </div>
+                            <div class="featured-price">
+                                <span class="from">From</span>
+                                <span class="amount">$2,499</span>
+                            </div>
+                            <div class="featured-actions">
+                                <a href="#" class="btn btn-primary">Explore This Journey</a>
+                                <a href="#" class="btn btn-text">View Itinerary</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Categories -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h3 class="section-subtitle">Explore by Interest</h3>
+                    <div class="categories-grid">
+                        <div class="category-item">
+                            <div class="category-visual">
+                                <img src="assets/img/travel/misc-3.webp" alt="Mountain Adventures" class="img-fluid">
+                            </div>
+                            <h5>Mountain Adventures</h5>
+                            <span class="tour-count">24 tours</span>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-visual">
+                                <img src="assets/img/travel/misc-7.webp" alt="Cultural Heritage" class="img-fluid">
+                            </div>
+                            <h5>Cultural Heritage</h5>
+                            <span class="tour-count">18 tours</span>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-visual">
+                                <img src="assets/img/travel/misc-11.webp" alt="Coastal Escapes" class="img-fluid">
+                            </div>
+                            <h5>Coastal Escapes</h5>
+                            <span class="tour-count">32 tours</span>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-visual">
+                                <img src="assets/img/travel/misc-15.webp" alt="Wildlife Safari" class="img-fluid">
+                            </div>
+                            <h5>Wildlife Safari</h5>
+                            <span class="tour-count">16 tours</span>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-visual">
+                                <img src="assets/img/travel/misc-2.webp" alt="Urban Explorer" class="img-fluid">
+                            </div>
+                            <h5>Urban Explorer</h5>
+                            <span class="tour-count">28 tours</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tours Grid -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="tours-header">
+                        <h3 class="section-subtitle">All Journeys</h3>
+                        <div class="view-toggle">
+                            <button class="toggle-btn active" data-view="grid">
+                                <i class="bi bi-grid-3x3-gap"></i>
+                            </button>
+                            <button class="toggle-btn" data-view="list">
+                                <i class="bi bi-list"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="tours-grid">
+                        <div class="tour-item">
+                            <div class="tour-image">
+                                <img src="assets/img/travel/tour-12.webp" alt="Norwegian Fjords" class="img-fluid">
+                                <div class="tour-availability">5 dates available</div>
+                            </div>
+                            <div class="tour-details">
+                                <h4>Norwegian Fjords Explorer</h4>
+                                <p>Cruise through dramatic fjords and witness cascading waterfalls in one of nature's most spectacular theaters.</p>
+                                <div class="tour-highlights">
+                                    <span><i class="bi bi-clock"></i> 8 Days</span>
+                                    <span><i class="bi bi-people"></i> Small Group</span>
+                                    <span><i class="bi bi-star-fill"></i> 4.8</span>
+                                </div>
+                                <div class="tour-pricing">
+                                    <span class="price">$1,899</span>
+                                    <span class="per">per person</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tour-item">
+                            <div class="tour-image">
+                                <img src="assets/img/travel/tour-4.webp" alt="Moroccan Odyssey" class="img-fluid">
+                                <div class="tour-availability">Limited spots</div>
+                            </div>
+                            <div class="tour-details">
+                                <h4>Moroccan Odyssey</h4>
+                                <p>Journey through ancient medinas, vast deserts, and vibrant markets in this sensory-rich adventure.</p>
+                                <div class="tour-highlights">
+                                    <span><i class="bi bi-clock"></i> 10 Days</span>
+                                    <span><i class="bi bi-people"></i> Private Option</span>
+                                    <span><i class="bi bi-star-fill"></i> 4.7</span>
+                                </div>
+                                <div class="tour-pricing">
+                                    <span class="price">$1,299</span>
+                                    <span class="per">per person</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tour-item">
+                            <div class="tour-image">
+                                <img src="assets/img/travel/tour-21.webp" alt="Patagonia Wilderness" class="img-fluid">
+                                <div class="tour-availability">Next: Mar 15</div>
+                            </div>
+                            <div class="tour-details">
+                                <h4>Patagonia Wilderness</h4>
+                                <p>Trek through pristine landscapes where glaciers meet granite peaks in Earth's most remote wilderness.</p>
+                                <div class="tour-highlights">
+                                    <span><i class="bi bi-clock"></i> 14 Days</span>
+                                    <span><i class="bi bi-people"></i> Adventure Level</span>
+                                    <span><i class="bi bi-star-fill"></i> 4.9</span>
+                                </div>
+                                <div class="tour-pricing">
+                                    <span class="price">$2,799</span>
+                                    <span class="per">per person</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tour-item">
+                            <div class="tour-image">
+                                <img src="assets/img/travel/tour-9.webp" alt="Japanese Gardens" class="img-fluid">
+                                <div class="tour-availability">Cherry blossom season</div>
+                            </div>
+                            <div class="tour-details">
+                                <h4>Japanese Gardens &amp; Temples</h4>
+                                <p>Experience the harmony of ancient traditions and modern elegance in Japan's most sacred spaces.</p>
+                                <div class="tour-highlights">
+                                    <span><i class="bi bi-clock"></i> 11 Days</span>
+                                    <span><i class="bi bi-people"></i> Cultural Focus</span>
+                                    <span><i class="bi bi-star-fill"></i> 4.8</span>
+                                </div>
+                                <div class="tour-pricing">
+                                    <span class="price">$2,199</span>
+                                    <span class="per">per person</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tour-item">
+                            <div class="tour-image">
+                                <img src="assets/img/travel/tour-16.webp" alt="Scottish Highlands" class="img-fluid">
+                                <div class="tour-availability">Year-round</div>
+                            </div>
+                            <div class="tour-details">
+                                <h4>Scottish Highlands &amp; Castles</h4>
+                                <p>Discover mist-shrouded lochs, ancient castles, and Highland culture in Scotland's most dramatic region.</p>
+                                <div class="tour-highlights">
+                                    <span><i class="bi bi-clock"></i> 7 Days</span>
+                                    <span><i class="bi bi-people"></i> History &amp; Nature</span>
+                                    <span><i class="bi bi-star-fill"></i> 4.6</span>
+                                </div>
+                                <div class="tour-pricing">
+                                    <span class="price">$1,599</span>
+                                    <span class="per">per person</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tour-item">
+                            <div class="tour-image">
+                                <img src="assets/img/travel/tour-28.webp" alt="Costa Rica Wildlife" class="img-fluid">
+                                <div class="tour-availability">Eco-certified</div>
+                            </div>
+                            <div class="tour-details">
+                                <h4>Costa Rica Wildlife Immersion</h4>
+                                <p>Encounter diverse ecosystems from cloud forests to tropical beaches in this biodiversity hotspot.</p>
+                                <div class="tour-highlights">
+                                    <span><i class="bi bi-clock"></i> 9 Days</span>
+                                    <span><i class="bi bi-people"></i> Eco-Tourism</span>
+                                    <span><i class="bi bi-star-fill"></i> 4.7</span>
+                                </div>
+                                <div class="tour-pricing">
+                                    <span class="price">$1,499</span>
+                                    <span class="per">per person</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exclusive Offers -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h3 class="section-subtitle">Limited-Time Offers</h3>
+                    <div class="offers-container">
+                        <div class="offer-card">
+                            <div class="offer-image">
+                                <img src="assets/img/travel/showcase-12.webp" alt="Early Bird Special" class="img-fluid">
+                            </div>
+                            <div class="offer-content">
+                                <div class="offer-tag">Early Bird</div>
+                                <h4>Save 25% on Summer Departures</h4>
+                                <p>Book your 2024 European adventure before March 31st and enjoy significant savings on our most popular routes.</p>
+                                <div class="offer-validity">Valid until March 31, 2024</div>
+                                <a href="#" class="btn btn-accent">Claim Offer</a>
+                            </div>
+                        </div>
+
+                        <div class="offer-card">
+                            <div class="offer-image">
+                                <img src="assets/img/travel/showcase-6.webp" alt="Last Minute Deal" class="img-fluid">
+                            </div>
+                            <div class="offer-content">
+                                <div class="offer-tag">Last Minute</div>
+                                <h4>African Safari - 30% Off</h4>
+                                <p>Join our next departure to Tanzania and Kenya with luxury accommodations and expert guides.</p>
+                                <div class="offer-validity">Departure: February 20th</div>
+                                <a href="#" class="btn btn-accent">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expert Consultation CTA -->
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="consultation-cta">
+                        <h3>Can't Find What You're Looking For?</h3>
+                        <p>Our travel designers craft bespoke journeys tailored to your unique preferences, schedule, and dreams.</p>
+                        <div class="cta-actions">
+                            <a href="#" class="btn btn-primary">Speak with an Expert</a>
+                            <a href="#" class="btn btn-text">Browse Custom Tours</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </section><!-- /Travel Tours Section -->
+
+</div>
