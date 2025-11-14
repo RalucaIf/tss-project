@@ -31,21 +31,29 @@
             <!-- Search & Filters -->
             <div class="row justify-content-center mb-5">
                 <div class="col-lg-10">
-                    <div class="search-container">
+                    <form class="search-container" th:action="@{/Itravel/search}" method="get">
                         <div class="search-bar">
-                            <input type="text" class="form-control" placeholder="Where would you like to go?">
-                            <button class="search-btn">
+
+                            <input type="search"
+                                   class="form-control"
+                                   name="query"
+                                   th:value="${query}"
+                                   placeholder="Where would you like to go?">
+
+                            <button type="submit" class="search-btn">
                                 <i class="bi bi-search"></i>
                             </button>
+
                         </div>
+
                         <div class="filter-pills">
-                            <button class="filter-pill active" data-filter="all">All Tours</button>
-                            <button class="filter-pill" data-filter="adventure">Adventure</button>
-                            <button class="filter-pill" data-filter="luxury">Luxury</button>
-                            <button class="filter-pill" data-filter="cultural">Cultural</button>
-                            <button class="filter-pill" data-filter="family">Family</button>
+                            <button class="filter-pill active" data-filter="all" type="button">All Tours</button>
+                            <button class="filter-pill" data-filter="adventure" type="button">Adventure</button>
+                            <button class="filter-pill" data-filter="luxury" type="button">Luxury</button>
+                            <button class="filter-pill" data-filter="cultural" type="button">Cultural</button>
+                            <button class="filter-pill" data-filter="family" type="button">Family</button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
 
