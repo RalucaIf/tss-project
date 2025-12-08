@@ -1,10 +1,9 @@
 package echipa13.calatorii.controller;
 
-import echipa13.calatorii.models.calatorii;
-import echipa13.calatorii.Dto.calatoriiDto;
-import echipa13.calatorii.service.calatoriiService;
+import echipa13.calatorii.models.Tour;
+import echipa13.calatorii.Dto.TourDto;
+import echipa13.calatorii.service.TourService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,24 +13,24 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
-
 @Controller
-public class calatoriiController {
 
-    private calatoriiService calatoriiService;
+public class TourController {
+
+    private final TourService tourService;
 
     @Autowired
-    public calatoriiController(calatoriiService calatoriiService) {
-        this.calatoriiService = calatoriiService;
+    public TourController(TourService tourService) {
+        this.tourService = tourService;
     }
+
 
 
 
     // Listarea călătoriilor
     @GetMapping("/Itravel")
     public String Itravel(Model model) {
-        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
         return "Itravel-list";  // numele HTML-ului de listare
     }
@@ -40,7 +39,7 @@ public class calatoriiController {
     @GetMapping("/About")
 
     public String About(Model model) {
-        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
         return "About-list";
     }
@@ -48,7 +47,7 @@ public class calatoriiController {
     @GetMapping("/Privacy")
 
     public String Privacy(Model model) {
-        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
         return "privacy";
     }
@@ -56,7 +55,7 @@ public class calatoriiController {
     @GetMapping("/Terms")
 
     public String Terms(Model model) {
-        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
         return "terms-list";
     }
@@ -64,7 +63,7 @@ public class calatoriiController {
     @GetMapping("/Destinations")
 
     public String Destinations(Model model) {
-        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
         return "destinations-list";
     }
@@ -72,7 +71,7 @@ public class calatoriiController {
     @GetMapping("/Contact")
 
     public String Contact(Model model) {
-        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
         return "contact-list";
     }
@@ -80,7 +79,7 @@ public class calatoriiController {
     @GetMapping("/Tours")
 
     public String Tours(Model model) {
-        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
         return "tours-list";
     }
@@ -88,7 +87,7 @@ public class calatoriiController {
     @GetMapping("/Tour_details")
 
     public String Tour_details(Model model) {
-        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
         return "tour-details";
     }
@@ -97,56 +96,56 @@ public class calatoriiController {
     @GetMapping("/Error/404")
 
     public String Error404(Model model) {
-        List<calatoriiDto> calatorii = calatoriiService.findAll();
+        List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
         return "404-list";
     }
     // Formular pentru adăugarea unei noi călătorii
     @GetMapping("/Itravel/new")
     public String ItravelNew(Model model) {
-        calatorii c = new calatorii();
+        Tour c = new Tour();
         model.addAttribute("calatorii", c);
         return "Itravel-new";
     }
 
-    @PostMapping("/Itravel/new")
-    public String saveItravel(@ModelAttribute("calatorii") calatorii c,
-                              @RequestParam("imagine") MultipartFile imagine) {
-        try {
-            if (!imagine.isEmpty()) {
-                // folderul "imagine" în directorul proiectului
-                String uploadDir = System.getProperty("user.dir") + "/imagine/";
-                File folder = new File(uploadDir);
-                if (!folder.exists()) folder.mkdirs();
-
-                File file = new File(uploadDir + imagine.getOriginalFilename());
-                imagine.transferTo(file);
-
-                c.setImage(imagine.getOriginalFilename());
-            }
-            calatoriiService.saveCalatorie(c);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "redirect:/Itravel";
-    }
+//    @PostMapping("/Itravel/new")
+//    public String saveItravel(@ModelAttribute("calatorii") Tour c,
+//                              @RequestParam("imagine") MultipartFile imagine) {
+//        try {
+//            if (!imagine.isEmpty()) {
+//                // folderul "imagine" în directorul proiectului
+//                String uploadDir = System.getProperty("user.dir") + "/imagine/";
+//                File folder = new File(uploadDir);
+//                if (!folder.exists()) folder.mkdirs();
+//
+//                File file = new File(uploadDir + imagine.getOriginalFilename());
+//                imagine.transferTo(file);
+//
+//                c.setImage(imagine.getOriginalFilename());
+//            }
+//            tourService.saveTour(c);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return "redirect:/Itravel";
+//    }
 
 
     @GetMapping("/Itravel/{id}")
     public String calatorieDetail(@PathVariable("id") long id, Model model) {
-        calatoriiDto calatorieDto = calatoriiService.findCalatorieById(id);
+        TourDto calatorieDto = tourService.findTourById(id);
         model.addAttribute("calatorie", calatorieDto);
         return "Itravel-detail";
     }
 
     @GetMapping("/Itravel/{id}/delete")
     public String deleteItravel(@PathVariable("id") long id) {
-        calatoriiService.delete(id);
+        tourService.delete(id);
         return "redirect:/Itravel";
     }
     @GetMapping("/Itravel/search")
         public String searchCalatorie(@RequestParam(value="query") String query,  Model model) {
-        List<calatoriiDto> c = calatoriiService.searchCalatorii(query);
+        List<TourDto> c = tourService.searchByTitle(query);
         model.addAttribute("calatorii", c);
         return "Itravel-list";
         }
