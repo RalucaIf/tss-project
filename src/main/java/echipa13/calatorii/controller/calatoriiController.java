@@ -79,7 +79,7 @@ public class calatoriiController {
 
     @GetMapping("/Tours")
 
-    public String Tours(Model model) {
+    public <calatoriiDto> String Tours(Model model) {
         List<calatoriiDto> calatorii = calatoriiService.findAll();
         model.addAttribute("calatorii", calatorii);
         return "tours-list";
