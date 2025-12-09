@@ -21,25 +21,6 @@
     <section  class="py-5">
 
         <form role="form" th:action="@{/Itravel/new}" th:object="${calatorii}" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="inputName">Name</label>
-                <input type="text" class="form-control" id="inputName" th:field="*{name}" placeholder="Name">
-            </div>
-
-            <div class="form-group">
-                <label for="inputLastname">Last Name</label>
-                <input type="text" class="form-control" id="inputLastname" th:field="*{lastname}" placeholder="Last Name">
-            </div>
-
-            <div class="form-group">
-                <label for="inputEmail">Email</label>
-                <input type="email" class="form-control" id="inputEmail" th:field="*{email}" placeholder="name@example.com">
-            </div>
-
-            <div class="form-group">
-                <label for="inputPhone">Phone</label>
-                <input type="text" class="form-control" id="inputPhone" th:field="*{phone}" placeholder="Phone">
-            </div>
 
             <div class="form-group">
                 <label for="inputTitle">Title</label>
@@ -47,8 +28,18 @@
             </div>
 
             <div class="form-group">
-                <label for="inputDescription">Description</label>
+                <label for="inputDescription">Summary</label>
                 <textarea class="form-control" id="inputDescription" th:field="*{summary}" rows="4" placeholder="Description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="inputPrice">Price_points</label>
+                <textarea class="form-control" id="inputPrice" th:field="*{pricePoints}" rows="4" placeholder="Price Points"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="inputStatus">Status</label>
+                <textarea class="form-control" id="inputStatus" th:field="*{status}" rows="4" placeholder="Status"></textarea>
             </div>
 
             <div class="mb-3">

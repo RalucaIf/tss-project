@@ -3,6 +3,7 @@ package echipa13.calatorii.controller;
 import echipa13.calatorii.models.Tour;
 import echipa13.calatorii.Dto.TourDto;
 import echipa13.calatorii.service.TourService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -108,6 +110,11 @@ public class TourController {
         return "Itravel-new";
     }
 
+    @GetMapping("/nuEstiGhid")
+    public String nuEstiGhid(Model model) {
+        return "nuEstiGhid";
+    }
+
 //    @PostMapping("/Itravel/new")
 //    public String saveItravel(@ModelAttribute("calatorii") Tour c,
 //                              @RequestParam("imagine") MultipartFile imagine) {
@@ -129,6 +136,38 @@ public class TourController {
 //        }
 //        return "redirect:/Itravel";
 //    }
+
+    @PostMapping("/Itravel/new")
+    public String addTour(@ModelAttribute("tour") Tour c,
+                          @RequestParam("imagine") MultipartFile imagine,
+                          HttpSession session) {
+
+        try {
+            Long guideId = (Long) session.getAttribute("guideId");
+            if (guideId == null) {
+                return "redirect:/nuEstiGhid";
+            }
+            c.setGuideId(guideId);
+            c.setStatus("ACTIVE");
+            c.setCreatedAt(LocalDateTime.now());
+
+            if (!imagine.isEmpty()) {
+                // folderul "imagine" în directorul proiectului
+                String uploadDir = System.getProperty("user.dir") + "/imagine/";
+                File folder = new File(uploadDir);
+                if (!folder.exists()) folder.mkdirs();
+
+                File file = new File(uploadDir + imagine.getOriginalFilename());
+                imagine.transferTo(file);
+
+                c.setImage(imagine.getOriginalFilename());
+            }
+            tourService.saveTour(c);
+        } catch (IOException e) {
+           e.printStackTrace();
+        }
+        return "redirect:/Itravel";
+    }
 
 
     @GetMapping("/Itravel/{id}")
