@@ -54,6 +54,13 @@ public class SecurityConfig {
                         .passwordParameter("password")// câmp parola din modal
                         .defaultSuccessUrl("/Itravel", true)
                         .permitAll()
+
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")          // URL pentru logout
+                        .logoutSuccessUrl("/Itravel")  // unde să fie redirect după logout
+                        .invalidateHttpSession(true)   // distruge sesiunea
+                        .deleteCookies("JSESSIONID")   // șterge cookie-ul de sesiune
                 );
 
         return http.build();

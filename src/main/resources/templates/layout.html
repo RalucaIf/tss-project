@@ -52,19 +52,22 @@
                 <li><a th:href="@{/About}">About</a></li>
                 <li><a th:href="@{/Destinations}">Destinations</a></li>
                 <li><a th:href="@{/Tours}">Tours</a></li>
-                <li th:if="${#authentication == null}">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
-                </li>
 
-                <li th:if="${#authentication != null}" class="dropdown">
+                <li sec:authorize="isAuthenticated()" class="dropdown">
                     <a href="#">
-                        Welcome, <b th:text="${#authentication.name}">User</b>!
+                        Welcome, <b sec:authentication="principal.username">User</b>!
                     </a>
                     <ul>
-                        <li><a th:href="@{/logout}">Logout</a></li>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <button type="submit" class="btn-logout">Logout</button>
+                            </form>
+                        </li>
                     </ul>
                 </li>
-
+                <li sec:authorize="isAnonymous()">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+                </li>
 
 
                 <li class="dropdown"><a href="#"><span>More Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
