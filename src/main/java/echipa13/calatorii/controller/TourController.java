@@ -8,7 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -32,6 +33,11 @@ public class TourController {
     public String Itravel(Model model) {
         List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
+
+        // preluare user logat
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        model.addAttribute("user", username);
         return "Itravel-list";  // numele HTML-ului de listare
     }
 
@@ -41,6 +47,11 @@ public class TourController {
     public String About(Model model) {
         List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
+
+        // preluare user logat
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        model.addAttribute("user", username);
         return "About-list";
     }
 
@@ -49,6 +60,11 @@ public class TourController {
     public String Privacy(Model model) {
         List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
+
+        // preluare user logat
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        model.addAttribute("user", username);
         return "privacy";
     }
 
@@ -57,6 +73,11 @@ public class TourController {
     public String Terms(Model model) {
         List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
+
+        // preluare user logat
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        model.addAttribute("user", username);
         return "terms-list";
     }
 
@@ -65,6 +86,11 @@ public class TourController {
     public String Destinations(Model model) {
         List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
+
+        // preluare user logat
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        model.addAttribute("user", username);
         return "destinations-list";
     }
 
@@ -73,6 +99,10 @@ public class TourController {
     public String Contact(Model model) {
         List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
+        // preluare user logat
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        model.addAttribute("user", username);
         return "contact-list";
     }
 
@@ -81,6 +111,10 @@ public class TourController {
     public String Tours(Model model) {
         List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
+        // preluare user logat
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        model.addAttribute("user", username);
         return "tours-list";
     }
 
@@ -89,6 +123,11 @@ public class TourController {
     public String Tour_details(Model model) {
         List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
+
+        // preluare user logat
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        model.addAttribute("user", username);
         return "tour-details";
     }
 
@@ -98,6 +137,8 @@ public class TourController {
     public String Error404(Model model) {
         List<TourDto> calatorii = tourService.findAll();
         model.addAttribute("calatorii", calatorii);
+
+
         return "404-list";
     }
     // Formular pentru adăugarea unei noi călătorii
@@ -105,6 +146,7 @@ public class TourController {
     public String ItravelNew(Model model) {
         Tour c = new Tour();
         model.addAttribute("calatorii", c);
+
         return "Itravel-new";
     }
 
@@ -135,18 +177,24 @@ public class TourController {
     public String calatorieDetail(@PathVariable("id") long id, Model model) {
         TourDto calatorieDto = tourService.findTourById(id);
         model.addAttribute("calatorie", calatorieDto);
+
+        // preluare user logat
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        model.addAttribute("user", username);
         return "Itravel-detail";
     }
 
     @GetMapping("/Itravel/{id}/delete")
     public String deleteItravel(@PathVariable("id") long id) {
+
         tourService.delete(id);
         return "redirect:/Itravel";
     }
-    @GetMapping("/Itravel/search")
-        public String searchCalatorie(@RequestParam(value="query") String query,  Model model) {
-        List<TourDto> c = tourService.searchByTitle(query);
-        model.addAttribute("calatorii", c);
-        return "Itravel-list";
-        }
+//    @GetMapping("/Itravel/search")
+//        public String searchByTitle(@RequestParam(value="query") String query,  Model model) {
+//        List<TourDto> c = tourService.searchByTitle(query);
+//        model.addAttribute("calatorii", c);
+//        return "Itravel-list";
+//        }
 }

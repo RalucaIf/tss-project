@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -52,7 +52,24 @@
                 <li><a th:href="@{/About}">About</a></li>
                 <li><a th:href="@{/Destinations}">Destinations</a></li>
                 <li><a th:href="@{/Tours}">Tours</a></li>
-                <li> <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" >Login</a> </li>
+
+                <li sec:authorize="isAuthenticated()" class="dropdown">
+                    <a href="#">
+                        Welcome, <b sec:authentication="principal.username">User</b>!
+                    </a>
+                    <ul>
+                        <li>
+                            <form th:action="@{/logout}" method="post">
+                                <button type="submit" class="btn-logout">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                <li sec:authorize="isAnonymous()">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+                </li>
+
+
                 <li class="dropdown"><a href="#"><span>More Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
                         <li><a href="destination-details.html">Destination Details</a></li>
@@ -232,131 +249,95 @@
 <script th:href="@{/js/main.js}"></script>
 
 
-        <div class="modal fade" id="loginModal" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Welcome Back!</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="mb-3">
-                                <label class="form-label">Email address</label>
-                                <div class="input-group">
-                                    <input type="email" class="form-control" placeholder="name@example.com">
-                                    <span class="input-group-text">
-                    <i class="fas fa-envelope"></i>
-                  </span>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Password</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" placeholder="Enter your password">
-<!--                                    <span class="input-group-text password-toggle">-->
-                    <i class="fas fa-eye"></i>
-                  </span>
-                                </div>
-                            </div>
-
-                            <div class="form-check">
-                                <div>
-                                    <input type="checkbox" class="form-check-input" id="remember">
-                                    <label class="form-check-label" for="remember">Remember me</label>
-                                </div>
-                                <a href="#" class="text-decoration-none section-badge">Esqueceu a palavra passe?</a>
-                            </div>
-
-                            <button type="submit" class="btn btn-login">Sign In</button>
-
-                            <div class="divider">
-                                <div>
-                                <span>or continue with</span>
-                                </div>
-                            </div>
-
-                            <div class="social-login">
-                                <button type="button" class="btn btn-social">
-                                    <i class="fab fa-google"></i>Google
-                                </button>
-                                <button type="button" class="btn btn-social">
-                                    <i class="fab fa-facebook-f"></i>Facebook
-                                </button>
-                            </div>
-
-                            <div class="register-link">
-                                Don't have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal"
-                                                          data-bs-dismiss="modal" class="text-decoration-none">
-                                Register now
-                            </a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-
-<div class="modal fade" id="registerModal" tabindex="-1">
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Register!</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title">Welcome Back!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form th:action="@{/auth/login}" method="post">
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="email" placeholder="Enter your email" required>
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="password" placeholder="Enter your password" required>
+                            <span class="input-group-text"><i class="fas fa-eye"></i></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-login w-100">Sign In</button>
+
+                    <div class="register-link mt-3 text-center">
+                        Don't have an account?
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">
+                            Register now
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Register</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form action="/auth/register" method="post">
+
+                    <div class="mb-3">
+                        <label class="form-label">Your Name</label>
+                        <input type="text" class="form-control" name="username" placeholder="Your name" required>
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label">Email address</label>
-                        <div class="input-group">
-                            <input type="email" class="form-control" placeholder="name@example.com">
-                            <span class="input-group-text">
-                    <i class="fas fa-envelope"></i>
-                  </span>
-                        </div>
+                        <input type="email" class="form-control" name="email" placeholder="name@example.com" required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Enter Password</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" placeholder="Enter your password">
-                            <span class="input-group-text password-toggle">
-                            <i class="fas fa-eye"></i>
-                            </span>
-                        </div>
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password_hash" placeholder="Password" required>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Retype Password</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" placeholder="Retype your password">
-                            <span class="input-group-text password-toggle">
-                            <i class="fas fa-eye"></i>
-                            </span>
-                        </div>
-                    </div>
                     <button type="submit" class="btn btn-login">Register</button>
-                    <div class="divider">
-                        <div><span>or sign up with</span></div>
+
+                    <div class="divider mt-3"><span>or sign up with</span></div>
+
+                    <div class="social-login mt-2">
+                        <button type="button" class="btn btn-social">
+                            <i class="fab fa-google"></i> Google
+                        </button>
+                        <button type="button" class="btn btn-social">
+                            <i class="fab fa-facebook-f"></i> Facebook
+                        </button>
                     </div>
 
-                    <div class="social-login">
-                        <button type="button" class="btn btn-social">
-                            <i class="fab fa-google"></i>Google
-                        </button>
-                        <button type="button" class="btn btn-social">
-                            <i class="fab fa-facebook-f"></i>Facebook
-                        </button>
-                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
 
 
 
