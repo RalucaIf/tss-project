@@ -21,7 +21,12 @@ public interface GuideRepository extends JpaRepository<Guide, Long> {
     List<Guide> searchByDisplayName(@Param("query") String query);
 
     // Găsește ghid după user_id
-    Optional<Guide> findByUserId(Long userId);
+    Optional<Guide> findByUser_Id(Long userId);
+
+
+    // verifică dacă userul e deja ghid
+
+    boolean existsByUser_Id(Long userId);
 
     // Găsește ghizi verificați cu rating minim
     @Query("SELECT g FROM Guide g WHERE g.verified = true AND g.ratingAvg >= :minRating")
