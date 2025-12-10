@@ -8,6 +8,7 @@ package echipa13.calatorii.models;
  import java.time.LocalDateTime;
  import java.util.ArrayList;
  import java.util.List;
+ import java.util.Optional;
 
 @Getter
  @Setter
@@ -39,6 +40,5 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private List<Role> roles = new ArrayList<>();
-
 
 }
