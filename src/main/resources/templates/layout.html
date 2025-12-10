@@ -60,11 +60,17 @@
                 <li><a th:href="@{/Destinations}">Destinations</a></li>
                 <li><a th:href="@{/Tours}">Tours</a></li>
 
-                <li sec:authorize="isAuthenticated()" class="dropdown" th:if="${user != null}">
+                <li sec:authorize="isAuthenticated()" class="dropdown">
                     <a href="#" class="d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#avatarModal">
-                        <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${user.avatar}}"
-                             width="45" height="45" class="rounded-circle me-2 border avatar-option-nav"/>
-                        <span>Welcome, <b th:text="${user.username}"></b></span>
+                        <!-- Avatar: vine gata format din @ModelAttribute("navbarAvatarUrl") -->
+                        <img th:src="${navbarAvatarUrl}"
+                             width="45" height="45"
+                             class="rounded-circle me-2 border avatar-option-nav"
+                             alt="Avatar"/>
+
+                        <!-- Numele: din UserEntity (username) -->
+                        <span>Welcome, <b sec:authentication="name"></b></span>
+
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
@@ -87,7 +93,7 @@
                         <li><a href="blog-details.html">Blog Details</a></li>
                         <li><a th:href="@{/Terms}">Terms</a></li>
                         <li><a th:href="@{/Privacy}">Privacy</a></li>
-
+                        <li><a th:href="@{/Error/404}">404</a></li>
                     </ul>
                 </li>
                 <li sec:authorize="isAuthenticated()" class="dropdown">
@@ -262,8 +268,7 @@
 <!-- Preloader -->
 <!--<div id="preloader"></div>-->
 <!-- Main JS File -->
-<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<script th:href="@{/js/main.js}"></script>
+
 
 
 <!-- Login Modal -->
@@ -462,7 +467,8 @@
         });
     })();
 </script>
-
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
 
 
 
