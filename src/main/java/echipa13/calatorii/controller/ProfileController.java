@@ -32,23 +32,27 @@ public class ProfileController {
         return "layout"; // numele template-ului Thymeleaf
     }
 
-    // --- Salvare avatar ---
+    // --- Salvare avatar ---  !!!
     @PostMapping("/avatar")
     public String saveAvatar(@RequestParam("avatar") String avatar, Authentication auth) {
-        String email = auth.getName();
-        UserEntity user = userRepository.findByEmail(email);
+        if (auth == null || !auth.isAuthenticated()) {
+            return "redirect:/Itravel?error=unauthorized";
+        }
+        if (avatar == null || avatar.isEmpty()) {
+            return "redirect:/profile?error=noAvatarSelected";
+        }
 
+        String principal = auth.getName();
+        UserEntity user = userRepository.findByEmail(principal);
+        if (user == null) {
+            user = userRepository.findByUsername(principal); // fallback
+        }
         if (user == null) {
             return "redirect:/Itravel?error=userNotFound";
         }
 
-        if (avatar != null && !avatar.isEmpty()) {
-            user.setAvatar(avatar);
-            userRepository.save(user);
-        } else {
-            return "redirect:/profile?error=noAvatarSelected";
-        }
-
+        user.setAvatar(avatar);
+        userRepository.saveAndFlush(user); // asigură persistența înainte de redirect
         return "redirect:/Itravel?success=avatarUpdated";
     }
 }

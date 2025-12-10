@@ -12,6 +12,9 @@
     <title layout:title-pattern="${CONTENT_TITLE} - ITravel">ITravel</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
+    <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -42,13 +45,13 @@
         <a th:href="@{/Itravel}" class=" logo d-flex align-items-center me-auto me-xl-0">
             <!-- Uncomment the line below if you also wish to use an image logo -->
 
-<!--                <<img th:src="@{/walpaper/walpaper-image.jpg}" alt="">-->
+            <!--                <<img th:src="@{/walpaper/walpaper-image.jpg}" alt="">-->
 
 
             <h1 class="sitename">ITravel</h1>
         </a>
 
-        <button id="theme-toggle">Schimbă tema</button>
+
         <nav id="navmenu" class="navmenu" >
             <ul>
                 <li><a th:href="@{/Itravel}" class="active">Home</a></li>
@@ -377,41 +380,45 @@
         </div>
     </div>
 </div>
+<form id="avatarForm" th:action="@{/profile/avatar}" method="post" style="display:none">
+    <input type="hidden" name="avatar" id="avatarValue"/>
+    <!-- CSRF doar dacă există -->
+    <input th:if="${_csrf != null}" type="hidden"
+           th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+</form>
 <!-- JS -->
+<!-- src/main/resources/templates/layout.html -->
+<!-- Înlocuiește blocul <script> pentru avatar cu acesta -->
 <script>
-    const avatarImgs = document.querySelectorAll('.avatar-option');
-    const navbarAvatar = document.querySelector('#navmenu img'); // avatar din navbar
+    (function () {
+        const avatarImgs = document.querySelectorAll('.avatar-option');
+        const saveBtn = document.getElementById('saveAvatarBtn');
+        const form = document.getElementById('avatarForm');
+        const avatarValue = document.getElementById('avatarValue');
 
-    avatarImgs.forEach(img => {
-        img.addEventListener('click', function () {
-            // Deselect toate
-            avatarImgs.forEach(i => i.classList.remove('selected'));
-            // Selectează click-ul curent
-            this.classList.add('selected');
-            // Selectează radio-ul ascuns
-            this.previousElementSibling.checked = true;
+        // select vizual + radio hidden
+        avatarImgs.forEach(img => {
+            img.addEventListener('click', function () {
+                avatarImgs.forEach(i => i.classList.remove('selected'));
+                this.classList.add('selected');
+                this.previousElementSibling.checked = true; /* WHY: radio-ul din label trebuie să aibă value */
+            });
         });
-    });
 
-    document.querySelector('#saveAvatarBtn').addEventListener('click', function () {
-        const selectedRadio = document.querySelector('input[name="avatar"]:checked');
-        if (!selectedRadio) return alert('Please select an avatar!');
-        const selectedValue = selectedRadio.value;
+        // la Save -> persistă în DB; redirectul aduce avatarul nou din model (${user.avatar})
+        saveBtn?.addEventListener('click', function () {
+            const selected = document.querySelector('input[name="avatar"]:checked');
+            if (!selected) { alert('Please select an avatar!'); return; }
 
-        // Schimbă instant avatarul din navbar
-        navbarAvatar.src = `https://api.dicebear.com/9.x/dylan/svg?seed=${selectedValue}`;
-
-        // Închide modalul
-        const avatarModal = bootstrap.Modal.getInstance(document.getElementById('avatarModal'));
-        avatarModal.hide();
-
-
-    });
+            avatarValue.value = selected.value;  /* WHY: controllerul primește parametrul "avatar" */
+            form.submit();                       /* WHY: @PostMapping("/profile/avatar") salvează + redirect */
+        });
+    })();
 </script>
 
 
-<!-- Js -->
-<script th:src="@{/js/theme.js}"></script>
+
+
 
 </body>
 </html>

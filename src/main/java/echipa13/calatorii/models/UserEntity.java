@@ -27,7 +27,7 @@ public class UserEntity {
 
      private boolean enabled;
 
-    private String avatar;
+    private String avatar; // !
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();

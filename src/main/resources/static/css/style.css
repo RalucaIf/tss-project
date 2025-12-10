@@ -8207,12 +8207,82 @@ section,
     margin-top: 20px;
     font-size: 0.9rem;
 }
- .avatar-option {
-     border: 2px solid #dee2e6; /* border gri implicit */
-     transition: border 0.2s;
-     cursor: pointer;
- }
+.avatar-option {
+    border: 2px solid #dee2e6; /* border gri implicit */
+    transition: border 0.2s;
+    cursor: pointer;
+}
 
 .avatar-option:hover {
     border: 2px solid #28a745; /* verde la hover */
+}
+
+/* === Navbar overlay + contrast fix (add-only) === */
+/* WHY: textul rămâne lizibil pe orice fundal, inclusiv la scroll; nu atingem JS/HTML. */
+
+/* ajustează ușor după gust */
+:root {
+    --header-overlay-start: rgba(32, 15, 13, 0.50);
+    --header-overlay-scrolled: rgba(32, 15, 13, 0.65);
+}
+
+/* nu schimbăm position! (header are .fixed-top din Bootstrap) */
+header.header {
+    isolation: isolate; /* creează stacking context pt. ::before */
+}
+
+/* stratul semi-transparent sub conținutul header-ului */
+header.header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--header-overlay-start);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: -1;          /* sub conținutul header-ului */
+    pointer-events: none; /* nu blochează click-urile */
+}
+
+/* întărim opacitatea pe scroll (JS setează .scrolled pe <body>) */
+body.scrolled header.header::before {
+    background: var(--header-overlay-scrolled);
+}
+
+/* păstrăm mereu textul din navbar alb, inclusiv la scroll */
+header.header .navmenu a,
+header.header .logo h1,
+header.header .btn-getstarted {
+    color: #fff;
+}
+
+body.scrolled header.header .navmenu a,
+body.scrolled header.header .logo h1,
+body.scrolled header.header .btn-getstarted {
+    color: #fff; /* bate regula existentă cu #333 pentru .scrolled */
+}
+
+/* accent pe hover/active rămâne vizibil pe fond închis */
+header.header .navmenu li:hover > a,
+header.header .navmenu .active,
+header.header .navmenu .active:focus {
+    color: var(--nav-hover-color, #f95e4d);
+}
+
+/* (opțional) dacă îți acoperă conținutul: activează padding-ul de sus
+:root { --header-height: 70px; }
+body { padding-top: var(--header-height); }
+*/
+
+/* === Culori dropdown: top-level alb, submeniu negru === */
+header.header .navmenu > ul > li > a { color: #fff; }
+body.scrolled header.header .navmenu > ul > li > a { color: #fff; }
+
+header.header .navmenu .dropdown ul a { color: #000; }
+body.scrolled header.header .navmenu .dropdown ul a { color: #000; }
+.mobile-nav-active header.header .navmenu .dropdown ul a { color: #000; }
+
+header.header .navmenu .dropdown ul a:hover,
+header.header .navmenu .dropdown ul .active:hover,
+header.header .navmenu .dropdown ul li:hover > a {
+    color: var(--nav-dropdown-hover-color);
 }

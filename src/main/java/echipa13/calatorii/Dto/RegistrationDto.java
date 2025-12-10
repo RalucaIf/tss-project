@@ -17,7 +17,7 @@ public class RegistrationDto {
 
     private boolean enabled;
 
-    private String avatar;
+    private String avatar;  // !
 
     private LocalDateTime createdAt;
 }
