@@ -2,6 +2,8 @@ package echipa13.calatorii.controller;
 
 import echipa13.calatorii.models.Tour;
 import echipa13.calatorii.Dto.TourDto;
+import echipa13.calatorii.models.UserEntity;
+import echipa13.calatorii.repository.UserRepository;
 import echipa13.calatorii.service.TourService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,10 +27,10 @@ public class TourController {
         this.tourService = tourService;
     }
 
+    @Autowired
+    private UserRepository userRepository;
 
 
-
-    // Listarea călătoriilor
     @GetMapping("/Itravel")
     public String Itravel(Model model) {
         List<TourDto> calatorii = tourService.findAll();
@@ -36,8 +38,14 @@ public class TourController {
 
         // preluare user logat
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        model.addAttribute("user", username);
+        String emailOrUsername = auth.getName();
+
+        UserEntity user = userRepository.findByEmail(emailOrUsername);
+        if (user == null) {
+            user = userRepository.findByUsername(emailOrUsername);
+        }
+        model.addAttribute("user", user);
+
         return "Itravel-list";  // numele HTML-ului de listare
     }
 

@@ -50,7 +50,7 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginProcessingUrl("/auth/login") // endpoint POST pentru login
-                        .usernameParameter("email")        // câmp email din modal
+                        .usernameParameter("usernameOrEmail")        // câmp email din modal
                         .passwordParameter("password")// câmp parola din modal
                         .defaultSuccessUrl("/Itravel", true)
                         .permitAll()

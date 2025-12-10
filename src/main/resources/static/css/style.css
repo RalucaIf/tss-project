@@ -8207,3 +8207,12 @@ section,
     margin-top: 20px;
     font-size: 0.9rem;
 }
+ .avatar-option {
+     border: 2px solid #dee2e6; /* border gri implicit */
+     transition: border 0.2s;
+     cursor: pointer;
+ }
+
+.avatar-option:hover {
+    border: 2px solid #28a745; /* verde la hover */
+}
