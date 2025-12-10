@@ -8286,33 +8286,3 @@ header.header .navmenu .dropdown ul .active:hover,
 header.header .navmenu .dropdown ul li:hover > a {
     color: var(--nav-dropdown-hover-color);
 }
-.navmenu .theme-toggle-li { margin-left: 12px; }
-
-.btn-theme {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 36px; height: 36px; border-radius: 9999px;
-    border: 1px solid color-mix(in srgb, var(--default-color), transparent 70%);
-    background: color-mix(in srgb, var(--surface-color), white 10%);
-    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-    box-shadow: 0 1px 2px rgba(0,0,0,.05);
-    cursor: pointer;
-}
-
-.btn-theme i { font-size: 1.1rem; line-height: 1; }
-.btn-theme:hover {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-color), transparent 85%);
-}
-
-/* LIGHT MODE: soarele – auriu deschis */
-body:not(.dark-background) .btn-theme i {
-    color: #FFD36B;           /* gold deschis */
-    filter: drop-shadow(0 0 0.25rem rgba(255, 211, 107, 0.35)); /* subtil, pentru claritate */
-}
-
-/* DARK MODE: luna – albastru pal deschis */
-body.dark-background .btn-theme i {
-    color: #C9DCFF;           /* albastru pal */
-    filter: drop-shadow(0 0 0.25rem rgba(201, 220, 255, 0.35));
-}
-
