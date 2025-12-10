@@ -14,12 +14,17 @@ public class GlobalControllerAdvice {
     @Autowired
     private UserRepository userRepository;
 
+    /** WHY: expune ${user} pe toate paginile; funcționează și dacă principalul e username. */
     @ModelAttribute("user")
-    public UserEntity addUserToModel() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
-            return userRepository.findByEmail(auth.getName());
+    public UserEntity addUserToModel(Authentication auth) {
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
+            return null;
         }
-        return null; // va fi null pentru useri anonimi
+        String principal = auth.getName();
+        UserEntity u = userRepository.findByEmail(principal);
+        if (u == null) {
+            u = userRepository.findByUsername(principal); // fallback
+        }
+        return u;
     }
 }
