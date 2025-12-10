@@ -4,6 +4,9 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
+
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title layout:title-pattern="${CONTENT_TITLE} - ITravel">ITravel</title>
@@ -53,18 +56,18 @@
                 <li><a th:href="@{/Destinations}">Destinations</a></li>
                 <li><a th:href="@{/Tours}">Tours</a></li>
 
-                <li sec:authorize="isAuthenticated()" class="dropdown">
-                    <a href="#">
-                        Welcome, <b sec:authentication="principal.username">User</b>!
+                <li sec:authorize="isAuthenticated()" class="dropdown" th:if="${user != null}">
+                    <a href="#" class="d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#avatarModal">
+                        <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${user.avatar}}"
+                             width="45" height="45" class="rounded-circle me-2 border avatar-option-nav"/>
+                        <span>Welcome, <b th:text="${user.username}"></b></span>
                     </a>
-                    <ul>
-                        <li>
-                            <form th:action="@{/logout}" method="post">
-                                <button type="submit" class="btn-logout">Logout</button>
-                            </form>
-                        </li>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
                     </ul>
                 </li>
+
+
                 <li sec:authorize="isAnonymous()">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
                 </li>
@@ -262,9 +265,9 @@
                 <form th:action="@{/auth/login}" method="post">
 
                     <div class="mb-3">
-                        <label class="form-label">Email</label>
+                        <label class="form-label">Email or Username</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="email" placeholder="Enter your email" required>
+                            <input type="text" class="form-control" name="usernameOrEmail" placeholder="Enter your email or username" required>
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
                         </div>
                     </div>
@@ -338,7 +341,73 @@
     </div>
 </div>
 
+<!-- Avatar Select Modal -->
+<div class="modal fade" id="avatarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <h5 class="modal-title">Choose Your Avatar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row text-center">
+
+                    <!-- 12 avataruri -->
+                    <div class="col-3 mb-4" th:each="i : ${#numbers.sequence(1,12)}">
+                        <label style="cursor:pointer; display:inline-block; position:relative;">
+                            <input type="radio" name="avatar"
+                                   th:value="'avatar' + ${i}"
+                                   class="form-check-input"
+                                   style="opacity:0; position:absolute; left:0; top:0; width:100%; height:100%; cursor:pointer;">
+
+                            <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=avatar' + ${i}}"
+                                 class="rounded-circle border avatar-option"
+                                 width="90" height="90">
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveAvatarBtn">Save Avatar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- JS -->
+<script>
+    const avatarImgs = document.querySelectorAll('.avatar-option');
+    const navbarAvatar = document.querySelector('#navmenu img'); // avatar din navbar
+
+    avatarImgs.forEach(img => {
+        img.addEventListener('click', function () {
+            // Deselect toate
+            avatarImgs.forEach(i => i.classList.remove('selected'));
+            // Selectează click-ul curent
+            this.classList.add('selected');
+            // Selectează radio-ul ascuns
+            this.previousElementSibling.checked = true;
+        });
+    });
+
+    document.querySelector('#saveAvatarBtn').addEventListener('click', function () {
+        const selectedRadio = document.querySelector('input[name="avatar"]:checked');
+        if (!selectedRadio) return alert('Please select an avatar!');
+        const selectedValue = selectedRadio.value;
+
+        // Schimbă instant avatarul din navbar
+        navbarAvatar.src = `https://api.dicebear.com/9.x/dylan/svg?seed=${selectedValue}`;
+
+        // Închide modalul
+        const avatarModal = bootstrap.Modal.getInstance(document.getElementById('avatarModal'));
+        avatarModal.hide();
+
+
+    });
+</script>
 
 
 

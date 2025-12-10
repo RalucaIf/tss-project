@@ -27,21 +27,29 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(email);
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        // caută userul mai întâi după email
+        UserEntity user = userRepository.findByEmail(usernameOrEmail);
+
+        // dacă nu găsește, caută după username
         if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+            user = userRepository.findByUsername(usernameOrEmail);
         }
+
+        // dacă nu există deloc, aruncă excepție
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail);
+        }
+
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),           // 🔥 email ca username
-                user.getPassword_hash(),   // parola criptată
+                user.getUsername(),
+                user.getPassword_hash(),
                 user.isEnabled(),
                 true, true, true,
-                user.getRoles().stream()
-                        .map(role -> new SimpleGrantedAuthority(role.getName()))
-                        .collect(Collectors.toList())
+                mapRolesToAuthorities(user.getRoles())
         );
     }
+
 
     private Collection<GrantedAuthority> mapRolesToAuthorities(List<Role> roles){
         return roles.stream()
