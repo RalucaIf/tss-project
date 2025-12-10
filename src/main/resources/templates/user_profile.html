@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<div class="content-wrapper" layout:fragment="content">
+    <!--Page Title-->
+    <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/showcase-7.webp}');|">
+        <div class="container position-relative">
+            <h1>Welcome to ITravel</h1>
+            <p>This is your profile.</p>
+
+        </div>
+    </div> <!--End Page Title-->
+    <style>
+        .content-wrapper .container {
+            display: grid;
+            grid-template-columns: auto auto;
+            padding: 10px;
+        }
+        .content-wrapper .container div {
+            background: var(--surface-color);
+            padding: 10px;
+            margin-left: 10px;
+            margin-top: 10px;
+            font-size: 30px;
+            text-align: center;
+            height: 500px;
+            border-radius: 8px;
+            border: 1px solid color-mix(in srgb, #35211f, transparent 90%);
+            transition: all 0.3s ease;
+        }
+        .content-wrapper .container div:hover {
+            transform: translateY(-10px); /* ridică elementul cu 10px */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); /* umbrea de sub el */
+        }
+    </style>
+<div class="container">
+    <div class="profile-avatar">
+        <img src="/imagine/Croatia.png" class="img-fluid rounded-circle mb-3" style="width: 300px; height: 300px">
+        <h4 th:text="${user.username}">Nume utilizator</h4>
+    </div>
+    <div class="profile-info">
+        <h4>Informatii profil</h4>
+        <ul>
+            <li>Email: <span th:text ="${user.email}">email@example.com</span></li>
+            <li> Created at: <span th:text="${user.createdAt}">2025-01-01</span></li>
+           <!-- <li>Roles: <span th:text="${user.roles}">Username</span></li>-->
+        </ul>
+    </div>
+</div>
+</div>
+</html>

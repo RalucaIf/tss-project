@@ -54,7 +54,7 @@
                 <li><a th:href="@{/Tours}">Tours</a></li>
 
                 <li sec:authorize="isAuthenticated()" class="dropdown">
-                    <a href="#">
+                    <a th:href="@{/user_profile}">
                         Welcome, <b sec:authentication="principal.username">User</b>!
                     </a>
                     <ul>
