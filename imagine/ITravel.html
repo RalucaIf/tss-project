@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<!-- saved from url=(0031)http://localhost:8080/Itravel/6 -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>ITravel</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/" rel="preconnect">
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin="">
+    <link href="./ITravel_files/css2" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="./ITravel_files/bootstrap.css" rel="stylesheet">
+
+    <!-- GLightbox -->
+    <link href="./ITravel_files/glightbox.min.css" rel="stylesheet">
+
+
+    <!-- CSS propriu -->
+    <link href="./ITravel_files/style.css" rel="stylesheet">
+
+    <!-- =======================================================
+    * Template Name: TravelTime
+    * Template URL: https://bootstrapmade.com/traveltime-bootstrap-travel-template/
+    * Updated: Jul 28 2025 with Bootstrap v5.3.7
+    * Author: BootstrapMade.com
+    * License: https://bootstrapmade.com/license/
+    ======================================================== -->
+</head>
+<body><header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container position-relative d-flex align-items-center justify-content-between">
+
+        <a href="http://localhost:8080/Itravel" class=" logo d-flex align-items-center me-auto me-xl-0">
+            <!-- Uncomment the line below if you also wish to use an image logo -->
+
+<!--                <<img th:src="@{/walpaper/walpaper-image.jpg}" alt="">-->
+
+
+            <h1 class="sitename">ITravel</h1>
+        </a>
+
+
+        <nav id="navmenu" class="navmenu">
+            <ul>
+                <li><a href="http://localhost:8080/Itravel" class="active">Home</a></li>
+                <li><a href="http://localhost:8080/About">About</a></li>
+                <li><a href="http://localhost:8080/Destinations">Destinations</a></li>
+                <li><a href="http://localhost:8080/Tours">Tours</a></li>
+                <li> <a href="http://localhost:8080/Itravel/6#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a> </li>
+                <li class="dropdown"><a href="http://localhost:8080/Itravel/6#"><span>More Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                    <ul>
+                        <li><a href="http://localhost:8080/Itravel/destination-details.html">Destination Details</a></li>
+                        <li><a href="http://localhost:8080/Tour_details">Tour Details</a></li>
+                        <li><a href="http://localhost:8080/Itravel/booking.html">Booking</a></li>
+                        <li><a href="http://localhost:8080/Itravel/testimonials">Testimonials</a></li>
+                        <li><a href="http://localhost:8080/Itravel/faq.html">Frequently Asked Questions</a></li>
+                        <li><a href="http://localhost:8080/Itravel/blog-details.html">Blog Details</a></li>
+                        <li><a href="http://localhost:8080/Terms">Terms</a></li>
+                        <li><a href="http://localhost:8080/Privacy">Privacy</a></li>
+                        <li><a href="http://localhost:8080/Error/404">404</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="http://localhost:8080/Itravel/6#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                    <ul>
+                        <li><a href="http://localhost:8080/Itravel/6#">Dropdown 1</a></li>
+                        <li class="dropdown"><a href="http://localhost:8080/Itravel/6#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                            <ul>
+                                <li><a href="http://localhost:8080/Itravel/new">Create</a></li>
+                                <li><a href="http://localhost:8080/Itravel/6#">Deep Dropdown 2</a></li>
+                                <li><a href="http://localhost:8080/Itravel/6#">Deep Dropdown 3</a></li>
+                                <li><a href="http://localhost:8080/Itravel/6#">Deep Dropdown 4</a></li>
+                                <li><a href="http://localhost:8080/Itravel/6#">Deep Dropdown 5</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="http://localhost:8080/Itravel/6#">Dropdown 2</a></li>
+                        <li><a href="http://localhost:8080/Itravel/6#">Dropdown 3</a></li>
+                        <li><a href="http://localhost:8080/Itravel/6#">Dropdown 4</a></li>
+                    </ul>
+                </li>
+                <li><a href="http://localhost:8080/Contact">Contact</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+
+        <a class="btn-getstarted" href="http://localhost:8080/Itravel/Itravel-list">Get Started</a>
+
+    </div>
+</header>
+<!-- Fragmentul pentru conținutul paginii copil -->
+<div>
+    <!-- Page Title -->
+    <div class="page-title dark-background" style="background-image: url(&#39;/walpaper/showcase-11.webp&#39;);">
+        <div class="container position-relative">
+            <h1>Welcome to ITravel</h1>
+            <p>Create memorable moments with us.</p>
+
+        </div>
+    </div><!-- End Page Title -->
+    <section id="travel-destination-details" class="travel-destination-details section">
+
+        <div class="container">
+
+            <!-- Hero Section -->
+            <div class="destination-hero">
+                <div class="hero-content">
+                    <h1 class="destination-name">Franta</h1>
+                    <p class="destination-tagline">Island of the Gods</p>
+                </div>
+                <div class="hero-image">
+                 <img src="./ITravel_files/Croatia.png" alt="Bali destination" class="img-fluid">
+                </div>
+
+            </div>
+
+            <!-- Overview Section -->
+            <div class="destination-overview">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <div class="overview-content">
+                            <h2>Discover Paradise</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                            <p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida risus commodo viverra maecenas accumsan lacus vel facilisis.</p>
+                        </div>
+                        <a class="btn-explore" href="http://localhost:8080/Itravel/6/delete">
+                            Delete <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="overview-image">
+                            <img src="./ITravel_files/destination-5.webp" alt="Bali culture" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Highlights Section -->
+            <div class="destination-highlights">
+                <div class="section-header">
+                    <h2>Must-See Attractions</h2>
+                    <p>Explore the most captivating places and experiences</p>
+                </div>
+
+                <div class="row gy-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="highlight-item">
+                            <div class="highlight-image">
+                                <img src="./ITravel_files/destination-8.webp" alt="Temple complex" class="img-fluid">
+                            </div>
+                            <div class="highlight-content">
+                                <h4>Sacred Temples</h4>
+                                <p>Discover ancient Hindu temples with intricate stone carvings and spiritual significance.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="highlight-item">
+                            <div class="highlight-image">
+                                <img src="./ITravel_files/destination-12.webp" alt="Rice terraces" class="img-fluid">
+                            </div>
+                            <div class="highlight-content">
+                                <h4>Rice Terraces</h4>
+                                <p>Walk through emerald green terraced landscapes that showcase traditional farming methods.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="highlight-item">
+                            <div class="highlight-image">
+                                <img src="./ITravel_files/destination-15.webp" alt="Pristine beaches" class="img-fluid">
+                            </div>
+                            <div class="highlight-content">
+                                <h4>Pristine Beaches</h4>
+                                <p>Relax on white sand beaches with crystal clear waters perfect for swimming and surfing.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="highlight-item">
+                            <div class="highlight-image">
+                                <img src="./ITravel_files/destination-3.webp" alt="Traditional markets" class="img-fluid">
+                            </div>
+                            <div class="highlight-content">
+                                <h4>Traditional Markets</h4>
+                                <p>Immerse yourself in local culture at vibrant markets filled with crafts and delicacies.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="highlight-item">
+                            <div class="highlight-image">
+                                <img src="./ITravel_files/destination-7.webp" alt="Volcano hiking" class="img-fluid">
+                            </div>
+                            <div class="highlight-content">
+                                <h4>Volcano Adventures</h4>
+                                <p>Challenge yourself with sunrise hikes to active volcanoes offering breathtaking views.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="highlight-item">
+                            <div class="highlight-image">
+                                <img src="./ITravel_files/destination-11.webp" alt="Cultural performances" class="img-fluid">
+                            </div>
+                            <div class="highlight-content">
+                                <h4>Cultural Shows</h4>
+                                <p>Experience traditional Balinese dance performances and artistic expressions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Tours Section -->
+            <div class="available-tours">
+                <div class="section-header">
+                    <h2>Available Tours</h2>
+                    <p>Choose from our carefully crafted experiences</p>
+                </div>
+
+                <div class="row gy-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="tour-card">
+                            <div class="tour-image">
+                                <img src="./ITravel_files/tour-8.webp" alt="Cultural Heritage Tour" class="img-fluid">
+                                <div class="tour-duration">
+                                    <span>5 Days</span>
+                                </div>
+                            </div>
+                            <div class="tour-content">
+                                <h4>Cultural Heritage Tour</h4>
+                                <p>Explore ancient temples, traditional villages, and local artisan workshops in this immersive cultural journey.</p>
+                                <div class="tour-meta">
+                                    <span class="tour-price">$589</span>
+                                    <span class="tour-rating">
+                      <i class="bi bi-star-fill"></i>
+                      <span>4.8</span>
+                    </span>
+                                </div>
+                                <a href="http://localhost:8080/Itravel/6#" class="btn-tour">View Details <i class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="tour-card">
+                            <div class="tour-image">
+                                <img src="./ITravel_files/tour-12.webp" alt="Adventure Package" class="img-fluid">
+                                <div class="tour-duration">
+                                    <span>7 Days</span>
+                                </div>
+                            </div>
+                            <div class="tour-content">
+                                <h4>Adventure Package</h4>
+                                <p>Volcano hiking, white water rafting, and jungle trekking combined with beautiful beach relaxation.</p>
+                                <div class="tour-meta">
+                                    <span class="tour-price">$759</span>
+                                    <span class="tour-rating">
+                      <i class="bi bi-star-fill"></i>
+                      <span>4.9</span>
+                    </span>
+                                </div>
+                                <a href="http://localhost:8080/Itravel/6#" class="btn-tour">View Details <i class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="tour-card">
+                            <div class="tour-image">
+                                <img src="./ITravel_files/tour-15.webp" alt="Wellness Retreat" class="img-fluid">
+                                <div class="tour-duration">
+                                    <span>4 Days</span>
+                                </div>
+                            </div>
+                            <div class="tour-content">
+                                <h4>Wellness Retreat</h4>
+                                <p>Rejuvenate your mind and body with yoga sessions, spa treatments, and healthy organic cuisine.</p>
+                                <div class="tour-meta">
+                                    <span class="tour-price">$445</span>
+                                    <span class="tour-rating">
+                      <i class="bi bi-star-fill"></i>
+                      <span>4.7</span>
+                    </span>
+                                </div>
+                                <a href="http://localhost:8080/Itravel/6#" class="btn-tour">View Details <i class="bi bi-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practical Information Section -->
+            <div class="practical-info">
+                <div class="section-header">
+                    <h2>Travel Information</h2>
+                    <p>Essential details for planning your trip</p>
+                </div>
+
+                <div class="row gy-4">
+                    <div class="col-lg-6">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="bi bi-calendar3"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h5>Best Time to Visit</h5>
+                                    <p>April to October (dry season) offers the best weather with minimal rainfall and plenty of sunshine.</p>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="bi bi-thermometer-sun"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h5>Climate</h5>
+                                    <p>Tropical climate with temperatures ranging from 26°C to 30°C year-round.</p>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="bi bi-cash-coin"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h5>Currency</h5>
+                                    <p>Indonesian Rupiah (IDR). Credit cards accepted in most tourist areas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="bi bi-translate"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h5>Language</h5>
+                                    <p>Bahasa Indonesia is the official language. English widely spoken in tourist areas.</p>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="bi bi-passport"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h5>Visa Requirements</h5>
+                                    <p>30-day visa on arrival available for most nationalities. Passport must be valid for 6 months.</p>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="bi bi-shield-check"></i>
+                                </div>
+                                <div class="info-content">
+                                    <h5>Safety Tips</h5>
+                                    <p>Generally safe for tourists. Respect local customs and dress modestly when visiting temples.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery Section -->
+            <div class="destination-gallery">
+                <div class="section-header">
+                    <h2>Photo Gallery</h2>
+                    <p>Glimpses of natural beauty and cultural richness</p>
+                </div>
+
+                <div class="gallery-grid">
+                    <div class="gallery-item large">
+                        <a href="./ITravel_files/showcase-5.webp" class="glightbox">
+                            <img src="./ITravel_files/showcase-5.webp" alt="Gallery image" class="img-fluid">
+                        </a>
+                    </div>
+
+                    <div class="gallery-item">
+                        <a href="./ITravel_files/destination-9.webp" class="glightbox">
+                            <img src="./ITravel_files/destination-9.webp" alt="Gallery image" class="img-fluid">
+                        </a>
+                    </div>
+
+                    <div class="gallery-item">
+                        <a href="./ITravel_files/destination-13.webp" class="glightbox">
+                            <img src="./ITravel_files/destination-13.webp" alt="Gallery image" class="img-fluid">
+                        </a>
+                    </div>
+
+                    <div class="gallery-item">
+                        <a href="./ITravel_files/destination-16.webp" class="glightbox">
+                            <img src="./ITravel_files/destination-16.webp" alt="Gallery image" class="img-fluid">
+                        </a>
+                    </div>
+
+                    <div class="gallery-item">
+                        <a href="./ITravel_files/destination-18.webp" class="glightbox">
+                            <img src="./ITravel_files/destination-18.webp" alt="Gallery image" class="img-fluid">
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action Section -->
+            <div class="destination-cta">
+                <div class="cta-content">
+                    <h2>Ready to Start Your Journey?</h2>
+                    <p>Let our travel experts help you create the perfect Bali experience tailored to your preferences and budget.</p>
+                    <div class="cta-actions">
+                        <a href="http://localhost:8080/Itravel/tours.html" class="btn-primary">Explore Tours</a>
+                        <a href="http://localhost:8080/Itravel/contact.html" class="btn-outline">Contact Expert</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </section><!-- /Travel Destination Details Section -->
+
+</div>
+
+<!-- Footer -->
+<footer id="footer" class="footer position-relative dark-background">
+
+    <div class="container">
+        <div class="row gy-5">
+
+            <div class="col-lg-4">
+                <div class="footer-content">
+                    <a href="http://localhost:8080/Itravel/index.html" class="logo d-flex align-items-center mb-4">
+                        <span class="sitename">TravelTime</span>
+                    </a>
+                    <p class="mb-4">Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae. Donec velit neque auctor sit amet aliquam vel ullamcorper sit amet ligula.</p>
+
+                    <div class="newsletter-form">
+                        <h5>Stay Updated</h5>
+                        <form action="http://localhost:8080/Itravel/forms/newsletter.php" method="post" class="php-email-form">
+                            <div class="input-group">
+                                <input type="email" name="email" class="form-control" placeholder="Enter your email" required="">
+                                <button type="submit" class="btn-subscribe">
+                                    <i class="bi bi-send"></i>
+                                </button>
+                            </div>
+                            <div class="loading">Loading</div>
+                            <div class="error-message"></div>
+                            <div class="sent-message">Thank you for subscribing!</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-6">
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="http://localhost:8080/Itravel/6#"><i class="bi bi-chevron-right"></i> About</a></li>
+                        <li><a href="http://localhost:8080/Itravel/6#"><i class="bi bi-chevron-right"></i> Careers</a></li>
+                        <li><a href="http://localhost:8080/Itravel/6#"><i class="bi bi-chevron-right"></i> Press</a></li>
+                        <li><a href="http://localhost:8080/Itravel/6#"><i class="bi bi-chevron-right"></i> Blog</a></li>
+                        <li><a href="http://localhost:8080/Itravel/6#"><i class="bi bi-chevron-right"></i> Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-6">
+                <div class="footer-links">
+                    <h4>Solutions</h4>
+                    <ul>
+                        <li><a href="http://localhost:8080/Itravel/6#"><i class="bi bi-chevron-right"></i> Digital Strategy</a></li>
+                        <li><a href="http://localhost:8080/Itravel/6#"><i class="bi bi-chevron-right"></i> Cloud Computing</a></li>
+                        <li><a href="http://localhost:8080/Itravel/6#"><i class="bi bi-chevron-right"></i> Data Analytics</a></li>
+                        <li><a href="http://localhost:8080/Itravel/6#"><i class="bi bi-chevron-right"></i> AI Solutions</a></li>
+                        <li><a href="http://localhost:8080/Itravel/6#"><i class="bi bi-chevron-right"></i> Cybersecurity</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="footer-contact">
+                    <h4>Get in Touch</h4>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <div class="contact-info">
+                            <p>2847 Maple Avenue<br>Los Angeles, CA 90210<br>United States</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+                        <div class="contact-info">
+                            <p>+1 (555) 987-6543</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="bi bi-envelope"></i>
+                        </div>
+                        <div class="contact-info">
+                            <p>contact@example.com</p>
+                        </div>
+                    </div>
+
+                    <div class="social-links">
+                        <a href="http://localhost:8080/Itravel/6#"><i class="bi bi-facebook"></i></a>
+                        <a href="http://localhost:8080/Itravel/6#"><i class="bi bi-twitter-x"></i></a>
+                        <a href="http://localhost:8080/Itravel/6#"><i class="bi bi-linkedin"></i></a>
+                        <a href="http://localhost:8080/Itravel/6#"><i class="bi bi-youtube"></i></a>
+                        <a href="http://localhost:8080/Itravel/6#"><i class="bi bi-github"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="copyright">
+                        <p>© <span>Copyright</span> <strong class="px-1 sitename">MyWebsite</strong> <span>All Rights Reserved</span></p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="footer-bottom-links">
+                        <a href="http://localhost:8080/Itravel/6#">Privacy Policy</a>
+                        <a href="http://localhost:8080/Itravel/6#">Terms of Service</a>
+                        <a href="http://localhost:8080/Itravel/6#">Cookie Policy</a>
+                    </div>
+                    <div class="credits">
+                        <!-- All the links in the footer should remain intact. -->
+                        <!-- You can delete the links only if you've purchased the pro version. -->
+                        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+                        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+                        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<!-- Scroll Top -->
+<a href="http://localhost:8080/Itravel/6#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Preloader -->
+<!--<div id="preloader"></div>-->
+<!-- Main JS File -->
+<script src="./ITravel_files/bootstrap.bundle.min.js.download"></script>
+<script href="/js/main.js"></script>
+
+
+        <div class="modal fade" id="loginModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Welcome Back!</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Email address</label>
+                                <div class="input-group">
+                                    <input type="email" class="form-control" placeholder="name@example.com">
+                                    <span class="input-group-text">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" placeholder="Enter your password">
+<!--                                    <span class="input-group-text password-toggle">-->
+                    <i class="fas fa-eye"></i>
+                  
+                                </div>
+                            </div>
+
+                            <div class="form-check">
+                                <div>
+                                    <input type="checkbox" class="form-check-input" id="remember">
+                                    <label class="form-check-label" for="remember">Remember me</label>
+                                </div>
+                                <a href="http://localhost:8080/Itravel/6#" class="text-decoration-none section-badge">Esqueceu a palavra passe?</a>
+                            </div>
+
+                            <button type="submit" class="btn btn-login">Sign In</button>
+
+                            <div class="divider">
+                                <div>
+                                <span>or continue with</span>
+                                </div>
+                            </div>
+
+                            <div class="social-login">
+                                <button type="button" class="btn btn-social">
+                                    <i class="fab fa-google"></i>Google
+                                </button>
+                                <button type="button" class="btn btn-social">
+                                    <i class="fab fa-facebook-f"></i>Facebook
+                                </button>
+                            </div>
+
+                            <div class="register-link">
+                                Don't have an account? <a href="http://localhost:8080/Itravel/6#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal" class="text-decoration-none">
+                                Register now
+                            </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+<div class="modal fade" id="registerModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Register!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Email address</label>
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="name@example.com">
+                            <span class="input-group-text">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Enter Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" placeholder="Enter your password">
+                            <span class="input-group-text password-toggle">
+                            <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Retype Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" placeholder="Retype your password">
+                            <span class="input-group-text password-toggle">
+                            <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-login">Register</button>
+                    <div class="divider">
+                        <div><span>or sign up with</span></div>
+                    </div>
+
+                    <div class="social-login">
+                        <button type="button" class="btn btn-social">
+                            <i class="fab fa-google"></i>Google
+                        </button>
+                        <button type="button" class="btn btn-social">
+                            <i class="fab fa-facebook-f"></i>Facebook
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</body></html>
