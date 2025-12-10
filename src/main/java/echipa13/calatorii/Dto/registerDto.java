@@ -7,6 +7,8 @@ public class registerDto {
     private String username;
     private String email;
     private String password_hash;
+    private String avatar;
+    private boolean guide;
 
     // getters & setters
 }

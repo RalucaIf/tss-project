@@ -27,6 +27,8 @@ public class UserEntity {
 
      private boolean enabled;
 
+    private String avatar; // !
+
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
     @ManyToMany(fetch = FetchType.EAGER)
@@ -36,4 +38,6 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private List<Role> roles = new ArrayList<>();
- }
+
+
+}
