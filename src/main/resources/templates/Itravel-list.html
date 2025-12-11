@@ -183,7 +183,7 @@
                                 </div>
                                 <div class="content">
                                     <h4 th:text="${c.title}">Titlu</h4>
-                                    <p th:text="${#strings.abbreviate(c.summary, 100)}">Descriere</p>
+                                    <p th:text="${#strings.abbreviate(c.pricePoints, 100)}">Descriere</p>
                                     <div class="card-footer">
                                         <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">
                                             Explore <i class="bi bi-arrow-right"></i>

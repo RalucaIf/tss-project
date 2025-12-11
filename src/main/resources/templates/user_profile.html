@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}">
 
 <div class="content-wrapper" layout:fragment="content">
@@ -18,7 +19,11 @@
             grid-template-columns: auto auto;
             padding: 10px;
         }
-        .content-wrapper .container div {
+
+        .content-wrapper .profile-avatar,
+        .content-wrapper .profile-info,
+        .content-wrapper .list_tours,
+        .content-wrapper .destination-card{
             background: var(--surface-color);
             padding: 10px;
             margin-left: 10px;
@@ -30,14 +35,17 @@
             border: 1px solid color-mix(in srgb, #35211f, transparent 90%);
             transition: all 0.3s ease;
         }
-        .content-wrapper .container div:hover {
-            transform: translateY(-10px); /* ridică elementul cu 10px */
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2); /* umbrea de sub el */
+
+        .content-wrapper .profile-avatar:hover,
+        .content-wrapper .profile-info:hover,
+        .content-wrapper .destination-card:hover{
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
     </style>
 <div class="container">
     <div class="profile-avatar">
-        <img src="/imagine/Croatia.png" class="img-fluid rounded-circle mb-3" style="width: 300px; height: 300px">
+        <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${user.avatar}}" style="height: 300px; width: 300px" class="rounded-circle me-2 border avatar-option-nav">
         <h4 th:text="${user.username}">Nume utilizator</h4>
     </div>
     <div class="profile-info">
@@ -47,6 +55,39 @@
             <li> Created at: <span th:text="${user.createdAt}">2025-01-01</span></li>
            <!-- <li>Roles: <span th:text="${user.roles}">Username</span></li>-->
         </ul>
+    </div>
+    <div sec:authorize="hasRole('Guide')" class="list_tours">
+
+        <h4>Tururile Dumneavoastra</h4>
+        <div class = 'container'>
+            <div th:if="${#lists.isEmpty(calatorii)}">
+                <p>Nu aveți încă tururi.</p>
+            </div>
+            <div class="row gy-4" th:if="${!#lists.isEmpty(calatorii)}">
+                <div class="col-lg-4 col-md-6" th:each="c : ${calatorii}">
+                    <div class="destination-card">
+                        <div class="image-wrapper">
+                            <img th:src="@{/imagine/{img}(img=${c.image})}" alt="Destination" class="img-fluid">
+                            <div class="overlay">
+                                <div class="badge">Popular</div>
+                            </div>
+                        </div>
+
+                        <div class="content">
+                            <h4 th:text="${c.title}">Titlu</h4>
+                            <p th:text="${#strings.abbreviate(c.pricePoints, 100)}">Descriere</p>
+
+                            <div class="card-footer">
+                                <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">
+                                    Explore <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </div>
