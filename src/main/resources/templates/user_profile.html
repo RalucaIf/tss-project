@@ -14,10 +14,13 @@
         </div>
     </div> <!--End Page Title-->
     <style>
-        .content-wrapper .container {
+         .container {
             display: grid;
             grid-template-columns: auto auto;
             padding: 10px;
+            grid-template-areas:
+                    "profile-avatar" "profile-info"
+                    "list_tours" "list_tours";
         }
 
         .content-wrapper .profile-avatar,
@@ -78,11 +81,18 @@
                             <p th:text="${#strings.abbreviate(c.pricePoints, 100)}">Descriere</p>
 
                             <div class="card-footer">
-                                <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">
-                                    Explore <i class="bi bi-arrow-right"></i>
-                                </a>
+                                <form th:action="@{/tours/delete/{id}(id=${c.id})}" method="post">
+                                    <button class="btn btn-danger"
+                                            onclick="return confirm('Ești sigur că vrei să ștergi acest tur?');">
+                                        Delete
+                                    </button>
+                                </form>
+                                <form th:action="@{/Itravel/edit/{id}(id=${c.id})}" method="get">
+                                    <button  class="btn btn-login w-100">
+                                        Edit
+                                    </button>
+                                </form>
                             </div>
-
                         </div>
                     </div>
                 </div>
