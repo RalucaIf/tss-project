@@ -8281,20 +8281,61 @@ header.header .navmenu .active:focus {
 :root { --header-height: 70px; }
 body { padding-top: var(--header-height); }
 */
-
-/* === Culori dropdown: top-level alb, submeniu negru === */
-header.header .navmenu > ul > li > a { color: #fff; }
-body.scrolled header.header .navmenu > ul > li > a { color: #fff; }
-
-header.header .navmenu .dropdown ul a { color: #000; }
-body.scrolled header.header .navmenu .dropdown ul a { color: #000; }
-.mobile-nav-active header.header .navmenu .dropdown ul a { color: #000; }
-
-header.header .navmenu .dropdown ul a:hover,
-header.header .navmenu .dropdown ul .active:hover,
-header.header .navmenu .dropdown ul li:hover > a {
-    color: var(--nav-dropdown-hover-color);
+/* Variabile globale pentru dropdown */
+:root {
+    --dropdown-bg: #ffffff;
+    --dropdown-color: #212529;
+    --dropdown-hover: #f95e4d;
 }
+
+/* Dark mode override */
+body.dark-background {
+    --dropdown-bg: #1f1f1f;
+    --dropdown-color: #e9ecef;
+    --dropdown-hover: #4dabf7;
+}
+
+/* Dropdown navmenu */
+header.header .navmenu ul li ul,
+header.header .navmenu ul li .custom-dropdown,
+#header .account-item .account-menu {
+    background-color: var(--dropdown-bg);
+    color: var(--dropdown-color);
+    list-style: none;
+    padding: 0.5rem 0;
+    position: absolute;
+    display: none; /* ascuns implicit */
+    min-width: 180px;
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.08);
+    z-index: 1000;
+}
+
+/* Afișare dropdown la hover (nav) sau la open (account) */
+header.header .navmenu ul li:hover > ul,
+header.header .navmenu ul li:hover > .custom-dropdown,
+#header .account-item.open .account-menu {
+    display: block;
+}
+
+/* Linkuri dropdown */
+header.header .navmenu ul li ul li a,
+header.header .navmenu ul li .custom-dropdown li a,
+#header .account-item .account-menu li a {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: var(--dropdown-color);
+    white-space: nowrap;
+}
+
+/* Hover dropdown */
+header.header .navmenu ul li ul li a:hover,
+header.header .navmenu ul li .custom-dropdown li a:hover,
+#header .account-item .account-menu li a:hover {
+    color: var(--dropdown-hover);
+}
+
 
 .btn-theme {
     display: inline-flex;
@@ -8337,68 +8378,4 @@ body.dark-background .btn-theme {
 body.dark-background .btn-theme i {
     color: #C9DCFF;
     filter: drop-shadow(0 0 0.25rem rgba(201, 220, 255, 0.35));
-}
-
-:root {
-    --surface-2: #ffffff;           /* fundalul meniului dropdown */
-    --nav-dropdown-color: #212529;  /* culoarea textului din dropdown */
-    --accent: #f85a40;              /* culoarea de accent a temei (alege ce vrei) */
-}
-
-/* Override pentru dark mode (ai clasa .dark-background pe <body>) */
-body.dark-background {
-    --surface-2: #1f1f1f;
-    --nav-dropdown-color: #e9ecef;
-    --accent: #4dabf7;
-}
-
-
-/* Account dropdown: aceleași efecte ca la .navmenu .dropdown ul */
-#header .account-item { position: relative; }
-
-#header .account-item .account-toggle .toggle-dropdown {
-    transition: transform .2s ease;
-}
-
-#header .account-item.open .account-toggle .toggle-dropdown {
-    transform: rotate(180deg);
-}
-
-#header .account-item .account-menu {
-    margin: 0;
-    padding: 10px 0;
-    list-style: none;
-    position: absolute;
-    right: 0;              /* aliniere la dreapta, nu pe stânga */
-    top: 130%;
-    opacity: 0;
-    visibility: hidden;
-    transition: 0.3s;
-    background: var(--surface-2);
-    border-radius: 4px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.08);
-    z-index: 1000;
-    min-width: 180px;
-}
-
-#header .account-item.open .account-menu {
-    opacity: 1;
-    top: 100%;
-    visibility: visible;
-}
-
-#header .account-item .account-menu li { position: relative; }
-
-#header .account-item .account-menu a {
-    display: block;
-    padding: 10px 20px;
-    font-size: 15px;
-    text-transform: none;
-    color: var(--nav-dropdown-color);
-    white-space: nowrap;
-}
-
-#header .account-item .account-menu a:hover,
-#header .account-item .account-menu .active {
-    color: var(--accent);
 }
