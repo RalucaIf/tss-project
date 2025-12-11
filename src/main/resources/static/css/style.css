@@ -8286,3 +8286,45 @@ header.header .navmenu .dropdown ul .active:hover,
 header.header .navmenu .dropdown ul li:hover > a {
     color: var(--nav-dropdown-hover-color);
 }
+.btn-theme {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 9999px;
+    background: transparent;
+    border: 1px solid rgba(0,0,0,.15);
+    cursor: pointer;
+    transition: box-shadow .2s, border-color .2s, color .2s;
+}
+
+.btn-theme i {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+body:not(.dark-background) .btn-theme {
+    color: #1a1a1a;
+    border-color: rgba(0,0,0,.2);
+}
+
+body:not(.dark-background) .btn-theme:hover {
+    border-color: #f95e4d;
+    box-shadow: 0 0 0 3px rgba(249,94,77,.2);
+}
+
+body:not(.dark-background) .btn-theme i {
+    color: #FFD36B;
+    filter: drop-shadow(0 0 0.25rem rgba(255, 211, 107, 0.35));
+}
+
+body.dark-background .btn-theme {
+    color: #fff;
+    border-color: rgba(25,25,25,.5);
+}
+
+body.dark-background .btn-theme i {
+    color: #C9DCFF;
+    filter: drop-shadow(0 0 0.25rem rgba(201, 220, 255, 0.35));
+}
