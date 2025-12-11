@@ -63,11 +63,6 @@
                 <li><a th:href="@{/Tours}">Tours</a></li>
 
 
-
-
-
-
-
                 <li class="dropdown"><a href="#"><span>More Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
                         <li><a href="destination-details.html">Destination Details</a></li>
@@ -78,7 +73,7 @@
                         <li><a href="blog-details.html">Blog Details</a></li>
                         <li><a th:href="@{/Terms}">Terms</a></li>
                         <li><a th:href="@{/Privacy}">Privacy</a></li>
-                        <li><a th:href="@{/Error/404}">404</a></li>
+
                     </ul>
                 </li>
                 <li sec:authorize="isAuthenticated()" class="dropdown">
@@ -186,11 +181,6 @@
                     </ul>
                 </div>
 
-
-
-
-
-
         </div>
     </div>
 </header>
@@ -208,20 +198,20 @@
                     <a href="index.html" class="logo d-flex align-items-center mb-4">
                         <span class="sitename">TravelTime</span>
                     </a>
-                    <p class="mb-4">Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae. Donec velit neque auctor sit amet aliquam vel ullamcorper sit amet ligula.</p>
+                    <p class="mb-4">Oferim experiențe de călătorie de neuitat și servicii personalizate pentru fiecare aventură. Echipa noastră este dedicată confortului și siguranței tale.</p>
 
                     <div class="newsletter-form">
-                        <h5>Stay Updated</h5>
+                        <h5>Abonează-te</h5>
                         <form action="forms/newsletter.php" method="post" class="php-email-form">
                             <div class="input-group">
-                                <input type="email" name="email" class="form-control" placeholder="Enter your email" required="">
+                                <input type="email" name="email" class="form-control" placeholder="Introdu adresa ta de email" required="">
                                 <button type="submit" class="btn-subscribe">
                                     <i class="bi bi-send"></i>
                                 </button>
                             </div>
-                            <div class="loading">Loading</div>
+                            <div class="loading">Se încarcă</div>
                             <div class="error-message"></div>
-                            <div class="sent-message">Thank you for subscribing!</div>
+                            <div class="sent-message">Mulțumim pentru abonare!</div>
                         </form>
                     </div>
                 </div>
@@ -229,11 +219,11 @@
 
             <div class="col-lg-2 col-6">
                 <div class="footer-links">
-                    <h4>Company</h4>
+                    <h4>Companie</h4>
                     <ul>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> About</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Careers</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Press</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i> Despre Noi</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i> Cariere</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i> Presă</a></li>
                         <li><a href="#"><i class="bi bi-chevron-right"></i> Blog</a></li>
                         <li><a href="#"><i class="bi bi-chevron-right"></i> Contact</a></li>
                     </ul>
@@ -242,26 +232,26 @@
 
             <div class="col-lg-2 col-6">
                 <div class="footer-links">
-                    <h4>Solutions</h4>
+                    <h4>Soluții</h4>
                     <ul>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Digital Strategy</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i> Strategie Digitală</a></li>
                         <li><a href="#"><i class="bi bi-chevron-right"></i> Cloud Computing</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Data Analytics</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> AI Solutions</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Cybersecurity</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i> Analiză Date</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i> Soluții AI</a></li>
+                        <li><a href="#"><i class="bi bi-chevron-right"></i> Securitate Cibernetică</a></li>
                     </ul>
                 </div>
             </div>
 
             <div class="col-lg-4">
                 <div class="footer-contact">
-                    <h4>Get in Touch</h4>
+                    <h4>Contactează-ne</h4>
                     <div class="contact-item">
                         <div class="contact-icon">
                             <i class="bi bi-geo-alt"></i>
                         </div>
                         <div class="contact-info">
-                            <p>2847 Maple Avenue<br>Los Angeles, CA 90210<br>United States</p>
+                            <p>2847 Maple Avenue<br>Los Angeles, CA 90210<br>Statele Unite</p>
                         </div>
                     </div>
 
@@ -301,21 +291,16 @@
             <div class="row align-items-center">
                 <div class="col-lg-6">
                     <div class="copyright">
-                        <p>© <span>Copyright</span> <strong class="px-1 sitename">MyWebsite</strong> <span>All Rights Reserved</span></p>
+                        <p>© <span>Drepturi de autor</span> <strong class="px-1 sitename">MyWebsite</strong> <span>Toate drepturile rezervate</span></p>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="footer-bottom-links">
-                        <a href="#">Privacy Policy</a>
-                        <a href="#">Terms of Service</a>
-                        <a href="#">Cookie Policy</a>
+                        <a href="#">Politica de Confidențialitate</a>
+                        <a href="#">Termeni și Condiții</a>
+                        <a href="#">Politica Cookie</a>
                     </div>
                     <div class="credits">
-                        <!-- All the links in the footer should remain intact. -->
-                        <!-- You can delete the links only if you've purchased the pro version. -->
-                        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-                        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-                        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
                     </div>
                 </div>
             </div>
@@ -546,7 +531,7 @@
         });
     });
 </script>
-<script>
+<script defer>
     (function () {
         const item   = document.querySelector('#header .account-item');
         const toggle = item?.querySelector('.account-toggle');
@@ -570,6 +555,54 @@
         });
     })();
 </script>
+
+
+
+<script>
+    const chatBox = document.getElementById('chat-box');
+    const chatInput = document.getElementById('chat-input');
+    const chatMessages = document.getElementById('chat-messages');
+
+    document.getElementById('open-chat').addEventListener('click', () => {
+        chatBox.style.display = 'block';
+    });
+
+    document.getElementById('close-chat').addEventListener('click', () => {
+        chatBox.style.display = 'none';
+    });
+
+    function addMessage(sender, text) {
+        chatMessages.innerHTML += `<div><b>${sender}:</b> ${text}</div>`;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    chatInput.addEventListener('keypress', async function(e){
+        if(e.key === 'Enter' && chatInput.value.trim() !== '') {
+            const message = chatInput.value;
+            addMessage('Tu', message);
+            chatInput.value = '';
+
+            const tempId = 'temp-' + Date.now();
+            chatMessages.innerHTML += `<div id="${tempId}"><b>Expert:</b> ...</div>`;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            try {
+                const response = await fetch('http://localhost:8080/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                document.getElementById(tempId).innerHTML = `<b>Expert:</b> ${data.reply}`;
+            } catch (err) {
+                document.getElementById(tempId).innerHTML = `<b>Expert:</b> Îmi pare rău, a apărut o eroare.`;
+                console.error(err);
+            }
+        }
+    });
+</script>
+
 
 
 

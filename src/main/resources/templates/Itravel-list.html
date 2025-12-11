@@ -3,218 +3,223 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 
-
 <div layout:fragment="content">
-<div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/walpaper-image.jpg}');|">
-    <div class="container position-relative">
-        <h1>Destination Details</h1>
-        <p>Esse dolorum voluptatum ullam est sint nemo et est ipsa porro placeat quibusdam quia assumenda numquam molestias.</p>
-        <nav class="breadcrumbs">
-            <ol>
-                <li><a th:href="@{/Itravel}">Home</a></li>
-                <li class="current">Destination Details</li>
-            </ol>
-        </nav>
-    </div>
-</div><!-- End Page Title -->
+    <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/walpaper-image.jpg}');|">
+        <div class="container position-relative">
+            <h1>Detalii Destinație</h1>
+            <p>Crează momente memorabile în călătoria ta și descoperă locuri de neuitat.</p>
+            <nav class="breadcrumbs">
+                <ol>
+                    <li><a th:href="@{/Itravel}">Acasă</a></li>
+                    <li class="current">Detalii Destinație</li>
+                </ol>
+            </nav>
+        </div>
+    </div><!-- End Page Title -->
 
-    <!-- Contenutul care va fi injectat în layout -->
+    <main class="flex-shrink-0">
 
+        <!-- Why Us Section -->
+        <section id="why-us" class="why-us section">
 
-        <main class="flex-shrink-0">
+            <div class="container">
 
+                <!-- Main Content Grid -->
+                <div class="content-grid">
+                    <div class="row g-4 align-items-stretch">
 
-            <!-- Why Us Section -->
-            <section id="why-us" class="why-us section">
+                        <!-- About Section -->
+                        <div class="col-lg-6">
+                            <div class="about-block">
+                                <div class="about-header">
+                                    <span class="section-badge">Despre Noi</span>
+                                    <h3>Creăm Experiențe de Călătorie de Neuitat</h3>
+                                </div>
+                                <div class="about-content">
+                                    <p>Oferim servicii personalizate și ghidare expertă pentru ca fiecare călătorie să fie memorabilă.</p>
+                                    <p>Echipa noastră se dedică să transforme fiecare vacanță într-o experiență unică și fără griji.</p>
 
-                <div class="container">
-
-                    <!-- Main Content Grid -->
-                    <div class="content-grid">
-                        <div class="row g-4 align-items-stretch">
-
-                            <!-- About Section -->
-                            <div class="col-lg-6">
-                                <div class="about-block">
-                                    <div class="about-header">
-                                        <span class="section-badge">About Us</span>
-                                        <h3>Creating Unforgettable Travel Experiences</h3>
-                                    </div>
-                                    <div class="about-content">
-                                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa quae ab illo inventore veritatis.</p>
-                                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores.</p>
-
-                                        <div class="feature-list">
-                                            <div class="feature-item">
-                                                <i class="bi bi-check-circle-fill"></i>
-                                                <span>Expert local guides in every destination</span>
-                                            </div>
-                                            <div class="feature-item">
-                                                <i class="bi bi-check-circle-fill"></i>
-                                                <span>Customized itineraries for every traveler</span>
-                                            </div>
-                                            <div class="feature-item">
-                                                <i class="bi bi-check-circle-fill"></i>
-                                                <span>24/7 customer support throughout your journey</span>
-                                            </div>
+                                    <div class="feature-list">
+                                        <div class="feature-item">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span>Ghiduri locale experte în fiecare destinație</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span>Itinerarii personalizate pentru fiecare călător</span>
+                                        </div>
+                                        <div class="feature-item">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span>Asistență clienți 24/7 pe durata călătoriei</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Image Showcase -->
-                            <div class="col-lg-6">
-                                <div class="image-showcase">
-                                    <div class="main-image">
-                                        <img src="assets/img/travel/showcase-12.webp" alt="Travel Adventure" class="img-fluid rounded-3">
-                                        <div class="overlay-badge">
-                                            <div class="badge-content">
-                                                <i class="bi bi-award-fill"></i>
-                                                <div class="badge-text">
-                                                    <strong>Award Winner</strong>
-                                                    <span>Best Travel Agency 2024</span>
-                                                </div>
+                        <!-- Image Showcase -->
+                        <div class="col-lg-6">
+                            <div class="image-showcase">
+                                <div class="main-image">
+                                    <img src="walpaper/misc-5.webp" alt="Aventură de Călătorie" class="img-fluid rounded-3">
+                                    <div class="overlay-badge">
+                                        <div class="badge-content">
+                                            <i class="bi bi-award-fill"></i>
+                                            <div class="badge-text">
+                                                <strong>Premiat</strong>
+                                                <span>Cea Mai Bună Agenție de Turism 2024</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="floating-card">
-                                        <img src="assets/img/travel/misc-8.webp" alt="Happy Travelers" class="img-fluid rounded-2">
-                                        <div class="card-content">
-                                            <div class="rating">
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <i class="bi bi-star-fill"></i>
-                                                <span>4.9/5</span>
-                                            </div>
-                                            <p>"Amazing experience!"</p>
+                                </div>
+                                <div class="floating-card">
+                                    <img src="walpaper/people.jpg" alt="Călători Fericiți" class="img-fluid rounded-2">
+                                    <div class="card-content">
+                                        <div class="rating">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <span>4.9/5</span>
+                                        </div>
+                                        <p>"Experiență uimitoare!"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div><!-- End Main Content Grid -->
+
+                <!-- Why Choose Us Section -->
+                <div class="why-choose-wrapper">
+                    <div class="section-header text-center">
+                        <span class="section-badge">De ce Noi</span>
+                        <h3>Ce Ne Face Diferiti</h3>
+                        <p>Nu există nimeni care să nu aprecieze o experiență de călătorie bine organizată.</p>
+                    </div>
+
+                    <div class="features-container">
+                        <div class="row g-4">
+
+                            <div class="col-lg-3 col-md-6">
+                                <div class="feature-box">
+                                    <div class="feature-icon-wrapper">
+                                        <div class="feature-icon">
+                                            <i class="bi bi-compass"></i>
                                         </div>
                                     </div>
+                                    <h4>Navigare Expertă</h4>
+                                    <p>Ghidare precisă și expertă pentru fiecare destinație</p>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-md-6">
+                                <div class="feature-box">
+                                    <div class="feature-icon-wrapper">
+                                        <div class="feature-icon">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </div>
+                                    </div>
+                                    <h4>Îngrijire Personalizată</h4>
+                                    <p>Servicii adaptate nevoilor și dorințelor fiecărui călător</p>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-md-6">
+                                <div class="feature-box">
+                                    <div class="feature-icon-wrapper">
+                                        <div class="feature-icon">
+                                            <i class="bi bi-lightning-charge-fill"></i>
+                                        </div>
+                                    </div>
+                                    <h4>Rezervare Instantă</h4>
+                                    <p>Rezervări rapide și fără bătăi de cap</p>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-md-6">
+                                <div class="feature-box">
+                                    <div class="feature-icon-wrapper">
+                                        <div class="feature-icon">
+                                            <i class="bi bi-globe-americas"></i>
+                                        </div>
+                                    </div>
+                                    <h4>Acoperire Globală</h4>
+                                    <p>Servicii disponibile în întreaga lume</p>
                                 </div>
                             </div>
 
                         </div>
-                    </div><!-- End Main Content Grid -->
+                    </div>
+                </div><!-- End Why Choose Us Section -->
 
-                    <!-- Why Choose Us Section -->
-                    <div class="why-choose-wrapper">
-                        <div class="section-header text-center">
-                            <span class="section-badge">Why Choose Us</span>
-                            <h3>What Makes Us Different</h3>
-                            <p>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit</p>
-                        </div>
+            </div>
 
-                        <div class="features-container">
-                            <div class="row g-4">
+        </section><!-- /Why Us Section -->
 
-                                <div class="col-lg-3 col-md-6">
-                                    <div class="feature-box">
-                                        <div class="feature-icon-wrapper">
-                                            <div class="feature-icon">
-                                                <i class="bi bi-compass"></i>
-                                            </div>
-                                        </div>
-                                        <h4>Expert Navigation</h4>
-                                        <p>Quis nostrum exercitationem ullam corporis suscipit laboriosam</p>
-                                    </div>
+        <!-- Featured Destinations Section -->
+        <section id="featured-destinations" class="featured-destinations section">
+            <div class="container section-title">
+                <h2>Destinații Recomandate</h2>
+                <div><span>Vezi</span> <span class="description-title">Destinațiile Noastre Recomandate</span></div>
+            </div>
+
+            <div class="container">
+                <div class="row gy-4">
+                    <div class="col-lg-4 col-md-6" th:each="c : ${calatorii}">
+                        <div class="destination-card">
+                            <div class="image-wrapper">
+                                <img th:src="@{/imagine/{img}(img=${c.image})}" alt="Destinație" class="img-fluid">
+                                <div class="overlay">
+                                    <div class="badge">Popular</div>
                                 </div>
-
-                                <div class="col-lg-3 col-md-6">
-                                    <div class="feature-box">
-                                        <div class="feature-icon-wrapper">
-                                            <div class="feature-icon">
-                                                <i class="bi bi-heart-fill"></i>
-                                            </div>
-                                        </div>
-                                        <h4>Personalized Care</h4>
-                                        <p>Excepteur sint occaecat cupidatat non proident sunt in culpa</p>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-3 col-md-6">
-                                    <div class="feature-box">
-                                        <div class="feature-icon-wrapper">
-                                            <div class="feature-icon">
-                                                <i class="bi bi-lightning-charge-fill"></i>
-                                            </div>
-                                        </div>
-                                        <h4>Instant Booking</h4>
-                                        <p>Ut enim ad minim veniam quis nostrud exercitation ullamco</p>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-3 col-md-6">
-                                    <div class="feature-box">
-                                        <div class="feature-icon-wrapper">
-                                            <div class="feature-icon">
-                                                <i class="bi bi-globe-americas"></i>
-                                            </div>
-                                        </div>
-                                        <h4>Worldwide Coverage</h4>
-                                        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse</p>
-                                    </div>
-                                </div>
-
                             </div>
-                        </div>
-                    </div><!-- End Why Choose Us Section -->
-
-                </div>
-
-            </section><!-- /Why Us Section -->
-
-            <!-- Featured Destinations Section -->
-            <section id="featured-destinations" class="featured-destinations section">
-                <div class="container section-title">
-                    <h2>Featured Destinations</h2>
-                    <div><span>Check Our</span> <span class="description-title">Featured Destinations</span></div>
-                </div>
-
-                <div class="container">
-                    <div class="row gy-4">
-                        <div class="col-lg-4 col-md-6" th:each="c : ${calatorii}">
-                            <div class="destination-card">
-                                <div class="image-wrapper">
-                                    <img th:src="@{/imagine/{img}(img=${c.image})}" alt="Destination" class="img-fluid">
-                                    <div class="overlay">
-                                        <div class="badge">Popular</div>
-                                    </div>
-                                </div>
-                                <div class="content">
-                                    <h4 th:text="${c.title}">Titlu</h4>
-                                    <p th:text="${#strings.abbreviate(c.pricePoints, 100)}">Descriere</p>
-                                    <div class="card-footer">
-                                        <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">
-                                            Explore <i class="bi bi-arrow-right"></i>
-                                        </a>
-                                    </div>
+                            <div class="content">
+                                <h4 th:text="${c.title}">Titlu</h4>
+                                <p th:text="${#strings.abbreviate(c.pricePoints, 100)}">Descriere</p>
+                                <div class="card-footer">
+                                    <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">
+                                        Explorează <i class="bi bi-arrow-right"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
+
+    </main>
+
+            <div class="destinations-cta">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 text-center">
+                        <h3>Nu te poți hotărî unde să mergi?</h3>
+                        <p>Experții noștri în călătorii te pot ajuta să găsești destinația perfectă, în funcție de preferințele, bugetul și stilul tău de călătorie.</p>
+                        <div class="cta-buttons">
+                            <a href="destinations.html" class="btn btn-primary">Vezi Toate Destinațiile</a>
+                            <a href="contact.html" class="btn btn-outline">Contact</a>
+                        </div>
+
+                        <!-- Buton pentru chat -->
+                        <button class="btn btn-outline" id="open-chat">Vorbește cu un Expert</button>
+
+                        <!-- Fereastra Chat -->
+                        <div id="chat-box" style="display:none; position:fixed; bottom:20px; right:20px; width:350px; height:450px; border:1px solid #ccc; background:#fff; z-index:1000; padding:10px; box-shadow:0 4px 12px rgba(0,0,0,0.2); color:#000; font-family:Arial, sans-serif;">
+                            <div id="chat-header" style="font-weight:bold; margin-bottom:10px;">Chat cu Expertul AI <span id="close-chat" style="float:right; cursor:pointer;">✖</span></div>
+                            <div id="chat-messages" style="height:350px; overflow-y:auto; border-top:1px solid #eee; padding-top:10px; color:#000;"></div>
+                            <input type="text" id="chat-input" placeholder="Scrie mesajul..." style="width:100%; padding:8px; margin-top:5px; color:#000; background:#fff; border:1px solid #ccc;">
+                        </div>
 
 
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
-</div>
 
-<div class="destinations-cta">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 text-center">
-            <h3>Can't Decide Where to Go?</h3>
-            <p>Our travel experts are here to help you find the perfect destination based on your preferences, budget, and travel style.</p>
-            <div class="cta-buttons">
-                <a href="destinations.html" class="btn btn-primary">View All Destinations</a>
-                <a href="contact.html" class="btn btn-outline">Talk to Expert</a>
-            </div>
-        </div>
-    </div>
-</div>
+    </html>
 
-</div>
-
-</html>

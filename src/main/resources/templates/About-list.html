@@ -4,135 +4,156 @@
       layout:decorate="~{layout}">
 
 <div layout:fragment="content">
+
   <!-- Page Title -->
-  <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/showcase-7.webp}');|">
+  <div class="page-title dark-background"
+       th:style="|background-image: url('@{/walpaper/showcase-7.webp}');|">
+
     <div class="container position-relative">
       <h1>Welcome to ITravel</h1>
       <p>Create memorable moments with us.</p>
-
     </div>
-  </div><!-- End Page Title -->
+  </div>
+  <!-- End Page Title -->
+
+
+
   <!-- About Section -->
   <section id="about" class="about section">
-
     <div class="container">
 
       <div class="row g-5 align-items-center">
 
+        <!-- LEFT TEXT SIDE -->
         <div class="col-lg-6">
-          <div class="content">
-            <h2 class="mb-4">Crafting Unforgettable Journeys Since 2015</h2>
-            <p class="lead mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
-            <p class="mb-5">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
 
-            <div class="row g-4 mb-5">
-              <div class="col-6">
-                <div class="stat-item text-center">
-                  <div class="stat-number">350+</div>
-                  <div class="stat-label">Tours Completed</div>
-                </div>
+          <h2 class="mb-4">Crafting Unforgettable Journeys Since 2020</h2>
+
+          <p class="lead mb-4">
+            Totul a început cu o simplă pasiune: dorința de a descoperi locuri noi și de a împărtăși
+            bucuria călătoriilor cu alți oameni. Din această pasiune a prins viață ITravel.
+          </p>
+
+          <p class="mb-4">
+            De atunci, am transformat mii de planuri de vacanță în povești reale. Nu oferim doar pachete
+            turistice — ci experiențe create cu grijă, autentice și memorabile. Ne bazăm pe ghizi locali,
+            cunoaștem cele mai frumoase trasee ascunse și știm că fiecare călător își dorește ceva unic.
+          </p>
+
+          <p class="mb-5">
+            La ITravel, fiecare destinație este o invitație la explorare, iar fiecare client este parte
+            din călătoria noastră. Te încurajăm să visezi, să alegi unde vrei să ajungi, iar noi ne ocupăm
+            de restul. Așa construim împreună momente care contează.
+          </p>
+
+          <!-- Stats -->
+          <div class="row g-4 mb-4">
+            <div class="col-6">
+              <div class="stat-item text-center">
+                <div class="stat-number">350+</div>
+                <div class="stat-label">Tours Completed</div>
               </div>
-              <div class="col-6">
-                <div class="stat-item text-center">
-                  <div class="stat-number">25+</div>
-                  <div class="stat-label">Countries</div>
-                </div>
+            </div>
+            <div class="col-6">
+              <div class="stat-item text-center">
+                <div class="stat-number">25+</div>
+                <div class="stat-label">Countries</div>
               </div>
-              <div class="col-6">
-                <div class="stat-item text-center">
-                  <div class="stat-number">8</div>
-                  <div class="stat-label">Years Experience</div>
-                </div>
+            </div>
+            <div class="col-6">
+              <div class="stat-item text-center">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Years Experience</div>
               </div>
-              <div class="col-6">
-                <div class="stat-item text-center">
-                  <div class="stat-number">98%</div>
-                  <div class="stat-label">Satisfied Guests</div>
-                </div>
+            </div>
+            <div class="col-6">
+              <div class="stat-item text-center">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Satisfied Guests</div>
               </div>
             </div>
           </div>
-        </div>
 
+        </div>
+        <!-- END LEFT -->
+
+
+
+
+        <!-- RIGHT IMAGE SIDE -->
         <div class="col-lg-6">
-          <div class="image-stack">
-            <div class="image-main">
-              <img src="assets/img/travel/showcase-3.webp" alt="Travel Experience" class="img-fluid">
+          <div class="image-stack position-relative">
+            <div class="image-main mb-3">
+              <img src="assets/img/travel/showcase-3.webp" class="img-fluid rounded" alt="Travel Experience">
             </div>
-            <div class="image-overlay">
-              <img src="assets/img/travel/misc-12.webp" alt="Happy Travelers" class="img-fluid">
+
+            <div class="image-overlay position-absolute top-50 start-50 translate-middle">
+              <img src="assets/img/travel/misc-12.webp" class="img-fluid rounded shadow" alt="Happy Travelers">
             </div>
           </div>
         </div>
 
       </div>
+      <!-- END row -->
 
+
+
+      <!-- FEATURES GRID -->
       <div class="row g-4 mt-5">
 
         <div class="col-lg-4 col-md-6">
           <div class="feature-item text-center">
-            <div class="feature-icon">
-              <i class="bi bi-award"></i>
-            </div>
+            <div class="feature-icon"><i class="bi bi-award"></i></div>
             <h5>Expert Local Guides</h5>
-            <p>Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore</p>
+            <p>Ghizi profesioniști, pasionați și cu experiență locală reală.</p>
           </div>
         </div>
 
         <div class="col-lg-4 col-md-6">
           <div class="feature-item text-center">
-            <div class="feature-icon">
-              <i class="bi bi-headset"></i>
-            </div>
+            <div class="feature-icon"><i class="bi bi-headset"></i></div>
             <h5>24/7 Customer Support</h5>
-            <p>Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure</p>
+            <p>Suntem alături de tine în orice moment al călătoriei.</p>
           </div>
         </div>
 
         <div class="col-lg-4 col-md-6">
           <div class="feature-item text-center">
-            <div class="feature-icon">
-              <i class="bi bi-shield-check"></i>
-            </div>
+            <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
             <h5>Best Price Guarantee</h5>
-            <p>Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim</p>
+            <p>Tarife corecte, transparente și cele mai bune oferte.</p>
           </div>
         </div>
 
         <div class="col-lg-4 col-md-6">
           <div class="feature-item text-center">
-            <div class="feature-icon">
-              <i class="bi bi-geo-alt"></i>
-            </div>
+            <div class="feature-icon"><i class="bi bi-geo-alt"></i></div>
             <h5>Local Expertise</h5>
-            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium</p>
+            <p>Trasee autentice și destinații recomandate de localnici.</p>
           </div>
         </div>
 
         <div class="col-lg-4 col-md-6">
           <div class="feature-item text-center">
-            <div class="feature-icon">
-              <i class="bi bi-calendar-check"></i>
-            </div>
+            <div class="feature-icon"><i class="bi bi-calendar-check"></i></div>
             <h5>Flexible Booking</h5>
-            <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum</p>
+            <p>Schimbări ușoare, anulare flexibilă și programe adaptabile.</p>
           </div>
         </div>
 
         <div class="col-lg-4 col-md-6">
           <div class="feature-item text-center">
-            <div class="feature-icon">
-              <i class="bi bi-leaf"></i>
-            </div>
+            <div class="feature-icon"><i class="bi bi-leaf"></i></div>
             <h5>Sustainable Travel</h5>
-            <p>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit</p>
+            <p>Promovăm călătoriile responsabile și eco-friendly.</p>
           </div>
         </div>
 
       </div>
 
     </div>
+  </section>
+  <!-- END About Section -->
 
-  </section><!-- /About Section -->
 </div>
 </html>
