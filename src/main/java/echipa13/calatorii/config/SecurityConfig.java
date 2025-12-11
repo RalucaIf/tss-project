@@ -1,6 +1,7 @@
 package echipa13.calatorii.config;
 
-import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
+import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect; // ✅ CORECT
+
 
 import echipa13.calatorii.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -60,22 +60,10 @@
                 <li><a th:href="@{/Destinations}">Destinations</a></li>
                 <li><a th:href="@{/Tours}">Tours</a></li>
 
-                <li sec:authorize="isAuthenticated()" class="dropdown" th:if="${user != null}">
-                    <p></p><a href="#" class="d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#avatarModal">
-                        <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${user.avatar}}"
-                             width="45" height="45" class="rounded-circle me-2 border avatar-option-nav"/>
-                    </a>
-                    <a th:href="@{/user_profile}" ><span>Welcome, <b th:text="${user.username}"></b></span></a>
-                    </p>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
-                    </ul>
-                </li>
 
 
-                <li sec:authorize="isAnonymous()">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
-                </li>
+
+
 
 
                 <li class="dropdown"><a href="#"><span>More Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
@@ -112,6 +100,9 @@
 
 
                 <li><a th:href="@{/Contact}" >Contact</a></li>
+                <li sec:authorize="isAnonymous()">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+                </li>
                 <li class="theme-toggle-li">
                     <button id="themeToggle" class="btn btn-theme" type="button"
                             aria-label="Toggle theme" aria-pressed="false" title="Toggle theme">
@@ -123,7 +114,47 @@
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
-        <a class="btn-getstarted" href="Itravel-list">Get Started</a>
+        <!-- Slotul din dreapta: Login / Meniu utilizator -->
+        <div class="right-cta d-flex align-items-center">
+            <!-- Când NU ești logat: Login -->
+            <a sec:authorize="isAnonymous()"
+               href="#"
+               class="btn-getstarted"
+               data-bs-toggle="modal" data-bs-target="#loginModal">
+                Login
+            </a>
+
+            <!-- Când ești logat: AVATAR + buton dropdown separat -->
+            <li sec:authorize="isAuthenticated()" class="account-item d-flex align-items-center">
+                <!-- Avatar: deschide DOAR modalul de avatar -->
+                <button type="button"
+                        class="btn p-0 border-0 bg-transparent me-2 avatar-btn"
+                        data-bs-toggle="modal" data-bs-target="#avatarModal"
+                        aria-label="Schimbă avatar">
+                    <img th:src="${navbarAvatarUrl}"
+                         width="45" height="45"
+                         class="rounded-circle border avatar-option-nav"
+                         alt="Avatar">
+                </button>
+
+                <!-- Butonul 'Cont' deschide submeniul -->
+                <a href="#" class="account-toggle d-flex align-items-center">
+                    <span class="account-name"><b sec:authentication="name"></b></span>
+                    <i class="bi bi-chevron-down toggle-dropdown ms-1"></i>
+                </a>
+
+                <!-- IMPORTANT: fără .dropdown-menu de la Bootstrap -->
+                <ul class="account-menu">
+                    <li><a th:href="@{/profile}">Profilul meu</a></li>
+                    <li><a th:href="@{/logout}">Logout</a></li>
+                </ul>
+            </li>
+
+        </div>
+
+    </div>
+
+
 
     </div>
 </header>
@@ -263,8 +294,7 @@
 <!-- Preloader -->
 <!--<div id="preloader"></div>-->
 <!-- Main JS File -->
-<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<script th:href="@{/js/main.js}"></script>
+
 
 
 <!-- Login Modal -->
@@ -463,7 +493,47 @@
         });
     })();
 </script>
+<script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const img = document.querySelector('.right-user img.js-avatar-trigger');
+        if (!img) return;
+        img.addEventListener('click', function (ev) {
+            // Nu deschide dropdown-ul, ci avatar modalul
+            ev.preventDefault();
+            ev.stopPropagation();
+            const modalEl = document.getElementById('avatarModal');
+            if (!modalEl) return;
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        });
+    });
+</script>
+<script>
+    (function () {
+        const item   = document.querySelector('#header .account-item');
+        const toggle = item?.querySelector('.account-toggle');
 
+        // Deschide/închide meniul la click pe "Cont"
+        toggle?.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            item.classList.toggle('open');
+        });
+
+        // Închide când dai click în afara meniului
+        document.addEventListener('click', function (e) {
+            if (!item) return;
+            if (!item.contains(e.target)) item.classList.remove('open');
+        });
+
+        // Închide la ESC
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') item?.classList.remove('open');
+        });
+    })();
+</script>
 
 
 

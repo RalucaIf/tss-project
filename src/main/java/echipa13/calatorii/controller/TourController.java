@@ -157,7 +157,7 @@ public class TourController {
         model.addAttribute("calatorii", calatorii);
 
 
-        return "404-list";
+        return "404";
     }
     // Formular pentru adăugarea unei noi călătorii
     @GetMapping("/Itravel/new")
