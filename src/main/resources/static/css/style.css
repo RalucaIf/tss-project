@@ -8328,6 +8328,26 @@ header.header .navmenu ul li .custom-dropdown li a:hover,
 }
 
 
+/* === FIX pentru dropdown-ul de profil === */
+#header .account-item {
+    position: relative;
+}
+
+#header .account-item .account-menu {
+    top: 50px; /* mută sub avatar */
+    right: 0;  /* aliniază la dreapta */
+    left: auto;
+    list-style: none;
+}
+
+#header .account-item .account-menu ul {
+    padding: 0;
+    margin: 0;
+    list-style: none; /* scoate punctele */
+}
+
+
+
 .btn-theme {
     display: inline-flex;
     align-items: center;
@@ -8370,3 +8390,147 @@ body.dark-background .btn-theme i {
     color: #C9DCFF;
     filter: drop-shadow(0 0 0.25rem rgba(201, 220, 255, 0.35));
 }
+
+
+.avatar-container {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Badge generic */
+.badge {
+    position: absolute;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+}
+
+/* Rol */
+.badge.role {
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #f95e4d;
+}
+
+/* Puncte */
+.badge.points {
+    top: -6px;
+    right: -6px;
+    background: #FFD36B;
+    color: #222;
+}
+.badge.role.Guide {
+    background: #4A90E2;
+}
+
+.badge.role.User {
+    background: #7DDA58;
+}
+
+
+.avatar.level-1 {
+    box-shadow: 0 0 5px #ccc;
+}
+
+.avatar.level-5 {
+    box-shadow: 0 0 10px #4A90E2;
+}
+
+.avatar.level-10 {
+    box-shadow: 0 0 15px #FFD700;
+    animation: glow 1.5s infinite alternate;
+}
+
+/* animație glow */
+@keyframes glow {
+    from { box-shadow: 0 0 10px #FFD700; }
+    to { box-shadow: 0 0 20px #FFD700; }
+}
+
+.avatar-container {
+    position: relative;
+    display: inline-block;
+    width: 70px;  /* sau cât ai nevoie */
+    height: 70px;
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    z-index: 1;
+    display: block;
+}
+
+.avatar-frame {
+    position: absolute;
+    top: -5px;
+    left: -5px;  /* începe exact de la marginea avatarului */
+    width: 75px;  /* aceeași dimensiune ca avatar */
+    height: 75px;
+    border-radius: 50%;  /* dacă GIF-ul trebuie rotund */
+    z-index: 2;
+    pointer-events: none;
+    /*mix-blend-mode: soft-light;*/
+
+}
+
+.badge.points {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    z-index: 3;
+    background: #FFD36B;
+    color: #222;
+}
+
+.badge.level {
+    position: absolute;
+    top: 80%;
+    right: -25px; /* muti badge-ul în dreapta avatarului */
+    transform: translateY(-50%);
+    z-index: 3;
+    background: #4A90E2;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.badge.role {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+}
+
+.badge.role.User { background: #7DDA58; }
+.badge.role.Guide { background: #4A90E2; }
+
+/* Badge-uri */
+.badge {
+    position: absolute;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+}
+

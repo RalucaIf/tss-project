@@ -17,6 +17,8 @@
 
 
     <!-- Fonts -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -124,39 +126,72 @@
                data-bs-toggle="modal" data-bs-target="#loginModal">
                 Login
             </a>
-
-            <!-- Când ești logat: AVATAR + buton dropdown separat -->
             <li sec:authorize="isAuthenticated()" class="account-item d-flex align-items-center">
-                <!-- Avatar: deschide DOAR modalul de avatar -->
-                <button type="button"
-                        class="btn p-0 border-0 bg-transparent me-2 avatar-btn"
-                        data-bs-toggle="modal" data-bs-target="#avatarModal"
-                        aria-label="Schimbă avatar">
-                    <img th:src="${navbarAvatarUrl}"
-                         width="45" height="45"
-                         class="rounded-circle border avatar-option-nav"
-                         alt="Avatar">
-                </button>
 
-                <!-- Butonul 'Cont' deschide submeniul -->
+                <div class="avatar-container me-2"
+                     data-bs-toggle="modal"
+                     data-bs-target="#avatarModal"
+                     style="cursor: pointer; position: relative;">
+
+                    <!-- Avatar -->
+                    <img th:src="${navbarAvatarUrl}"
+                         alt="Avatar"
+                         class="avatar"
+                         th:classappend="${navbarLevelClass}">
+
+                    <!-- Rama GIF -->
+                    <img th:if="${navbarFrameGif != null}"
+                         th:src="@{${navbarFrameGif}}"
+                         class="avatar-frame">
+
+                    <!-- Badge puncte (doar User) -->
+                    <span sec:authorize="hasRole('User') and !hasRole('Guide')"
+                          class="badge points"
+                          th:text="${navbarPoints} + 'p'"></span>
+
+                    <!-- Badge nivel -->
+                    <span class="badge level"
+                          sec:authorize="isAuthenticated()"
+                          th:text="'Lvl ' + ${navbarLevel}"></span>
+
+                    <!-- Badge User -->
+                    <span class="badge role User"
+                          sec:authorize="hasRole('User') and !hasRole('Guide')">
+        <i class="bi bi-person-fill"></i> User
+    </span>
+
+                    <!-- Badge Guide -->
+                    <span class="badge role Guide"
+                          sec:authorize="hasRole('Guide')">
+        <i class="bi bi-geo-alt-fill"></i> Guide
+    </span>
+
+                </div>
+
+
+
+                <!-- Toggle Cont -->
                 <a href="#" class="account-toggle d-flex align-items-center">
-                    <span class="account-name"><b sec:authentication="name"></b></span>
+    <span class="account-name">
+        <b sec:authentication="name"></b>
+    </span>
                     <i class="bi bi-chevron-down toggle-dropdown ms-1"></i>
                 </a>
 
-                <!-- IMPORTANT: fără .dropdown-menu de la Bootstrap -->
-                <ul class="account-menu">
-                    <li><a th:href="@{/user_profile}">Profilul meu</a></li>
-                    <li><a th:href="@{/logout}">Logout</a></li>
-                </ul>
-            </li>
+                <!-- Meniu -->
+                <div class="account-menu">
+                    <ul>
+                        <li><a th:href="@{/user_profile}">Profilul meu</a></li>
+                        <li><a th:href="@{/logout}">Logout</a></li>
+                    </ul>
+                </div>
+
+
+
+
+
 
         </div>
-
-    </div>
-
-
-
     </div>
 </header>
 <!-- Fragmentul pentru conținutul paginii copil -->
