@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<div layout:fragment="content">
+
+    <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/misc-3.webp}');|">
+        <div class="container position-relative">
+            <h1>403</h1>
+            <p>You do not have permission to access this page.</p>
+            <nav class="breadcrumbs">
+                <ol>
+                    <li><a th:href="@{/Itravel}">Home</a></li>
+                    <li class="current">403</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <section class="error-403 section">
+        <div class="container text-center">
+            <h1 class="error-code">403</h1>
+            <h2 class="error-title">Access Denied</h2>
+            <p class="error-text">You don't have permission to view this resource.</p>
+            <a th:href="@{/Itravel}" class="btn btn-primary">Back to Home</a>
+        </div>
+    </section>
+
+</div>
+</html>

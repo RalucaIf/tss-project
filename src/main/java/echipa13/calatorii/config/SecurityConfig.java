@@ -47,21 +47,27 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // permit tot temporar
+                        // doar utilizatorii cu rolul GUIDE pot accesa /Itravel/new
+                        .requestMatchers("/Itravel/new").hasRole("Guide")
+                        // restul paginilor sunt accesibile tuturor
+                        .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
-                        .loginProcessingUrl("/auth/login") // endpoint POST pentru login
-                        .usernameParameter("usernameOrEmail")        // câmp email din modal
-                        .passwordParameter("password")// câmp parola din modal
+                        .loginProcessingUrl("/auth/login")
+                        .usernameParameter("usernameOrEmail")
+                        .passwordParameter("password")
                         .defaultSuccessUrl("/Itravel", true)
                         .permitAll()
-
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")          // URL pentru logout
-                        .logoutSuccessUrl("/Itravel")  // unde să fie redirect după logout
-                        .invalidateHttpSession(true)   // distruge sesiunea
-                        .deleteCookies("JSESSIONID")   // șterge cookie-ul de sesiune
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/Itravel")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                )
+                // pagina 403 pentru utilizatori fără permisiune
+                .exceptionHandling(ex -> ex
+                        .accessDeniedPage("/error/403")
                 );
 
         return http.build();
@@ -80,6 +86,9 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
+
 
 
 }

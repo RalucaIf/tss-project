@@ -16,3 +16,13 @@ toggleButton.addEventListener('click', () => {
         localStorage.setItem('theme', 'light-background');
     }
 });
+
+document.querySelectorAll('.dropdown > a').forEach(el => {
+    el.addEventListener('click', function(e) {
+        e.preventDefault();
+        const subMenu = this.nextElementSibling;
+        if (subMenu) {
+            subMenu.style.display = subMenu.style.display === 'block' ? 'none' : 'block';
+        }
+    });
+});

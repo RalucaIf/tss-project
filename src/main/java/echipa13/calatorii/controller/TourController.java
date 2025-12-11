@@ -32,6 +32,11 @@ public class TourController {
     @Autowired
     private UserRepository userRepository;
 
+    @GetMapping("/test500")
+    public String test500() {
+        throw new RuntimeException("Test 500");
+    }
+
 
     @GetMapping("/Itravel")
     public String Itravel(Model model) {
@@ -141,16 +146,6 @@ public class TourController {
         return "tour-details";
     }
 
-
-    @GetMapping("/Error/404")
-
-    public String Error404(Model model) {
-        List<TourDto> calatorii = tourService.findAll();
-        model.addAttribute("calatorii", calatorii);
-
-
-        return "404";
-    }
     // Formular pentru adăugarea unei noi călătorii
     @GetMapping("/Itravel/new")
     public String ItravelNew(Model model) {
