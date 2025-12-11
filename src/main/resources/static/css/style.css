@@ -8287,8 +8287,6 @@ header.header .navmenu .dropdown ul li:hover > a {
     color: var(--nav-dropdown-hover-color);
 }
 
-
-
 .btn-theme {
     display: inline-flex;
     align-items: center;
@@ -8332,87 +8330,66 @@ body.dark-background .btn-theme i {
     filter: drop-shadow(0 0 0.25rem rgba(201, 220, 255, 0.35));
 }
 
-.btn-theme {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 9999px;
-    background: transparent;
-    border: 1px solid rgba(0,0,0,.15);
-    cursor: pointer;
-    transition: box-shadow .2s, border-color .2s, color .2s;
+:root {
+    --surface-2: #ffffff;           /* fundalul meniului dropdown */
+    --nav-dropdown-color: #212529;  /* culoarea textului din dropdown */
+    --accent: #f85a40;              /* culoarea de accent a temei (alege ce vrei) */
 }
 
-.btn-theme i {
-    font-size: 1.1rem;
-    line-height: 1;
+/* Override pentru dark mode (ai clasa .dark-background pe <body>) */
+body.dark-background {
+    --surface-2: #1f1f1f;
+    --nav-dropdown-color: #e9ecef;
+    --accent: #4dabf7;
 }
 
-body:not(.dark-background) .btn-theme {
-    color: #1a1a1a;
-    border-color: rgba(0,0,0,.2);
+
+/* Account dropdown: aceleași efecte ca la .navmenu .dropdown ul */
+#header .account-item { position: relative; }
+
+#header .account-item .account-toggle .toggle-dropdown {
+    transition: transform .2s ease;
 }
 
-body:not(.dark-background) .btn-theme:hover {
-    border-color: #f95e4d;
-    box-shadow: 0 0 0 3px rgba(249,94,77,.2);
+#header .account-item.open .account-toggle .toggle-dropdown {
+    transform: rotate(180deg);
 }
 
-body:not(.dark-background) .btn-theme i {
-    color: #FFD36B;
-    filter: drop-shadow(0 0 0.25rem rgba(255, 211, 107, 0.35));
-}
-
-body.dark-background .btn-theme {
-    color: #fff;
-    border-color: rgba(25,25,25,.5);
-}
-
-body.dark-background .btn-theme i {
-    color: #C9DCFF;
-    filter: drop-shadow(0 0 0.25rem rgba(201, 220, 255, 0.35));
-}
-
-/* Dropdown light (implicit) */
-.custom-dropdown {
-    background-color: var(--nav-dropdown-background-color); /* alb */
-    color: var(--nav-dropdown-color);
+#header .account-item .account-menu {
+    margin: 0;
+    padding: 10px 0;
     list-style: none;
-    padding: 0.5rem 0;
     position: absolute;
-    display: none; /* ascuns implicit */
-    min-width: 200px;
-    border-radius: 0.25rem;
+    right: 0;              /* aliniere la dreapta, nu pe stânga */
+    top: 130%;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+    background: var(--surface-2);
+    border-radius: 4px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.08);
     z-index: 1000;
+    min-width: 180px;
 }
 
-.custom-dropdown li a {
+#header .account-item.open .account-menu {
+    opacity: 1;
+    top: 100%;
+    visibility: visible;
+}
+
+#header .account-item .account-menu li { position: relative; }
+
+#header .account-item .account-menu a {
     display: block;
-    padding: 0.5rem 1rem;
+    padding: 10px 20px;
+    font-size: 15px;
+    text-transform: none;
     color: var(--nav-dropdown-color);
-    text-decoration: none;
+    white-space: nowrap;
 }
 
-.custom-dropdown li a:hover {
-    background-color: rgba(0,0,0,0.05);
-    color: var(--nav-dropdown-hover-color);
+#header .account-item .account-menu a:hover,
+#header .account-item .account-menu .active {
+    color: var(--accent);
 }
-
-/* Dropdown dark theme */
-body.dark-theme .custom-dropdown {
-    background-color: var(--surface-color); /* ex: #252525 */
-    color: var(--default-color);
-}
-
-body.dark-theme .custom-dropdown li a {
-    color: var(--default-color);
-}
-
-body.dark-theme .custom-dropdown li a:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: var(--nav-dropdown-hover-color);
-}
-
-
