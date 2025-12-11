@@ -20,7 +20,7 @@
 
     <section  class="py-5">
 
-        <form role="form" th:action="@{/Itravel/new}" th:object="${calatorii}" method="post" enctype="multipart/form-data">
+        <form role="form" th:action="${calatorii.id } != null ? '/Itravel/edit/' + ${calatorii.id} : '/Itravel/new'"  th:object="${calatorii}" method="post" enctype="multipart/form-data">
 
             <div class="form-group">
                 <label for="inputTitle">Title</label>
@@ -44,11 +44,11 @@
 
             <div class="mb-3">
                 <label class="form-label">Imagine</label>
-                <input type="file" class="form-control" name="imagine" accept="image/*" required>
+                <input type="file" class="form-control" name="imagine" accept="image/*">
             </div>
 
             <div class="d-grid">
-                <button type="submit" class="btn-submit">Send Vacation <i class="bi bi-send-fill ms-2"></i></button>
+                <button type="submit" class="btn btn-login w-100">Send Vacation <i class="bi bi-send-fill ms-2"></i></button>
             </div>
         </form>
     </section>

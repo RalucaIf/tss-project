@@ -14,38 +14,111 @@
         </div>
     </div> <!--End Page Title-->
     <style>
-        .content-wrapper .container {
+        .profile-container {
             display: grid;
-            grid-template-columns: auto auto;
-            padding: 10px;
+            grid-template-columns: 1fr 1fr;
+            grid-template-areas:
+                "avatar info"
+                "tours tours";/* două coloane egale */
+            max-width: 1200px; /* le ținem înguste și elegante */
+            margin: 0 auto; /* centrare pe pagină */
+            gap: 30px; /* distanță frumoasă între carduri */
+            padding: 20px;
         }
 
-        .content-wrapper .profile-avatar,
-        .content-wrapper .profile-info,
-        .content-wrapper .list_tours,
-        .content-wrapper .destination-card{
+        .profile-avatar{
+            grid-area: avatar;
+        }
+        .profile-info{
+            grid-area: info;
+        }
+        .list_tours{
+            grid-area: tours;
+        }
+
+        .profile-avatar,
+        .profile-info {
             background: var(--surface-color);
-            padding: 10px;
-            margin-left: 10px;
-            margin-top: 10px;
-            font-size: 30px;
-            text-align: center;
-            height: 500px;
-            border-radius: 8px;
-            border: 1px solid color-mix(in srgb, #35211f, transparent 90%);
+            border-radius: 10px;
+            border: 1px solid rgba(0,0,0,0.1);
+            padding: 30px 40px; /* spatiu mai bun L-R */
             transition: all 0.3s ease;
+            box-sizing: border-box;
+            text-align: center; /* center pentru titluri & text simplu */
         }
 
-        .content-wrapper .profile-avatar:hover,
-        .content-wrapper .profile-info:hover,
-        .content-wrapper .destination-card:hover{
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        /* fix pentru lista din profile-info */
+        .profile-info ul {
+            list-style: none;        /* scoate bullet-urile */
+            padding: 0;
+            margin: 0;
         }
+
+        .profile-info ul li {
+            text-align: center;      /* alinează fiecare item */
+            margin-bottom: 8px;      /* spacing frumos */
+        }
+        .profile-avatar,
+        .profile-info {
+            background: var(--surface-color);
+            border-radius: 10px;
+            border: 1px solid rgba(0,0,0,0.1);
+            padding: 30px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        /* Hover effect */
+        .profile-avatar:hover,
+        .profile-info:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-color: rgba(0,0,0,0.2);
+        }
+
     </style>
-<div class="container">
+<div class="profile-container">
     <div class="profile-avatar">
-        <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${user.avatar}}" style="height: 300px; width: 300px" class="rounded-circle me-2 border avatar-option-nav">
+        <!--<img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${user.avatar}}" style="height: 300px; width: 300px" class="rounded-circle me-2 border avatar-option-nav">-->
+        <div class="avatar-container me-6"
+             data-bs-toggle="modal"
+             data-bs-target="#avatarModal"
+             style="cursor: pointer; position: relative;">
+
+            <!-- Avatar -->
+            <img th:src="${navbarAvatarUrl}"
+                 alt="Avatar"
+                 class="avatar"
+                 th:classappend="${navbarLevelClass}">
+
+            <!-- Rama GIF -->
+            <img th:if="${navbarFrameGif != null}"
+                 th:src="@{${navbarFrameGif}}"
+                 class="avatar-frame">
+
+            <!-- Badge puncte (doar User) -->
+            <span sec:authorize="hasRole('User') and !hasRole('Guide')"
+                  class="badge points"
+                  th:text="${navbarPoints} + 'p'"></span>
+
+            <!-- Badge nivel -->
+            <span class="badge level"
+                  sec:authorize="isAuthenticated()"
+                  th:text="'Lvl ' + ${navbarLevel}"></span>
+
+            <!-- Badge User -->
+            <span class="badge role User"
+                  sec:authorize="hasRole('User') and !hasRole('Guide')">
+        <i class="bi bi-person-fill"></i> User
+    </span>
+
+            <!-- Badge Guide -->
+            <span class="badge role Guide"
+                  sec:authorize="hasRole('Guide')">
+        <i class="bi bi-geo-alt-fill"></i> Guide
+    </span>
+
+        </div>
         <h4 th:text="${user.username}">Nume utilizator</h4>
     </div>
     <div class="profile-info">
@@ -57,37 +130,47 @@
         </ul>
     </div>
     <div sec:authorize="hasRole('Guide')" class="list_tours">
-
-        <h4>Tururile Dumneavoastra</h4>
-        <div class = 'container'>
-            <div th:if="${#lists.isEmpty(calatorii)}">
-                <p>Nu aveți încă tururi.</p>
+        <section id="featured-destinations" class="featured-destinations section">
+            <div class="container section-title">
+                <h2>Tururile Dumneavoastra</h2>
+                <div><span>Vizualizati</span> <span class="description-title">Tururile Postate</span></div>
             </div>
-            <div class="row gy-4" th:if="${!#lists.isEmpty(calatorii)}">
-                <div class="col-lg-4 col-md-6" th:each="c : ${calatorii}">
-                    <div class="destination-card">
-                        <div class="image-wrapper">
-                            <img th:src="@{/imagine/{img}(img=${c.image})}" alt="Destination" class="img-fluid">
-                            <div class="overlay">
-                                <div class="badge">Popular</div>
-                            </div>
-                        </div>
 
-                        <div class="content">
-                            <h4 th:text="${c.title}">Titlu</h4>
-                            <p th:text="${#strings.abbreviate(c.pricePoints, 100)}">Descriere</p>
-
-                            <div class="card-footer">
-                                <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">
-                                    Explore <i class="bi bi-arrow-right"></i>
-                                </a>
+            <div class = 'container'>
+                <div th:if="${#lists.isEmpty(calatorii)}">
+                    <p>Nu aveți încă tururi.</p>
+                </div>
+                <div class="row gy-4" th:if="${!#lists.isEmpty(calatorii)}">
+                    <div class="col-lg-4 col-md-6" th:each="c : ${calatorii}">
+                        <div class="destination-card">
+                            <div class="image-wrapper">
+                                <img th:src="@{/imagine/{img}(img=${c.image})}" alt="Destination" class="img-fluid">
                             </div>
 
+                            <div class="content">
+                                <h4 th:text="${c.title}">Titlu</h4>
+                                <p th:text="${#strings.abbreviate(c.pricePoints, 100)}">Descriere</p>
+
+                                <div class="card-footer">
+                                    <form th:action="@{/tours/delete/{id}(id=${c.id})}" method="post">
+                                        <button class="btn btn-danger"
+                                                onclick="return confirm('Ești sigur că vrei să ștergi acest tur?');">
+                                            Delete
+                                        </button>
+                                    </form>
+                                    <form th:action="@{/Itravel/edit/{id}(id=${c.id})}" method="get">
+                                        <button  class="btn btn-login w-100">
+                                            Edit
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
+    </div>
     </div>
 </div>
 </div>

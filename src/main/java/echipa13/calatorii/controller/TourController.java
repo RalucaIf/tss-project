@@ -5,6 +5,7 @@ import echipa13.calatorii.models.Tour;
 import echipa13.calatorii.Dto.TourDto;
 import echipa13.calatorii.models.UserEntity;
 import echipa13.calatorii.repository.GuideRepository;
+import echipa13.calatorii.repository.TourRepository;
 import echipa13.calatorii.repository.UserRepository;
 import echipa13.calatorii.service.GuideService;
 import echipa13.calatorii.service.TourService;
@@ -44,6 +45,9 @@ public class TourController {
 
     @Autowired
     GuideRepository guideRepository;
+
+    @Autowired
+    TourRepository tourRepository;
 
 
     @GetMapping("/Itravel")
@@ -155,9 +159,15 @@ public class TourController {
     }
 
     // Formular pentru adăugarea unei noi călătorii
-    @GetMapping("/Itravel/new")
-    public String ItravelNew(Model model) {
-        Tour c = new Tour();
+    @GetMapping({"/Itravel/new", "/Itravel/edit/{id}"})
+    public String ItravelNew(Model model, @PathVariable(required = false ) Long id) {
+        Tour c;
+        if (id == null) {
+            c = new Tour();
+        }
+        else {
+            c = tourRepository.findById(id).orElse(null);
+        }
         model.addAttribute("calatorii", c);
 
         return "Itravel-new";
@@ -191,7 +201,7 @@ public class TourController {
 //        return "redirect:/Itravel";
 //    }
 
-    @PostMapping("/Itravel/new")
+    @PostMapping({"/Itravel/new", "/Itravel/edit/{id}"})
     public String addTour(@ModelAttribute("tour") Tour c,
                           @RequestParam("imagine") MultipartFile imagine) {
 
@@ -215,11 +225,25 @@ public class TourController {
             System.out.println(guide.getId());
 
             // setăm guideId din tabela guides
-            c.setGuideId(guide.getId());
-            c.setStatus("PUBLISHED");
-            c.setCreatedAt(LocalDateTime.now());
+            if(c.getGuideId()==null)
+            {
+                c.setGuideId(guide.getId());
+                c.setStatus("PUBLISHED");
+                c.setCreatedAt(LocalDateTime.now());
+            }else {
+                Tour existingTour = tourRepository.findById(c.getId()).orElse(null);
+                if (existingTour != null) {
+                    c.setGuideId(existingTour.getGuideId());
+                    c.setCreatedAt(existingTour.getCreatedAt());
+                    c.setStatus(existingTour.getStatus());
 
-            if (!imagine.isEmpty()) {
+                    if (imagine == null || imagine.isEmpty()) {
+                        c.setImage(existingTour.getImage());
+                    }
+                }
+            }
+
+            if (imagine !=null &&!imagine.isEmpty()) {
                 String uploadDir = System.getProperty("user.dir") + "/imagine/";
                 File folder = new File(uploadDir);
                 if (!folder.exists()) folder.mkdirs();
@@ -237,10 +261,17 @@ public class TourController {
 
         return "redirect:/Itravel";
     }
+
+    @PostMapping("/tours/delete/{id}")
+    public String deleteTour(@PathVariable Long id) {
+        tourService.delete(id);
+        return "redirect:/user_profile";
+        }
+    }
 //    @GetMapping("/Itravel/search")
 //        public String searchByTitle(@RequestParam(value="query") String query,  Model model) {
 //        List<TourDto> c = tourService.searchByTitle(query);
 //        model.addAttribute("calatorii", c);
 //        return "Itravel-list";
 //        }
-}
+
