@@ -565,14 +565,14 @@
 </script>
 
 
-
 <script>
+
     const chatBox = document.getElementById('chat-box');
     const chatInput = document.getElementById('chat-input');
     const chatMessages = document.getElementById('chat-messages');
 
     document.getElementById('open-chat').addEventListener('click', () => {
-        chatBox.style.display = 'block';
+        chatBox.style.display = 'flex';
     });
 
     document.getElementById('close-chat').addEventListener('click', () => {
@@ -580,18 +580,31 @@
     });
 
     function addMessage(sender, text) {
-        chatMessages.innerHTML += `<div><b>${sender}:</b> ${text}</div>`;
+        const msgDiv = document.createElement('div');
+        msgDiv.textContent = text;
+
+        if(sender === 'Tu') {
+            msgDiv.classList.add('user-msg');
+        } else {
+            msgDiv.classList.add('expert-msg');
+        }
+
+        chatMessages.appendChild(msgDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     chatInput.addEventListener('keypress', async function(e){
         if(e.key === 'Enter' && chatInput.value.trim() !== '') {
-            const message = chatInput.value;
+            const message = chatInput.value.trim();
             addMessage('Tu', message);
             chatInput.value = '';
 
             const tempId = 'temp-' + Date.now();
-            chatMessages.innerHTML += `<div id="${tempId}"><b>Expert:</b> ...</div>`;
+            const tempDiv = document.createElement('div');
+            tempDiv.id = tempId;
+            tempDiv.textContent = '...';
+            tempDiv.classList.add('expert-msg');
+            chatMessages.appendChild(tempDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
@@ -602,14 +615,15 @@
                 });
 
                 const data = await response.json();
-                document.getElementById(tempId).innerHTML = `<b>Expert:</b> ${data.reply}`;
+                tempDiv.textContent = data.reply;
             } catch (err) {
-                document.getElementById(tempId).innerHTML = `<b>Expert:</b> Îmi pare rău, a apărut o eroare.`;
+                tempDiv.textContent = 'Îmi pare rău, a apărut o eroare.';
                 console.error(err);
             }
         }
     });
 </script>
+
 
 
 

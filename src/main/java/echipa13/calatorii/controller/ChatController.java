@@ -20,7 +20,8 @@ public class ChatController {
 
     // Lista de cuvinte cheie pentru călătorii
     private final List<String> travelKeywords = Arrays.asList(
-            "cazare", "zbor", "hotel", "obiective turistice", "restaurant", "transport", "destinație", "călătorie"
+            "cazare", "zbor", "hotel", "obiective turistice",
+            "restaurant", "transport", "destinație", "călătorie"
     );
 
     @PostMapping
@@ -36,22 +37,23 @@ public class ChatController {
         Map<String, Object> request = Map.of(
                 "model", "command-a-03-2025",
                 "message", userMessage,
-                "temperature", 0.5,          // răspuns concis
-                "max_output_tokens", 100,    // ~50 cuvinte
-                "system_prompt", "Ești un ghid de călătorii profesionist. Răspunzi doar la întrebări legate de călătorii, cum ar fi cazare, zboruri, obiective turistice, restaurante sau transport. Vorbești în română și oferi răspunsuri scurte și concise. Dacă întrebarea nu ține de călătorii, răspunde strict: \"Îmi pare rău, pot răspunde doar la întrebări legate de călătorii.\""
+                "temperature", 0.1,
+                "max_output_tokens", 20,
+                "system_prompt",
+                "Răspunzi scurt vreau sa FII FOARTE CONCIS, direct, ca pe WhatsApp. DOAR la întrebări despre călătorii. "
+                        + "Dacă nu e despre călătorii, răspunzi: «Îmi pare rău, pot răspunde doar la întrebări legate de călătorii.»"
         );
 
         HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(request, headers);
 
         try {
             Map<String, Object> response = restTemplate.postForObject(apiUrl, httpEntity, Map.class);
-            String reply = response.get("text").toString();
+            String reply = response.getOrDefault("text", "").toString();
 
-            // Filtrare suplimentară: dacă nu conține cuvinte cheie, răspuns standard
+            // Verificăm cuvintele-cheie
             String finalReply = reply;
             boolean containsKeyword = travelKeywords.stream()
-                    .anyMatch(keyword -> finalReply.toLowerCase().contains(keyword.toLowerCase()));
-
+                    .anyMatch(k -> finalReply.toLowerCase().contains(k.toLowerCase()));
             if (!containsKeyword) {
                 reply = "Îmi pare rău, pot răspunde doar la întrebări legate de călătorii.";
             }

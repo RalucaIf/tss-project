@@ -35,9 +35,11 @@ public class ChatAiImpl {
         Map<String, Object> requestBody = Map.of(
                 "model", "command-a-03-2025",
                 "message", userMessage,
-                "temperature", 0.5,
-                "max_output_tokens", 100,
-                "system_prompt", "Ești un ghid de călătorii profesionist. Vorbești în română și oferi răspunsuri scurte și concise despre cazare, zboruri, obiective turistice, restaurante și transport. Dacă întrebarea nu ține de călătorii, răspunde strict: \"Îmi pare rău, pot răspunde doar la întrebări legate de călătorii.\""
+                "temperature", 0.1,
+                "max_output_tokens", 20,
+                "system_prompt",
+                "Răspunzi scurt, direct, ca pe WhatsApp. DOAR la întrebări despre călătorii. "
+                        + "Dacă nu e despre călătorii, răspunzi: «Îmi pare rău, pot răspunde doar la întrebări legate de călătorii.»"
         );
 
         return webClient.post()
