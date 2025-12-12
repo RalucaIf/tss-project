@@ -2,12 +2,15 @@ package echipa13.calatorii.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.core.annotation.Order;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_points")
 @Data
+@Order
+
 public class UserPoints {
 
 

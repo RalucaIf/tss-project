@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-
+import java.util.List;
 
 
 @Service
@@ -66,5 +66,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public List<UserPoints> findAllUserPoints(){
+        return userRepository.findAllUserPoints();
     }
 }
