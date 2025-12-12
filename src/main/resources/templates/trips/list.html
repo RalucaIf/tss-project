@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ro"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>Itinerariile mele</title>
+</head>
+
+<div layout:fragment="content">
+
+  <!-- HERO exact ca pe celelalte pagini -->
+  <div class="page-title dark-background"
+       th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
+    <div class="container position-relative">
+      <h1>Itinerarii</h1>
+      <p>Create memorable moments with us.</p>
+    </div>
+  </div>
+
+  <!-- CONȚINUT pagina Trips -->
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="h4 m-0">Itinerariile mele</h2>
+      <a class="btn btn-primary" th:href="@{/trips/new}">+ Creează itinerariu</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(trips)}" class="alert alert-info">
+      Încă nu ai niciun itinerariu. Creează unul nou.
+    </div>
+
+    <table th:if="${!#lists.isEmpty(trips)}" class="table table-striped align-middle">
+      <thead>
+      <tr>
+        <th>Titlu</th>
+        <th>Perioadă</th>
+        <th>Categorie</th>
+        <th>Creat la</th>
+        <th style="width:220px">Acțiuni</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="t : ${trips}">
+        <td>
+          <a th:href="@{|/trips/${t.id}|}" th:text="${t.title}">Titlu</a>
+        </td>
+        <td>
+          <span th:text="${t.startDate}">2025-01-01</span>
+          –
+          <span th:text="${t.endDate}">2025-01-05</span>
+        </td>
+        <td th:text="${t.category}">CITY_BREAK</td>
+        <td th:text="${#temporals.format(t.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01</td>
+        <td>
+          <a class="btn btn-sm btn-outline-secondary" th:href="@{|/trips/${t.id}|}">Vezi</a>
+          <a class="btn btn-sm btn-outline-primary" th:href="@{|/trips/${t.id}/edit|}">Editează</a>
+          <form th:action="@{|/trips/${t.id}/delete|}" method="post" style="display:inline"
+                onsubmit="return confirm('Ștergi acest itinerariu?');">
+            <input th:if="${_csrf != null}" type="hidden"
+                   th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+            <button type="submit" class="btn btn-sm btn-outline-danger">Șterge</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</html>
