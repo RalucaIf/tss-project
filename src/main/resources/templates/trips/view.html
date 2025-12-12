@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ro"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title th:text="${trip.title}">Itinerariu</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+  <!-- Page Title (hero cu imagine) -->
+  <div class="page-title dark-background"
+       th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
+    <div class="container position-relative">
+      <h1 th:text="${trip.title}">Titlu itinerariu</h1>
+      <p class="mb-0">
+        <span>
+          <strong>Perioadă:</strong>
+          <span th:text="${trip.startDate}">2025-01-01</span> –
+          <span th:text="${trip.endDate}">2025-01-05</span>
+        </span>
+        <span class="ms-3">
+          <strong>Categorie:</strong> <span th:text="${trip.category}">CITY_BREAK</span>
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Conținutul paginii -->
+  <section class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="m-0">Detalii itinerariu</h2>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-primary" th:href="@{|/trips/${trip.id}/edit|}">Editează</a>
+
+        <form th:action="@{|/trips/${trip.id}/delete|}" method="post"
+              onsubmit="return confirm('Ștergi acest itinerariu?');">
+          <!-- CSRF doar dacă e prezent -->
+          <input th:if="${_csrf != null}" type="hidden"
+                 th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          <button type="submit" class="btn btn-outline-danger">Șterge</button>
+        </form>
+
+        <a class="btn btn-secondary" th:href="@{/trips}">Înapoi</a>
+      </div>
+    </div>
+
+    <p class="text-muted mb-3">
+      <strong>Creat la:</strong>
+      <span th:text="${#temporals.format(trip.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01</span>
+    </p>
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Descriere</h5>
+        <p class="card-text" th:text="${trip.description}">—</p>
+      </div>
+    </div>
+
+    <!-- Dacă vrei, poți afișa și item-urile itinerariului -->
+    <!--
+    <hr class="my-4"/>
+    <h5>Program pe zile</h5>
+    <div th:if="${#lists.isEmpty(items)}" class="text-muted">Nu ai încă activități.</div>
+    <ul class="list-group" th:if="${!#lists.isEmpty(items)}">
+      <li class="list-group-item" th:each="it : ${items}">
+        Ziua <span th:text="${it.dayIndex}">1</span> — <span th:text="${it.title}">...</span>
+      </li>
+    </ul>
+    -->
+  </section>
+</div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package echipa13.calatorii.config;
 
+import com.openai.core.http.HttpMethod;
 import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect; // ✅ CORECT
 
 
@@ -47,9 +48,21 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // doar utilizatorii cu rolul GUIDE pot accesa /Itravel/new
-                        .requestMatchers("/Itravel/new").hasRole("Guide")
-                        // restul paginilor sunt accesibile tuturor
+                        // === PUBLIC & STATIC ===
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/vendor/**", "/webjars/**").permitAll()
+                        .requestMatchers("/", "/Itravel", "/About", "/Destinations",
+                                "/Contact", "/Terms", "/Privacy", "/Error/**",
+                                "/Tour_details", "/Tours").permitAll()
+                        .requestMatchers(String.valueOf(HttpMethod.POST), "/auth/login").permitAll()
+                        .requestMatchers("/logout").permitAll()
+
+                        // === TRIPS: DOAR USER ===
+                        .requestMatchers("/trips/**").hasRole("User")   // => necesită autoritate ROLE_USER
+
+                        // === GHID: creare/administrare tours ===
+                        .requestMatchers("/Itravel/new", "/tours/**", "/Tours/**").hasRole("Guide") // => ROLE_GUIDE
+
+                        // restul – lasă-le publice ca până acum
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
@@ -65,13 +78,11 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 )
-                // pagina 403 pentru utilizatori fără permisiune
-                .exceptionHandling(ex -> ex
-                        .accessDeniedPage("/error/403")
-                );
+                .exceptionHandling(ex -> ex.accessDeniedPage("/error/403"));
 
         return http.build();
     }
+
 
 
 
