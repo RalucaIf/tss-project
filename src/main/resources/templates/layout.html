@@ -42,6 +42,7 @@
     * License: https://bootstrapmade.com/license/
     ======================================================== -->
 </head>
+<body>
 <header id="header" class="header d-flex align-items-center fixed-top">
     <div class="container position-relative d-flex align-items-center justify-content-between">
 
@@ -106,9 +107,9 @@
 
 
                 <li><a th:href="@{/Contact}" >Contact</a></li>
-                <!--<li sec:authorize="isAnonymous()">
+                <li sec:authorize="isAnonymous()">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
-                </li>-->
+                </li>
                 <li class="theme-toggle-li">
                     <button id="themeToggle" class="btn btn-theme" type="button"
                             aria-label="Toggle theme" aria-pressed="false" title="Toggle theme">
@@ -192,6 +193,9 @@
         </div>
     </div>
 </header>
+<!--<main id="main" class="page-content">-->
+<!--    <div layout:fragment="content"></div>-->
+<!--</main>-->
 <!-- Fragmentul pentru conținutul paginii copil -->
 <div layout:fragment="content"></div>
 
@@ -565,14 +569,14 @@
 </script>
 
 
-<script>
 
+<script>
     const chatBox = document.getElementById('chat-box');
     const chatInput = document.getElementById('chat-input');
     const chatMessages = document.getElementById('chat-messages');
 
     document.getElementById('open-chat').addEventListener('click', () => {
-        chatBox.style.display = 'flex';
+        chatBox.style.display = 'block';
     });
 
     document.getElementById('close-chat').addEventListener('click', () => {
@@ -580,31 +584,18 @@
     });
 
     function addMessage(sender, text) {
-        const msgDiv = document.createElement('div');
-        msgDiv.textContent = text;
-
-        if(sender === 'Tu') {
-            msgDiv.classList.add('user-msg');
-        } else {
-            msgDiv.classList.add('expert-msg');
-        }
-
-        chatMessages.appendChild(msgDiv);
+        chatMessages.innerHTML += `<div><b>${sender}:</b> ${text}</div>`;
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     chatInput.addEventListener('keypress', async function(e){
         if(e.key === 'Enter' && chatInput.value.trim() !== '') {
-            const message = chatInput.value.trim();
+            const message = chatInput.value;
             addMessage('Tu', message);
             chatInput.value = '';
 
             const tempId = 'temp-' + Date.now();
-            const tempDiv = document.createElement('div');
-            tempDiv.id = tempId;
-            tempDiv.textContent = '...';
-            tempDiv.classList.add('expert-msg');
-            chatMessages.appendChild(tempDiv);
+            chatMessages.innerHTML += `<div id="${tempId}"><b>Expert:</b> ...</div>`;
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
@@ -615,15 +606,14 @@
                 });
 
                 const data = await response.json();
-                tempDiv.textContent = data.reply;
+                document.getElementById(tempId).innerHTML = `<b>Expert:</b> ${data.reply}`;
             } catch (err) {
-                tempDiv.textContent = 'Îmi pare rău, a apărut o eroare.';
+                document.getElementById(tempId).innerHTML = `<b>Expert:</b> Îmi pare rău, a apărut o eroare.`;
                 console.error(err);
             }
         }
     });
 </script>
-
 
 
 
