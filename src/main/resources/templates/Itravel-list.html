@@ -203,15 +203,19 @@
                             <a href="contact.html" class="btn btn-outline">Contact</a>
                         </div>
 
-                        <!-- Buton pentru chat -->
-                        <button class="btn btn-outline" id="open-chat">Vorbește cu un Expert</button>
+                        <!-- Buton pentru deschiderea chatului -->
+                        <button id="open-chat">Deschide Chat</button>
 
                         <!-- Fereastra Chat -->
-                        <div id="chat-box" style="display:none; position:fixed; bottom:20px; right:20px; width:350px; height:450px; border:1px solid #ccc; background:#fff; z-index:1000; padding:10px; box-shadow:0 4px 12px rgba(0,0,0,0.2); color:#000; font-family:Arial, sans-serif;">
-                            <div id="chat-header" style="font-weight:bold; margin-bottom:10px;">Chat cu Expertul AI <span id="close-chat" style="float:right; cursor:pointer;">✖</span></div>
-                            <div id="chat-messages" style="height:350px; overflow-y:auto; border-top:1px solid #eee; padding-top:10px; color:#000;"></div>
-                            <input type="text" id="chat-input" placeholder="Scrie mesajul..." style="width:100%; padding:8px; margin-top:5px; color:#000; background:#fff; border:1px solid #ccc;">
+                        <div id="chat-box" class="chat-light" style="display: none;">
+                            <div id="chat-header">
+                                Chat cu Expertul AI
+                                <span id="close-chat" style="cursor:pointer;">✖</span>
+                            </div>
+                            <div id="chat-messages"></div>
+                            <input type="text" id="chat-input" placeholder="Scrie mesajul..." />
                         </div>
+
 
 
                     </div>
