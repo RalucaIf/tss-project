@@ -60,7 +60,15 @@
                 <li><a th:href="@{/Itravel}" class="active">Home</a></li>
                 <li><a th:href="@{/About}">About</a></li>
                 <li><a th:href="@{/Destinations}">Destinations</a></li>
-                <li><a th:href="@{/Tours}">Tours</a></li>
+                <li sec:authorize="hasRole('User') and !hasAnyRole('Guide')">
+                    <a th:href="@{/trips}">Trips</a>
+                </li>
+
+                <!-- Ghid → Tours -->
+                <li sec:authorize="hasRole('Guide')">
+                    <a th:href="@{/Tours}">Tours</a>
+                </li>
+
 
 
                 <li class="dropdown"><a href="#"><span>More Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
