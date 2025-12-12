@@ -1,28 +1,24 @@
-const toggleButton = document.getElementById('theme-toggle');
-const body = document.body;
+const chatBox = document.getElementById('chat-box');
+const openChatButton = document.getElementById('open-chat');
+const closeChatButton = document.getElementById('close-chat');
 
-// Setăm tema inițială, de exemplu light
-if (!localStorage.getItem('theme')) {
-    localStorage.setItem('theme', 'light-background');
-}
-body.classList.add(localStorage.getItem('theme'));
+// Deschidere cu fade
+openChatButton.addEventListener('click', () => {
+    chatBox.classList.add('show');
+});
 
-toggleButton.addEventListener('click', () => {
-    if (body.classList.contains('light-background')) {
-        body.classList.replace('light-background', 'dark-background');
-        localStorage.setItem('theme', 'dark-background');
+// Închidere cu fade
+closeChatButton.addEventListener('click', () => {
+    chatBox.classList.remove('show');
+});
+
+// Funcția pentru schimbarea temei chat-ului
+function updateChatTheme(theme) {
+    if(theme === 'dark-background') {
+        chatBox.classList.add('chat-dark');
+        chatBox.classList.remove('chat-light');
     } else {
-        body.classList.replace('dark-background', 'light-background');
-        localStorage.setItem('theme', 'light-background');
+        chatBox.classList.add('chat-light');
+        chatBox.classList.remove('chat-dark');
     }
-});
-
-document.querySelectorAll('.dropdown > a').forEach(el => {
-    el.addEventListener('click', function(e) {
-        e.preventDefault();
-        const subMenu = this.nextElementSibling;
-        if (subMenu) {
-            subMenu.style.display = subMenu.style.display === 'block' ? 'none' : 'block';
-        }
-    });
-});
+}
