@@ -150,19 +150,37 @@
         <h4>Leaderboard</h4>
         <ul>
             <li th:each="up : ${userPoints}"
-            th:class="'leaderboard-row ' + (${up.user.username} == ${user.username} ? 'me' : '')"
+                th:class="'leaderboard-row ' + (${up.user.username} == ${user.username} ? 'me' : '')"
                 th:if="${up.user.roles.size()} == 1 and ${up.user.roles[0].name == 'User'}">
-                <div style="position: relative; display: inline-block; margin-right: 10px;">
-                    <!-- Avatar -->
-                    <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${up.user.avatar}}"
-                         style="width: 45px; height: 45px; border-radius: 50%;">
 
-                    <!-- Frame/GIF, dacă level >=5 -->
-                    <img th:if="${up.level >= 5}"
-                         th:src="@{'/imagini/rame/frame' + ${frameNumbers[up.user.id]} + '.gif'}"
-                         style="position: absolute; top: 0; left: 0; width: 45px; height: 45px;">
-                    <span th:text="${frameNumber}"> </span>
+                <!-- Dacă e user-ul logat, avatar clickabil -->
+                <div th:if="${up.user.username == user.username}"
+                     class="avatar-container me-1"
+                     data-bs-toggle="modal"
+                     data-bs-target="#avatarModal"
+                     style="cursor: pointer; position: relative;">
+                    <div style="position: relative; display: inline-block; margin-right: 10px;">
+                        <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${up.user.avatar}}"
+                             alt="Avatar" class="avatar">
+                        <img th:if="${up.level >= 5}"
+                             th:src="@{'/imagini/rame/frame' + ${frameNumbers[up.user.id]} + '.gif'}"
+                             class="avatar-frame">
+                    </div>
                 </div>
+
+                <!-- Dacă e alt user, avatar doar vizual -->
+                <div th:if="${up.user.username != user.username}"
+                     class="avatar-container me-1"
+                     style="cursor: default; position: relative;">
+                    <div style="position: relative; display: inline-block; margin-right: 10px;">
+                        <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${up.user.avatar}}"
+                             alt="Avatar" class="avatar">
+                        <img th:if="${up.level >= 5}"
+                             th:src="@{'/imagini/rame/frame' + ${frameNumbers[up.user.id]} + '.gif'}"
+                             class="avatar-frame">
+                    </div>
+                </div>
+
                 <span th:text="${up.user.username}"></span> -
                 <span th:text="${up.points} + 'p'"></span>
             </li>
