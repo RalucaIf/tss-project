@@ -539,52 +539,51 @@
         });
     });
 </script>
+<script defer>
+    (function () {
+        const item   = document.querySelector('#header .account-item');
+        const toggle = item?.querySelector('.account-toggle');
+
+        // Deschide/închide meniul la click pe "Cont"
+        toggle?.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            item.classList.toggle('open');
+        });
+
+        // Închide când dai click în afara meniului
+        document.addEventListener('click', function (e) {
+            if (!item) return;
+            if (!item.contains(e.target)) item.classList.remove('open');
+        });
+
+        // Închide la ESC
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') item?.classList.remove('open');
+        });
+    })();
+</script>
+
 
 
 <script>
     const chatBox = document.getElementById('chat-box');
     const chatInput = document.getElementById('chat-input');
     const chatMessages = document.getElementById('chat-messages');
-    const openChatBtn = document.getElementById('open-chat');
-    const closeChatBtn = document.getElementById('close-chat');
 
-    // Funcție pentru fade-in / fade-out
-    function showChat() {
-        chatBox.style.display = 'flex';
-        chatBox.style.opacity = 0;
-        let op = 0;
-        const timer = setInterval(() => {
-            if (op >= 1) clearInterval(timer);
-            chatBox.style.opacity = op;
-            op += 0.1;
-        }, 20);
-    }
+    document.getElementById('open-chat').addEventListener('click', () => {
+        chatBox.style.display = 'block';
+    });
 
-    function hideChat() {
-        let op = 1;
-        const timer = setInterval(() => {
-            if (op <= 0) {
-                clearInterval(timer);
-                chatBox.style.display = 'none';
-            }
-            chatBox.style.opacity = op;
-            op -= 0.1;
-        }, 20);
-    }
+    document.getElementById('close-chat').addEventListener('click', () => {
+        chatBox.style.display = 'none';
+    });
 
-    // Deschidere / închidere chat
-    openChatBtn.addEventListener('click', showChat);
-    closeChatBtn.addEventListener('click', hideChat);
-
-    // Adaugă mesaj în chat
     function addMessage(sender, text) {
-        const msgDiv = document.createElement('div');
-        msgDiv.innerHTML = `<b>${sender}:</b> ${text}`;
-        chatMessages.appendChild(msgDiv);
+        chatMessages.innerHTML += `<div><b>${sender}:</b> ${text}</div>`;
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // Trimite mesaj la apăsarea Enter
     chatInput.addEventListener('keypress', async function(e){
         if(e.key === 'Enter' && chatInput.value.trim() !== '') {
             const message = chatInput.value;
@@ -592,10 +591,7 @@
             chatInput.value = '';
 
             const tempId = 'temp-' + Date.now();
-            const tempDiv = document.createElement('div');
-            tempDiv.id = tempId;
-            tempDiv.innerHTML = `<b>Expert:</b> ...`;
-            chatMessages.appendChild(tempDiv);
+            chatMessages.innerHTML += `<div id="${tempId}"><b>Expert:</b> ...</div>`;
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             try {
@@ -604,6 +600,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message })
                 });
+
                 const data = await response.json();
                 document.getElementById(tempId).innerHTML = `<b>Expert:</b> ${data.reply}`;
             } catch (err) {
@@ -612,24 +609,10 @@
             }
         }
     });
-
-    // Tema chat sincronizată cu tema site-ului
-    function updateChatTheme(theme) {
-        if(theme === 'dark-background') {
-            chatBox.classList.add('chat-dark');
-            chatBox.classList.remove('chat-light');
-        } else {
-            chatBox.classList.add('chat-light');
-            chatBox.classList.remove('chat-dark');
-        }
-    }
-
-    // Aplică tema curentă la încărcare
-    document.addEventListener('DOMContentLoaded', function() {
-        const currentTheme = localStorage.getItem('theme') || 'light-background';
-        updateChatTheme(currentTheme);
-    });
 </script>
+
+
+
 
 
 </body>
