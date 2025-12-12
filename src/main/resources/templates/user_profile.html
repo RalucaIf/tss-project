@@ -59,7 +59,8 @@
             margin-bottom: 8px;      /* spacing frumos */
         }
         .profile-avatar,
-        .profile-info {
+        .profile-info ,
+        .leaderboard{
             background: var(--surface-color);
             border-radius: 10px;
             border: 1px solid rgba(0,0,0,0.1);
@@ -70,12 +71,28 @@
 
         /* Hover effect */
         .profile-avatar:hover,
-        .profile-info:hover {
+        .profile-info:hover ,
+        .leaderboard:hover{
             transform: translateY(-8px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             border-color: rgba(0,0,0,0.2);
         }
 
+        .leaderboard-row.me {
+            background: linear-gradient(90deg, #ffe066, #ffcc00);
+            animation: glow 1.5s ease-in-out infinite alternate;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px #ffea70;
+            }
+            to {
+                box-shadow: 0 0 20px #ffd60a;
+            }
+        }
     </style>
 <div class="profile-container">
     <div class="profile-avatar">
@@ -127,6 +144,28 @@
             <li>Email: <span th:text ="${user.email}">email@example.com</span></li>
             <li> Created at: <span th:text="${user.createdAt}">2025-01-01</span></li>
            <!-- <li>Roles: <span th:text="${user.roles}">Username</span></li>-->
+        </ul>
+    </div>
+    <div sec:authorize="hasRole('User') and !hasRole('Guide')" class="leaderboard">
+        <h4>Leaderboard</h4>
+        <ul>
+            <li th:each="up : ${userPoints}"
+            th:class="'leaderboard-row ' + (${up.user.username} == ${user.username} ? 'me' : '')"
+                th:if="${up.user.roles.size()} == 1 and ${up.user.roles[0].name == 'User'}">
+                <div style="position: relative; display: inline-block; margin-right: 10px;">
+                    <!-- Avatar -->
+                    <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${up.user.avatar}}"
+                         style="width: 45px; height: 45px; border-radius: 50%;">
+
+                    <!-- Frame/GIF, dacă level >=5 -->
+                    <img th:if="${up.level >= 5}"
+                         th:src="@{'/imagini/rame/frame' + ${frameNumbers[up.user.id]} + '.gif'}"
+                         style="position: absolute; top: 0; left: 0; width: 45px; height: 45px;">
+                    <span th:text="${frameNumber}"> </span>
+                </div>
+                <span th:text="${up.user.username}"></span> -
+                <span th:text="${up.points} + 'p'"></span>
+            </li>
         </ul>
     </div>
     <div sec:authorize="hasRole('Guide')" class="list_tours">

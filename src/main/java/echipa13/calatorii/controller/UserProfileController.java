@@ -7,6 +7,7 @@ import echipa13.calatorii.Dto.registerDto;
 import echipa13.calatorii.models.Guide;
 import echipa13.calatorii.models.Role;
 import echipa13.calatorii.models.UserEntity;
+import echipa13.calatorii.models.UserPoints;
 import echipa13.calatorii.repository.GuideRepository;
 import echipa13.calatorii.repository.RoleRepository;
 import echipa13.calatorii.repository.UserRepository;
@@ -25,9 +26,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
 
 import java.util.Collections;
+import java.util.Map;
 
 @Controller
 public class UserProfileController {
@@ -77,6 +81,16 @@ public class UserProfileController {
         model.addAttribute("calatorii", calatorii);
         model.addAttribute("isGuide", guide != null);
 
+        List<UserPoints> userPoints = userRepository.findAllUserPoints();
+        model.addAttribute("userPoints", userPoints);
+
+        Map<Long, Integer> frameNumbers = new HashMap<>();
+        for(UserPoints userPoint : userPoints){
+            int level = userPoint.getLevel();
+            int frameNumber = Math.min(8, (level - 5)/2 + 1);
+            frameNumbers.put(userPoint.getUser().getId(), frameNumber); // use user's ID as key
+        }
+        model.addAttribute("frameNumbers", frameNumbers);
 
         return "user_profile";
     }
