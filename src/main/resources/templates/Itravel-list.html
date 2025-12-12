@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
       layout:decorate="~{layout}">
 
 <div layout:fragment="content">
@@ -204,17 +204,20 @@
                         </div>
 
                         <!-- Buton pentru deschiderea chatului -->
-                        <button id="open-chat">Deschide Chat</button>
-
-                        <!-- Fereastra Chat -->
-                        <div id="chat-box" style="display: none;">
+                        <a href="#" id="open-chat" class="btn-explore">
+                            <span>Vorbeste cu un expert</span>
+                            <i class="bi bi-arrow-right"></i> </a>
+                        <div id="chat-box" class="chat-text" style="display: none;">
                             <div id="chat-header">
                                 Chat cu expertii nostrii
                                 <span id="close-chat" style="cursor:pointer;">✖</span>
                             </div>
                             <div id="chat-messages"></div>
                             <input type="text" id="chat-input" placeholder="Scrie mesajul..." />
+                            <!-- ascuns: numele userului -->
+                            <span id="chat-username" style="display:none;" sec:authentication="name"></span>
                         </div>
+
 
 
 
