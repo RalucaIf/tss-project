@@ -206,61 +206,67 @@ public class TourController {
                           @RequestParam("imagine") MultipartFile imagine) {
 
         try {
-            // preluare user logat
+            // 1️⃣ Preluare user logat
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String emailOrUsername = auth.getName();
 
-            // găsim userul
             UserEntity user = userRepository.findByEmail(emailOrUsername);
             if (user == null) {
                 user = userRepository.findByUsername(emailOrUsername);
             }
-            System.out.println(user.getId());
 
-            // căutăm ghidul asociat
+            // 2️⃣ Preluare ghid asociat userului
             Guide guide = guideRepository.findByUser_Id(user.getId()).orElse(null);
             if (guide == null) {
                 return "redirect:/nuEstiGhid";
             }
-            System.out.println(guide.getId());
 
-            // setăm guideId din tabela guides
-            if(c.getGuideId()==null)
-            {
+            // 3️⃣ Setări pentru tur nou sau editat
+            if (c.getGuideId() == null) {
                 c.setGuideId(guide.getId());
                 c.setStatus("PUBLISHED");
                 c.setCreatedAt(LocalDateTime.now());
-            }else {
+            } else {
                 Tour existingTour = tourRepository.findById(c.getId()).orElse(null);
                 if (existingTour != null) {
                     c.setGuideId(existingTour.getGuideId());
                     c.setCreatedAt(existingTour.getCreatedAt());
                     c.setStatus(existingTour.getStatus());
 
+                    // Păstrează imaginea existentă dacă nu se încarcă alta
                     if (imagine == null || imagine.isEmpty()) {
                         c.setImage(existingTour.getImage());
                     }
                 }
             }
 
-            if (imagine !=null &&!imagine.isEmpty()) {
-                String uploadDir = System.getProperty("user.dir") + "/imagine/";
+            // 4️⃣ Upload imagine dacă există
+            if (imagine != null && !imagine.isEmpty()) {
+                // folderul static/uploads
+                String uploadDir = new File("src/main/resources/static/uploads/").getAbsolutePath();
                 File folder = new File(uploadDir);
                 if (!folder.exists()) folder.mkdirs();
 
-                File file = new File(uploadDir + imagine.getOriginalFilename());
+                // nume unic pentru imagine
+                String filename = System.currentTimeMillis() + "_" + imagine.getOriginalFilename();
+                File file = new File(folder, filename);
                 imagine.transferTo(file);
 
-                c.setImage(imagine.getOriginalFilename());
+                // salvează doar numele fișierului în DB
+                c.setImage(filename);
             }
 
+            // 5️⃣ Salvare tur
             tourService.saveTour(c);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return "redirect:/Itravel";
     }
+
+
 
     @PostMapping("/tours/delete/{id}")
     public String deleteTour(@PathVariable Long id) {
