@@ -169,12 +169,14 @@
 
             <div class="container">
                 <div class="row gy-4">
-                    <div class="col-lg-4 col-md-6" th:each="c : ${calatorii}">
+                    <div class="col-lg-4 col-md-6"
+                         th:each="c, iterStat : ${calatorii}"
+                         th:if="${iterStat.index} < 6">
                         <div class="destination-card">
                             <div class="image-wrapper">
-                                <img th:src="@{/imagine/{img}(img=${c.image})}" alt="Destinație" class="img-fluid">
+                                <img th:src="@{/uploads/{img}(img=${c.image})}" alt="Destinație" class="img-fluid">
                                 <div class="overlay">
-                                    <div class="badge">Popular</div>
+                                    <div class="destination-tag popular">Popular</div>
                                 </div>
                             </div>
                             <div class="content">
@@ -210,9 +212,11 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
+
 
     </main>
 
@@ -222,22 +226,25 @@
                         <h3>Nu te poți hotărî unde să mergi?</h3>
                         <p>Experții noștri în călătorii te pot ajuta să găsești destinația perfectă, în funcție de preferințele, bugetul și stilul tău de călătorie.</p>
                         <div class="cta-buttons">
-                            <a href="destinations.html" class="btn btn-primary">Vezi Toate Destinațiile</a>
-                            <a href="contact.html" class="btn btn-outline">Contact</a>
+                           <a th:href="@{/Destinations}" class="btn btn-primary">Vezi Toate Destinațiile</a>
+                            <a th:href="@{/Destinations}" class="btn btn-outline">Contact</a>
                         </div>
 
                         <!-- Buton pentru deschiderea chatului -->
-                        <button id="open-chat">Deschide Chat</button>
-
-                        <!-- Fereastra Chat -->
-                        <div id="chat-box" style="display: none;">
+                        <a href="#" id="open-chat" class="btn-explore">
+                            <span>Vorbeste cu un expert</span>
+                            <i class="bi bi-arrow-right"></i> </a>
+                        <div id="chat-box" class="chat-text" style="display: none;">
                             <div id="chat-header">
                                 Chat cu expertii nostrii
                                 <span id="close-chat" style="cursor:pointer;">✖</span>
                             </div>
                             <div id="chat-messages"></div>
                             <input type="text" id="chat-input" placeholder="Scrie mesajul..." />
+                            <!-- ascuns: numele userului -->
+                            <span id="chat-username" style="display:none;" sec:authentication="name"></span>
                         </div>
+
 
 
 

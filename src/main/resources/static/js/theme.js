@@ -1,54 +1,28 @@
-const chatBox = document.getElementById('chat-box');
-const openChatButton = document.getElementById('open-chat');
-const closeChatButton = document.getElementById('close-chat');
-const chatInput = document.getElementById('chat-input');
-const chatMessages = document.getElementById('chat-messages');
+(function() {
+    const toggleBtn = document.getElementById('themeToggle');
+    if (!toggleBtn) return;
+    const icon = toggleBtn.querySelector('i');
+    const THEME_KEY = 'theme';
 
-// Deschidere chat
-openChatButton.addEventListener('click', () => {
-    chatBox.style.display = 'flex';
-});
-
-// Închidere chat
-closeChatButton.addEventListener('click', () => {
-    chatBox.style.display = 'none';
-});
-
-// Adaugă mesaj în chat
-function addMessage(sender, text) {
-    const msgDiv = document.createElement('div');
-    msgDiv.textContent = text;
-    msgDiv.classList.add(sender === 'Tu' ? 'user-msg' : 'expert-msg');
-    chatMessages.appendChild(msgDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-// Trimitere mesaj la Enter
-chatInput.addEventListener('keypress', async function(e){
-    if(e.key === 'Enter' && chatInput.value.trim() !== '') {
-        const message = chatInput.value.trim();
-        addMessage('Tu', message);
-        chatInput.value = '';
-
-        // Mesaj temporar expert
-        const tempDiv = document.createElement('div');
-        tempDiv.textContent = '...';
-        tempDiv.classList.add('expert-msg');
-        chatMessages.appendChild(tempDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        try {
-            const response = await fetch('http://localhost:8080/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message })
-            });
-
-            const data = await response.json();
-            tempDiv.textContent = data.reply;
-        } catch (err) {
-            tempDiv.textContent = 'Îmi pare rău, a apărut o eroare.';
-            console.error(err);
-        }
+    function apply(theme) {
+        const dark = theme === 'dark';
+        document.body.classList.toggle('dark-background', dark);
+        // iconița reprezintă TEMA CURENTĂ: soare pe light, lună pe dark
+        if (icon) icon.className = dark ? 'bi bi-moon' : 'bi bi-sun';
+        toggleBtn.setAttribute('aria-pressed', String(dark));
+        toggleBtn.title = dark ? 'Dark mode' : 'Light mode';
     }
-});
+
+    // init: din localStorage sau preferința OS
+    const stored = localStorage.getItem(THEME_KEY);
+    const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+    apply(stored ?? (prefersDark ? 'dark' : 'light'));
+
+    // toggle + persist
+    toggleBtn.addEventListener('click', () => {
+        const dark = document.body.classList.contains('dark-background');
+        const next = dark ? 'light' : 'dark';
+        localStorage.setItem(THEME_KEY, next);
+        apply(next);
+    });
+})();

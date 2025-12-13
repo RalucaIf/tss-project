@@ -4,239 +4,135 @@
       layout:decorate="~{layout}">
 
 <div layout:fragment="content">
-  <!-- Page Title -->
+  <!-- Titlul paginii -->
   <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
     <div class="container position-relative">
-      <h1>Welcome to ITravel</h1>
-      <p>Create memorable moments with us.</p>
-
+      <h1>Bine ai venit la ITravel</h1>
+      <p>Creează momente de neuitat alături de noi.</p>
     </div>
-  </div><!-- End Page Title -->
-  <!-- Travel Destinations Section -->
+  </div><!-- Sfârșit Titlu Pagina -->
+
+
+  <!-- Secțiunea Destinații de Călătorie -->
   <section id="travel-destinations" class="travel-destinations section">
-
     <div class="container">
-
       <div class="row justify-content-center">
         <div class="col-lg-8 text-center">
-          <h2>Discover Amazing Travel Destinations</h2>
-          <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          <h2>Descoperă Destinații de Călătorie Incredibile</h2>
+          <p class="mb-5">Alege destinația perfectă pentru următoarea ta aventură și transformă fiecare călătorie într-o experiență memorabilă. Descoperă locuri unice, cultură autentică și momente de neuitat.</p>
+
         </div>
       </div>
 
       <div class="isotope-layout" data-default-filter="*" data-layout="fitRows" data-sort="original-order">
-
         <div class="filter-tabs">
           <ul class="destination-filters isotope-filters">
-            <li data-filter="*" class="filter-active">All</li>
+            <li data-filter="*" class="filter-active">Toate</li>
             <li data-filter=".filter-asia">Asia</li>
-            <li data-filter=".filter-europe">Europe</li>
+            <li data-filter=".filter-europe">Europa</li>
             <li data-filter=".filter-africa">Africa</li>
-            <li data-filter=".filter-america">Americas</li>
+            <li data-filter=".filter-america">Americi</li>
           </ul>
         </div>
 
         <div class="row gy-4 isotope-container destination-grid">
-
-          <div class="col-lg-12 destination-item isotope-item filter-europe">
+          <!-- Card mare pentru excursia recomandată -->
+          <!-- Card mare pentru excursia recomandată -->
+          <div class="col-lg-12 destination-item isotope-item filter-featured" th:if="${calatorii.size() > 0}">
             <div class="destination-large">
               <div class="destination-overlay">
-                <img src="assets/img/travel/destination-2.webp" alt="Paris, France" class="img-fluid" loading="lazy">
+                <img th:src="@{/uploads/{img}(img=${calatorii[0].image})}" th:alt="${calatorii[0].title}" class="img-fluid" loading="lazy">
                 <div class="overlay-content">
                   <div class="badge-wrapper">
-                    <span class="destination-tag featured">Featured</span>
+                    <span class="destination-tag featured">Recomandat</span>
                   </div>
                   <div class="content-wrapper">
-                    <h3>Paris, France</h3>
-                    <p class="destination-excerpt">City of lights and romance with iconic landmarks and world-class museums</p>
+                    <h3 th:text="${calatorii[0].title}">Titlu Excursie</h3>
+                    <p class="destination-excerpt" th:text="${#strings.abbreviate(calatorii[0].summary, 150)}">Descriere excursie</p>
                     <div class="destination-info">
                       <div class="info-item">
                         <i class="bi bi-geo-alt"></i>
-                        <span>15 Tours</span>
+                        <span>10 Tururi</span>
                       </div>
-                      <div class="price-tag">From $1,299</div>
+                      <div class="price-tag" th:text="'Puncte: ' + ${calatorii[0].pricePoints}">Puncte</div>
                     </div>
-                    <a href="destination-details.html" class="explore-btn">
-                      <span>Explore Now</span>
+                    <a th:href="@{/Itravel/{id}(id=${calatorii[0].id})}" class="explore-btn">
+                      <span>Explorează</span>
                       <i class="bi bi-arrow-right"></i>
                     </a>
                   </div>
                 </div>
               </div>
             </div>
-          </div><!-- End Destination Item -->
+          </div>
 
-          <div class="col-lg-3 col-md-6 destination-item isotope-item filter-asia">
+          <!-- Loop Thymeleaf pentru următoarele 12 excursii mici -->
+          <div class="col-lg-4 col-md-6 destination-item isotope-item"
+               th:each="c, iterStat : ${calatorii}"
+               th:if="${iterStat.index > 0 and iterStat.index <= 12}"
+               th:classappend="' filter-' + ${c.continent.cssClass}">
+
             <div class="destination-small">
               <div class="destination-overlay">
-                <img src="assets/img/travel/destination-4.webp" alt="Bali, Indonesia" class="img-fluid" loading="lazy">
+                <img th:src="@{/uploads/{img}(img=${c.image})}" th:alt="${c.title}" class="img-fluid" loading="lazy">
                 <div class="overlay-content">
                   <div class="badge-wrapper">
                     <span class="destination-tag popular">Popular</span>
                   </div>
                   <div class="content-wrapper">
-                    <h4>Bali, Indonesia</h4>
+                    <h4 th:text="${c.title}">Titlu Excursie</h4>
+                    <p class="destination-excerpt" th:text="${#strings.abbreviate(c.summary, 100)}">Descriere excursie</p>
                     <div class="destination-info">
-                      <span class="tours-count">8 Tours</span>
-                      <span class="price">$899</span>
+                      <span class="tours-count">10 Tururi</span>
+                      <span class="price black" th:text="'Puncte: ' + ${c.pricePoints}">Puncte</span>
                     </div>
+                    <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">
+                      <span>Explorează</span>
+                      <i class="bi bi-arrow-right"></i>
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
-          </div><!-- End Destination Item -->
-
-          <div class="col-lg-3 col-md-6 destination-item isotope-item filter-america">
-            <div class="destination-small">
-              <div class="destination-overlay">
-                <img src="assets/img/travel/destination-6.webp" alt="Costa Rica" class="img-fluid" loading="lazy">
-                <div class="overlay-content">
-                  <div class="badge-wrapper">
-                    <span class="destination-tag adventure">Adventure</span>
-                  </div>
-                  <div class="content-wrapper">
-                    <h4>Costa Rica</h4>
-                    <div class="destination-info">
-                      <span class="tours-count">6 Tours</span>
-                      <span class="price">$1,199</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Destination Item -->
-
-          <div class="col-lg-3 col-md-6 destination-item isotope-item filter-africa">
-            <div class="destination-small">
-              <div class="destination-overlay">
-                <img src="assets/img/travel/destination-8.webp" alt="Cairo, Egypt" class="img-fluid" loading="lazy">
-                <div class="overlay-content">
-                  <div class="badge-wrapper">
-                    <span class="destination-tag culture">Culture</span>
-                  </div>
-                  <div class="content-wrapper">
-                    <h4>Cairo, Egypt</h4>
-                    <div class="destination-info">
-                      <span class="tours-count">7 Tours</span>
-                      <span class="price">$1,499</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Destination Item -->
-
-          <div class="col-lg-3 col-md-6 destination-item isotope-item filter-asia">
-            <div class="destination-small">
-              <div class="destination-overlay">
-                <img src="assets/img/travel/destination-9.webp" alt="Singapore" class="img-fluid" loading="lazy">
-                <div class="overlay-content">
-                  <div class="badge-wrapper">
-                    <span class="destination-tag luxury">Luxury</span>
-                  </div>
-                  <div class="content-wrapper">
-                    <h4>Singapore</h4>
-                    <div class="destination-info">
-                      <span class="tours-count">12 Tours</span>
-                      <span class="price">$1,799</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Destination Item -->
-
-          <div class="col-lg-4 col-md-6 destination-item isotope-item filter-europe">
-            <div class="destination-medium">
-              <div class="destination-overlay">
-                <img src="assets/img/travel/destination-10.webp" alt="Santorini, Greece" class="img-fluid" loading="lazy">
-                <div class="overlay-content">
-                  <div class="badge-wrapper">
-                    <span class="destination-tag romantic">Romantic</span>
-                  </div>
-                  <div class="content-wrapper">
-                    <h3>Santorini, Greece</h3>
-                    <p class="destination-excerpt">Stunning sunsets and white-washed buildings overlooking the Aegean Sea</p>
-                    <div class="destination-info">
-                      <div class="info-item">
-                        <i class="bi bi-heart"></i>
-                        <span>10 Tours</span>
-                      </div>
-                      <div class="price-tag">From $1,599</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Destination Item -->
-
-          <div class="col-lg-4 col-md-6 destination-item isotope-item filter-america">
-            <div class="destination-medium">
-              <div class="destination-overlay">
-                <img src="assets/img/travel/destination-12.webp" alt="Rio de Janeiro, Brazil" class="img-fluid" loading="lazy">
-                <div class="overlay-content">
-                  <div class="badge-wrapper">
-                    <span class="destination-tag vibrant">Vibrant</span>
-                  </div>
-                  <div class="content-wrapper">
-                    <h3>Rio de Janeiro</h3>
-                    <p class="destination-excerpt">Spectacular beaches, vibrant carnival culture, and iconic Christ statue</p>
-                    <div class="destination-info">
-                      <div class="info-item">
-                        <i class="bi bi-sun"></i>
-                        <span>9 Tours</span>
-                      </div>
-                      <div class="price-tag">From $1,799</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Destination Item -->
-
-          <div class="col-lg-4 col-md-6 destination-item isotope-item filter-africa">
-            <div class="destination-medium">
-              <div class="destination-overlay">
-                <img src="assets/img/travel/destination-14.webp" alt="Cape Town, South Africa" class="img-fluid" loading="lazy">
-                <div class="overlay-content">
-                  <div class="badge-wrapper">
-                    <span class="destination-tag scenic">Scenic</span>
-                  </div>
-                  <div class="content-wrapper">
-                    <h3>Cape Town</h3>
-                    <p class="destination-excerpt">Dramatic mountains, pristine beaches, and world-renowned wine regions</p>
-                    <div class="destination-info">
-                      <div class="info-item">
-                        <i class="bi bi-camera"></i>
-                        <span>11 Tours</span>
-                      </div>
-                      <div class="price-tag">From $1,699</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div><!-- End Destination Item -->
-
-        </div><!-- End Destination Items Container -->
-
-      </div>
-
-      <div class="row justify-content-center mt-5">
-        <div class="col-lg-6 text-center">
-          <div class="explore-more">
-            <h4>Ready to Start Your Journey?</h4>
-            <p class="mb-4">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat.</p>
-            <a href="#" class="btn-explore">
-              <span>View All Destinations</span>
-              <i class="bi bi-arrow-right"></i>
-            </a>
           </div>
         </div>
       </div>
 
+
+
+      </div>
+    <div class="pagination-wrapper">
+      <ul class="pagination justify-content-center">
+
+        <!-- Pagina anterioară -->
+        <li class="page-item" th:classappend="${page == 0} ? ' disabled'">
+          <a class="page-link"
+             th:href="@{/Destinations(page=${page > 0 ? page - 1 : 0})}">
+            &laquo; Anterior
+          </a>
+        </li>
+
+        <!-- Numerele paginilor -->
+        <li class="page-item"
+            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+            th:classappend="${i == page} ? ' active'">
+          <a class="page-link" th:href="@{/Destinations(page=${i})}"
+             th:text="${i + 1}">1</a>
+        </li>
+
+        <!-- Pagina următoare -->
+        <li class="page-item" th:classappend="${page == totalPages - 1} ? ' disabled'">
+          <a class="page-link"
+             th:href="@{/Destinations(page=${page < totalPages - 1 ? page + 1 : totalPages - 1})}">
+            Următor &raquo;
+          </a>
+        </li>
+
+      </ul>
     </div>
 
-  </section>
+
+  </section><!-- Sfârșit Secțiune Destinații -->
+
 </div>
 </html>

@@ -1,5 +1,6 @@
 package echipa13.calatorii.Dto;
 
+import echipa13.calatorii.models.Continent;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -24,6 +25,8 @@ public class TourDto {
     private String status;
 
     private LocalDateTime createdAt;
+
+    private Continent continent;
 
     private String image;
 

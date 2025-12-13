@@ -42,6 +42,15 @@
                 <textarea class="form-control" id="inputStatus" th:field="*{status}" rows="4" placeholder="Status"></textarea>
             </div>
 
+            <div class="form-group">
+                <label for="inputContinent">Continent</label>
+                <select class="form-control" id="inputContinent" th:field="*{continent}">
+                    <option th:each="c : ${T(echipa13.calatorii.models.Continent).values()}"
+                            th:value="${c}"
+                            th:text="${c}">Continent</option>
+                </select>
+            </div>
+
             <div class="mb-3">
                 <label class="form-label">Imagine</label>
                 <input type="file" class="form-control" name="imagine" accept="image/*">

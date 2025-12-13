@@ -33,6 +33,16 @@ public class TripServiceImpl implements TripService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<Trip> listForUserByCategory(Long userId, String category) {
+        return trips.findByUserIdAndCategoryIgnoreCaseOrderByCreatedAtDesc(userId, category);
+    }
+    @Override
+    public List<String> listCategoriesForUser(Long userId) {
+        return trips.findDistinctCategoriesForUser(userId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Trip getOwned(Long tripId, Long userId) {
         return trips.findByIdAndUserId(tripId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Trip inexistent sau nu aparține utilizatorului."));

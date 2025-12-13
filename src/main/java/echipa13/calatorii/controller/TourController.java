@@ -8,6 +8,10 @@ import echipa13.calatorii.service.TourService;
 import echipa13.calatorii.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -122,17 +127,36 @@ public class TourController {
     }
 
     @GetMapping("/Destinations")
+    public String Destinations(@RequestParam(defaultValue = "0") int page, Model model) {
+        int size = 12;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Tour> calatoriiPage = tourRepository.findAll(pageable);
 
-    public String Destinations(Model model) {
-        List<TourDto> calatorii = tourService.findAll();
+        List<TourDto> calatorii = calatoriiPage.stream().map(t -> {
+            TourDto dto = new TourDto();
+            dto.setId(t.getId());
+            dto.setTitle(t.getTitle());
+            dto.setSummary(t.getSummary());
+            dto.setPricePoints(t.getPricePoints());
+            dto.setCreatedAt(t.getCreatedAt());
+            dto.setImage(t.getImage());
+            dto.setContinent(t.getContinent());
+            return dto;
+        }).toList();
+
         model.addAttribute("calatorii", calatorii);
+        model.addAttribute("page", calatoriiPage.getNumber());
+        model.addAttribute("totalPages", calatoriiPage.getTotalPages());
 
-        // preluare user logat
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        model.addAttribute("user", username);
+        model.addAttribute("user", auth.getName());
+
         return "destinations-list";
     }
+
+
+
+
 
     @GetMapping("/Contact")
 
@@ -219,61 +243,70 @@ public class TourController {
                           @RequestParam("imagine") MultipartFile imagine) {
 
         try {
-            // preluare user logat
+            // 1️⃣ Preluare user logat
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String emailOrUsername = auth.getName();
 
-            // găsim userul
             UserEntity user = userRepository.findByEmail(emailOrUsername);
             if (user == null) {
                 user = userRepository.findByUsername(emailOrUsername);
             }
-            System.out.println(user.getId());
 
-            // căutăm ghidul asociat
+            // 2️⃣ Preluare ghid asociat userului
             Guide guide = guideRepository.findByUser_Id(user.getId()).orElse(null);
             if (guide == null) {
                 return "redirect:/nuEstiGhid";
             }
-            System.out.println(guide.getId());
 
-            // setăm guideId din tabela guides
-            if(c.getGuideId()==null)
-            {
+            // 3️⃣ Setări pentru tur nou sau editat
+            if (c.getGuideId() == null) { // tur nou
                 c.setGuideId(guide.getId());
                 c.setStatus("PUBLISHED");
                 c.setCreatedAt(LocalDateTime.now());
-            }else {
+            } else { // edit tur existent
                 Tour existingTour = tourRepository.findById(c.getId()).orElse(null);
                 if (existingTour != null) {
                     c.setGuideId(existingTour.getGuideId());
                     c.setCreatedAt(existingTour.getCreatedAt());
                     c.setStatus(existingTour.getStatus());
 
+                    // păstrează imaginea existentă dacă nu se încarcă alta
                     if (imagine == null || imagine.isEmpty()) {
                         c.setImage(existingTour.getImage());
+                    }
+
+                    // păstrează continentul existent dacă nu se schimbă
+                    if (c.getContinent() == null) {
+                        c.setContinent(existingTour.getContinent());
                     }
                 }
             }
 
-            if (imagine !=null &&!imagine.isEmpty()) {
-                String uploadDir = System.getProperty("user.dir") + "/imagine/";
+            // 4️⃣ Upload imagine dacă există
+            if (imagine != null && !imagine.isEmpty()) {
+                String uploadDir = new File("src/main/resources/static/uploads/").getAbsolutePath();
                 File folder = new File(uploadDir);
                 if (!folder.exists()) folder.mkdirs();
 
-                File file = new File(uploadDir + imagine.getOriginalFilename());
+                String filename = System.currentTimeMillis() + "_" + imagine.getOriginalFilename();
+                File file = new File(folder, filename);
                 imagine.transferTo(file);
 
-                c.setImage(imagine.getOriginalFilename());
+                c.setImage(filename);
             }
 
+            // ✅ 5️⃣ Salvează turul cu tot, inclusiv continent
             tourService.saveTour(c);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return "redirect:/Itravel";
     }
+
+
+
 
     @PostMapping("/tours/delete/{id}")
     public String deleteTour(@PathVariable Long id) {
