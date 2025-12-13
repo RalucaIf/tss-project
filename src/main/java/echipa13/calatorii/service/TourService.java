@@ -34,4 +34,8 @@ public interface TourService {
 
  // Căutare tururi după titlu
  List<TourDto> searchByTitle(String query);
+
+ Tour findEntityById(Long id);
+
+
 }
