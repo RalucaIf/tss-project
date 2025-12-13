@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ro"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title th:text="${trip.title}">Jurnal</title>
+</head>
+
+<div layout:fragment="content">
+    <div class="page-title dark-background"
+         th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
+        <div class="container position-relative">
+            <h1 th:text="${trip.title}">Titlu itinerariu</h1>
+            <p>Detaliu jurnal (deocamdată doar titlul).</p>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <h2 class="h4" th:text="${trip.title}">Titlu itinerariu</h2>
+    </div>
+</div>
+</html>

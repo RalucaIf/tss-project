@@ -1,0 +1,28 @@
+<!-- src/main/resources/templates/journal/index.html -->
+<!DOCTYPE html>
+<html lang="ro"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>Jurnalul meu</title>
+</head>
+
+<div layout:fragment="content">
+
+  <!-- HERO ca pe celelalte pagini -->
+  <div class="page-title dark-background"
+       th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
+    <div class="container position-relative">
+      <h1>Jurnalul meu</h1>
+      <p>Note, amintiri și momente preferate din călătorii.</p>
+    </div>
+  </div>
+
+  <div class="container py-5">
+    <h2 class="h4 mb-0">Jurnalul meu</h2>
+    <p class="text-muted">— deocamdată doar titlul.</p>
+  </div>
+
+</div>
+</html>

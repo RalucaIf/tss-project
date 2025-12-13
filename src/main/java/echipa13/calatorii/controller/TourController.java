@@ -1,5 +1,9 @@
 package echipa13.calatorii.controller;
 
+import echipa13.calatorii.models.*;
+import echipa13.calatorii.Dto.TourDto;
+import echipa13.calatorii.repository.*;
+import echipa13.calatorii.service.GuideService;
 import echipa13.calatorii.Dto.DestinationsDto;
 import echipa13.calatorii.Dto.TourDto;
 import echipa13.calatorii.models.Destinations;
@@ -11,6 +15,8 @@ import echipa13.calatorii.repository.TourRepository;
 import echipa13.calatorii.repository.UserRepository;
 import echipa13.calatorii.service.DestinationsService;
 import echipa13.calatorii.service.TourService;
+import echipa13.calatorii.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +39,9 @@ public class TourController {
 
     @Autowired
     private TourService tourService;
+    private GuideService guideService;
+    @Autowired
+    private TourPurchaseRepository tourPurchaseRepository;
 
     @Autowired
     private DestinationsService destinationsService;
@@ -48,12 +57,27 @@ public class TourController {
 
 
     /* ===================== PAGINI SIMPLE ===================== */
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserPointsRepository userPointsRepository;
+
 
     @GetMapping("/Itravel")
     public String itravel(Model model) {
         model.addAttribute("calatorii", tourService.findAll());
 
         return "Itravel-list";
+        List<Long> boughtTourIds = tourPurchaseRepository
+                .findByBuyer(user)
+                .stream()
+                .map(tp -> tp.getTour().getId())
+                .toList();
+
+        model.addAttribute("boughtTourIds", boughtTourIds);
+
+        return "Itravel-list";  // numele HTML-ului de listare
     }
 
     @GetMapping("/About")
@@ -135,6 +159,8 @@ public class TourController {
             dto.setDestinationId(tour.getDestination() != null ? tour.getDestination().getId() : null);
         }
 
+        System.out.println(c.getImage());
+
         model.addAttribute("calatorii", dto);
         model.addAttribute("destinations", destinationsService.findAllDTOs());
         return "Itravel-new";
@@ -144,6 +170,8 @@ public class TourController {
     @PostMapping({"/Itravel/new", "/Itravel/edit/{id}"})
     public String saveTour(@ModelAttribute("calatorii") TourDto dto,
                            @RequestParam("imagine") MultipartFile imagine) {
+    public String addTour(@ModelAttribute("tour") Tour formTour,
+                          @RequestParam("imagine") MultipartFile imagine) {
 
         try {
             // 1️⃣ Preluare user logat
@@ -151,24 +179,53 @@ public class TourController {
             String emailOrUsername = auth.getName();
             UserEntity user = userRepository.findByEmail(emailOrUsername);
             if (user == null) user = userRepository.findByUsername(emailOrUsername);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String emailOrUsername = auth.getName();
+
+        UserEntity user = userRepository.findByEmail(emailOrUsername);
+        if (user == null) {
+            user = userRepository.findByUsername(emailOrUsername);
+        }
 
             // 2️⃣ Ghid asociat
             Guide guide = guideRepository.findByUser_Id(user.getId()).orElse(null);
             if (guide == null) return "redirect:/nuEstiGhid";
+        Guide guide = guideRepository.findByUser_Id(user.getId())
+                .orElseThrow(() -> new RuntimeException("Nu ești ghid"));
 
             // 3️⃣ Preluare destinație
             Destinations destination =
                     destinationsService.findEntityById(dto.getDestinationId());
+        Tour tour;
 
+        if (formTour.getId() == null) {
+            // 🆕 CREATE
+            tour = new Tour();
+            tour.setGuideId(guide.getId());
+            tour.setCreatedAt(LocalDateTime.now());
+            tour.setStatus("PUBLISHED");
+        } else {
+            // ✏️ EDIT
+            tour = tourRepository.findById(formTour.getId())
+                    .orElseThrow(() -> new RuntimeException("Tour not found"));
+        }
 
             // 4️⃣ Transformare DTO -> Entity
             Tour tour = dto.toEntity(destination);
             tour.setGuideId(guide.getId());
             if (tour.getCreatedAt() == null) tour.setCreatedAt(LocalDateTime.now());
             if (tour.getStatus() == null) tour.setStatus("PUBLISHED");
+        // ✅ COPIEM DOAR CE VINE DIN FORM
+        tour.setTitle(formTour.getTitle());
+        tour.setSummary(formTour.getSummary());
+        tour.setPricePoints(formTour.getPricePoints());
+        tour.setContinent(formTour.getContinent());
 
             // 5️⃣ Upload imagine
             if (imagine != null && !imagine.isEmpty()) {
+        // 🖼️ imagine DOAR dacă userul a ales una nouă
+        if (imagine != null && !imagine.isEmpty()) {
+            try {
                 String uploadDir = new File("src/main/resources/static/uploads/").getAbsolutePath();
                 File folder = new File(uploadDir);
                 if (!folder.exists()) folder.mkdirs();
@@ -183,8 +240,67 @@ public class TourController {
 
         } catch (IOException e) {
             e.printStackTrace();
+
+                tour.setImage(filename);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        // ❗ dacă nu vine imagine → NU atingem tour.getImage()
+
+        tourRepository.save(tour);
 
         return "redirect:/Itravel";
     }
+
+    @PostMapping("/tours/delete/{id}")
+    public String deleteTour(@PathVariable Long id) {
+        tourService.delete(id);
+        return "redirect:/user_profile";
+        }
+
+    @PostMapping("/tours/buy/{id}")
+    public String buyTours(@PathVariable Long id, Authentication authentication) {
+        String username = authentication.getName();
+        System.out.println("Logged in username: " + username);
+
+        UserEntity user = userService.findByUsername(username);
+        if (user == null) {
+            System.out.println("User not found in DB!");
+            return "redirect:/login";
+        }
+
+        TourDto tour = tourService.findTourById(id);
+        UserPoints userPoints = userPointsRepository.findByUserId(user.getId()).orElse(null);
+
+        int tourCost = tour.getPricePoints();
+        int myPoints = userPoints.getPoints();
+
+        if(myPoints < tourCost){
+            return "redirect:/Itravel?error=" + id;
+        }
+
+        myPoints = myPoints - tourCost;
+        userPoints.setPoints(myPoints);
+        userPointsRepository.save(userPoints);
+
+        Tour tourEntity = tourService.findEntityById(tour.getId());
+
+        TourPurchase tourPurchase = new TourPurchase();
+        tourPurchase.setBuyer(user);
+        tourPurchase.setTour(tourEntity);
+        tourPurchase.setPointsPaid(tourCost);
+        tourPurchaseRepository.save(tourPurchase);
+
+        return "redirect:/Itravel?success=" + id;
+    }
 }
+
+
+//    @GetMapping("/Itravel/search")
+//        public String searchByTitle(@RequestParam(value="query") String query,  Model model) {
+//        List<TourDto> c = tourService.searchByTitle(query);
+//        model.addAttribute("calatorii", c);
+//        return "Itravel-list";
+//        }
+

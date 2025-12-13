@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}">
 
 <div layout:fragment="content">
@@ -185,6 +186,28 @@
                                     <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">
                                         Explorează <i class="bi bi-arrow-right"></i>
                                     </a>
+                                    <!-- Mesaje BUY -->
+                                    <p th:if="${param.success != null and param.success[0] == c.id.toString()}"
+                                       class="text-success">
+                                        Excursie cumpărată 🎉
+                                    </p>
+
+                                    <p th:if="${param.error != null and param.error[0] == c.id.toString()}"
+                                       class="text-danger">
+                                        Nu ai destule puncte 😭
+                                    </p>
+                                    <form sec:authorize="hasRole('User') and !hasRole('Guide')"
+                                          th:action="@{/tours/buy/{id}(id=${c.id})}" method="post">
+                                        <button type="submit" class="btn btn-login w-100"
+                                                th:disabled="${boughtTourIds.contains(c.id)}">
+                                            <span th:if="${boughtTourIds.contains(c.id)}">
+                                                Cumparat!
+                                            </span>
+                                            <span th:unless="${boughtTourIds.contains(c.id)}">
+                                                Buy
+                                            </span>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

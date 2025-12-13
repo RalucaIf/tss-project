@@ -24,8 +24,13 @@ public interface TourService {
 
  TourDto findTourById(long id);
 
+ // Șterge tur după id
  void delete(long id);
 
+ // Căutare tururi după titlu
  List<TourDto> searchByTitle(String query);
+
+ Tour findEntityById(Long id);
+
 
 }
