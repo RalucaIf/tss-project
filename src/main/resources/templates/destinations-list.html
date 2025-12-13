@@ -12,15 +12,15 @@
     </div>
   </div><!-- Sfârșit Titlu Pagina -->
 
-
   <!-- Secțiunea Destinații de Călătorie -->
   <section id="travel-destinations" class="travel-destinations section">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-lg-8 text-center">
           <h2>Descoperă Destinații de Călătorie Incredibile</h2>
-          <p class="mb-5">Alege destinația perfectă pentru următoarea ta aventură și transformă fiecare călătorie într-o experiență memorabilă. Descoperă locuri unice, cultură autentică și momente de neuitat.</p>
-
+          <p class="mb-5">
+            Alege destinația perfectă pentru următoarea ta aventură și transformă fiecare călătorie într-o experiență memorabilă. Descoperă locuri unice, cultură autentică și momente de neuitat.
+          </p>
         </div>
       </div>
 
@@ -37,24 +37,23 @@
 
         <div class="row gy-4 isotope-container destination-grid">
           <!-- Card mare pentru excursia recomandată -->
-          <!-- Card mare pentru excursia recomandată -->
           <div class="col-lg-12 destination-item isotope-item filter-featured" th:if="${calatorii.size() > 0}">
             <div class="destination-large">
               <div class="destination-overlay">
-                <img th:src="@{/uploads/{img}(img=${calatorii[0].image})}" th:alt="${calatorii[0].title}" class="img-fluid" loading="lazy">
+                <img th:src="@{/uploads/{img}(img=${calatorii[0].image})}" th:alt="${calatorii[0].name}" class="img-fluid" loading="lazy">
                 <div class="overlay-content">
                   <div class="badge-wrapper">
                     <span class="destination-tag featured">Recomandat</span>
                   </div>
                   <div class="content-wrapper">
-                    <h3 th:text="${calatorii[0].title}">Titlu Excursie</h3>
-                    <p class="destination-excerpt" th:text="${#strings.abbreviate(calatorii[0].summary, 150)}">Descriere excursie</p>
+                    <h3 th:text="${calatorii[0].name}">Titlu Excursie</h3>
+                    <p class="destination-excerpt" th:text="${#strings.abbreviate(calatorii[0].description, 150)}">Descriere excursie</p>
                     <div class="destination-info">
                       <div class="info-item">
                         <i class="bi bi-geo-alt"></i>
-                        <span>10 Tururi</span>
+                        <span th:text="${calatorii[0].tours.size()} + ' Tururi'">10 Tururi</span>
+                        <span class="tours-count" th:text="${calatorii[0].minPrice > 0 ? 'From ' + calatorii[0].minPrice + ' p' : 'No tours available'}">0 points</span>
                       </div>
-                      <div class="price-tag" th:text="'Puncte: ' + ${calatorii[0].pricePoints}">Puncte</div>
                     </div>
                     <a th:href="@{/Itravel/{id}(id=${calatorii[0].id})}" class="explore-btn">
                       <span>Explorează</span>
@@ -66,26 +65,28 @@
             </div>
           </div>
 
-          <!-- Loop Thymeleaf pentru următoarele 12 excursii mici -->
+          <!-- Loop pentru următoarele 12 excursii mici -->
           <div class="col-lg-4 col-md-6 destination-item isotope-item"
                th:each="c, iterStat : ${calatorii}"
                th:if="${iterStat.index > 0 and iterStat.index <= 12}"
-               th:classappend="' filter-' + ${c.continent.cssClass}">
+               th:classappend="(${c.continent.name().toLowerCase()} == 'americas') ? ' filter-america' : ' filter-' + ${c.continent.name().toLowerCase()}">
 
-            <div class="destination-small">
+
+          <div class="destination-small">
               <div class="destination-overlay">
-                <img th:src="@{/uploads/{img}(img=${c.image})}" th:alt="${c.title}" class="img-fluid" loading="lazy">
+                <img th:src="@{/uploads/{img}(img=${c.image})}" th:alt="${c.name}" class="img-fluid" loading="lazy">
                 <div class="overlay-content">
                   <div class="badge-wrapper">
                     <span class="destination-tag popular">Popular</span>
                   </div>
                   <div class="content-wrapper">
-                    <h4 th:text="${c.title}">Titlu Excursie</h4>
-                    <p class="destination-excerpt" th:text="${#strings.abbreviate(c.summary, 100)}">Descriere excursie</p>
+                    <h4 th:text="${c.name}">Titlu Excursie</h4>
+                    <p class="destination-excerpt" th:text="${#strings.abbreviate(c.description, 100)}">Descriere excursie</p>
                     <div class="destination-info">
-                      <span class="tours-count">10 Tururi</span>
-                      <span class="price black" th:text="'Puncte: ' + ${c.pricePoints}">Puncte</span>
+                      <span class="tours-count" th:text="${c.tours.size()} + ' Tururi'">10 Tururi</span>
+                      <span class="tours-count" th:text="${c.minPrice > 0 ? 'From ' + c.minPrice + ' p' : 'No tours available'}">0 points</span>
                     </div>
+
                     <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">
                       <span>Explorează</span>
                       <i class="bi bi-arrow-right"></i>
@@ -94,39 +95,34 @@
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>
-
-
-
-      </div>
+    </div>
+    <!-- Pagination -->
     <div class="pagination-wrapper">
       <ul class="pagination justify-content-center">
 
-        <!-- Pagina anterioară -->
-        <li class="page-item" th:classappend="${page == 0} ? ' disabled'">
-          <a class="page-link"
-             th:href="@{/Destinations(page=${page > 0 ? page - 1 : 0})}">
-            &laquo; Anterior
-          </a>
-        </li>
+        <a class="page-link"
+           th:href="@{|/Destinations?page=${page > 0 ? page - 1 : 0}|}">
+          &laquo; Anterior
+        </a>
 
-        <!-- Numerele paginilor -->
+
+        <!-- Numere pagini -->
         <li class="page-item"
             th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
             th:classappend="${i == page} ? ' active'">
-          <a class="page-link" th:href="@{/Destinations(page=${i})}"
+          <a class="page-link"
+             th:href="@{'/Destinations?page=' + ${i}}"
              th:text="${i + 1}">1</a>
         </li>
 
-        <!-- Pagina următoare -->
-        <li class="page-item" th:classappend="${page == totalPages - 1} ? ' disabled'">
-          <a class="page-link"
-             th:href="@{/Destinations(page=${page < totalPages - 1 ? page + 1 : totalPages - 1})}">
-            Următor &raquo;
-          </a>
-        </li>
+        <a class="page-link"
+           th:href="@{|/Destinations?page=${page < totalPages - 1 ? page + 1 : totalPages - 1}|}">
+          Următor &raquo;
+        </a>
 
       </ul>
     </div>

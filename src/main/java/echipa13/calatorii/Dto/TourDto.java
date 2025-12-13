@@ -1,6 +1,7 @@
 package echipa13.calatorii.Dto;
 
-import echipa13.calatorii.models.Continent;
+import echipa13.calatorii.models.Destinations;
+import echipa13.calatorii.models.Tour;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -26,37 +27,32 @@ public class TourDto {
 
     private LocalDateTime createdAt;
 
-    private Continent continent;
-
     private String image;
 
+    private Long destinationId;
     public TourDto() {
         this.createdAt = LocalDateTime.now();
-
     }
 
-    // Getters și setters (Lombok @Data generează automat majoritatea)
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public TourDto(Long id, String title, Integer pricePoints) {
+        this.id = id;
+        this.title = title;
+        this.pricePoints = pricePoints;
+        this.createdAt = LocalDateTime.now();
+    }
 
-    public Long getGuideId() { return guideId; }
-    public void setGuideId(Long guideId) { this.guideId = guideId; }
-
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-
-    public String getSummary() { return summary; }
-    public void setSummary(String summary) { this.summary = summary; }
-
-    public Integer getPricePoints() { return pricePoints; }
-    public void setPricePoints(Integer pricePoints) { this.pricePoints = pricePoints; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public String getImage() { return image; }
-    public void setImage(String image) { this.image = image; }
+    // 🔹 Transformare DTO -> Entity
+    public Tour toEntity(Destinations destination) {
+        Tour t = new Tour();
+        t.setId(this.id);
+        t.setGuideId(this.guideId);
+        t.setTitle(this.title);
+        t.setSummary(this.summary);
+        t.setPricePoints(this.pricePoints);
+        t.setStatus(this.status);
+        t.setCreatedAt(this.createdAt);
+        t.setImage(this.image);
+        t.setDestination(destination); // legătura către destinație
+        return t;
+    }
 }

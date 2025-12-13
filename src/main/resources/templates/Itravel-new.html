@@ -20,7 +20,9 @@
 
     <section  class="py-5">
 
-        <form role="form" th:action="${calatorii.id } != null ? '/Itravel/edit/' + ${calatorii.id} : '/Itravel/new'"  th:object="${calatorii}" method="post" enctype="multipart/form-data">
+        <form role="form"
+              th:action="${calatorii.id} != null ? '/Itravel/edit/' + ${calatorii.id} : '/Itravel/new'"
+              th:object="${calatorii}" method="post" enctype="multipart/form-data">
 
             <div class="form-group">
                 <label for="inputTitle">Title</label>
@@ -33,21 +35,20 @@
             </div>
 
             <div class="form-group">
-                <label for="inputPrice">Price_points</label>
-                <textarea class="form-control" id="inputPrice" th:field="*{pricePoints}" rows="4" placeholder="Price Points"></textarea>
+                <label for="inputPrice">Price Points</label>
+                <input type="number" class="form-control" id="inputPrice" th:field="*{pricePoints}" placeholder="Price Points">
             </div>
 
             <div class="form-group">
                 <label for="inputStatus">Status</label>
-                <textarea class="form-control" id="inputStatus" th:field="*{status}" rows="4" placeholder="Status"></textarea>
+                <input type="text" class="form-control" id="inputStatus" th:field="*{status}" placeholder="Status">
             </div>
 
+            <!-- 🔹 Select destinație -->
             <div class="form-group">
-                <label for="inputContinent">Continent</label>
-                <select class="form-control" id="inputContinent" th:field="*{continent}">
-                    <option th:each="c : ${T(echipa13.calatorii.models.Continent).values()}"
-                            th:value="${c}"
-                            th:text="${c}">Continent</option>
+                <label for="inputDestination">Destination</label>
+                <select class="form-control" id="inputDestination" th:field="*{destinationId}">
+                    <option th:each="d : ${destinations}" th:value="${d.id}" th:text="${d.name}">Destination Name</option>
                 </select>
             </div>
 

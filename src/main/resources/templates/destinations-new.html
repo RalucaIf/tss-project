@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<div layout:fragment="content">
+
+    <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/walpaper-image.jpg}');|">
+        <div class="container position-relative">
+            <h1>Destination Details</h1>
+            <p>Creeaza o destinatie</p>
+
+            <nav class="breadcrumbs">
+                <ol>
+                    <li><a th:href="@{/Itravel}">Home</a></li>
+                    <li class="current">Destination Details</li>
+                </ol>
+            </nav>
+        </div>
+    </div><!-- End Page Title -->
+
+    <section  class="py-5">
+
+        <<form role="form"
+               th:action="${destination.id} != null ? '/destinations/edit/' + ${destination.id} : '/destinations/new'"
+               th:object="${destination}"
+               method="post"
+               enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label for="inputName">Name</label>
+            <input type="text" class="form-control" id="inputName" th:field="*{name}" placeholder="Destination Name">
+        </div>
+
+        <div class="form-group">
+            <label for="inputDescription">Description</label>
+            <textarea class="form-control" id="inputDescription" th:field="*{description}" rows="4" placeholder="Description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="inputContinent">Continent</label>
+            <select class="form-control" id="inputContinent" th:field="*{continent}">
+                <option th:each="c : ${T(echipa13.calatorii.models.Continent).values()}"
+                        th:value="${c}"
+                        th:text="${c}">Continent</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="inputDestination">Destination</label>
+            <select class="form-control" id="inputDestination" th:field="*{destinationId}">
+                <option th:each="d : ${destinations}" th:value="${d.id}" th:text="${d.name}">Destination</option>
+            </select>
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary w-100">Save Destination</button>
+        </div>
+    </form>
+
+
+    </section>
+</div>
+</html>

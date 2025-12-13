@@ -31,7 +31,7 @@ public interface TourRepository extends JpaRepository<Tour, Long> {
 
     // Găsește tururi create după o anumită dată
     List<Tour> findByCreatedAtAfter(java.time.LocalDateTime date);
-    List<Tour> findByContinent(Continent continent);
+
     Page<Tour> findAll(Pageable pageable);
 
 

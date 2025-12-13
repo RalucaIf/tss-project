@@ -22,30 +22,34 @@
       <!-- Hero Banner -->
       <div class="tour-hero">
         <div class="hero-image-wrapper">
-          <img src="assets/img/travel/showcase-7.webp" alt="Mediterranean Coast Adventure" class="hero-image">
+          <img th:src="@{/uploads/{img}(img=${calatorie.image})}"
+               th:alt="${calatorie.title}" class="hero-image">
           <div class="hero-overlay">
             <div class="hero-content">
-              <span class="tour-type">Cultural Explorer</span>
-              <h1>Mediterranean Coast Discovery</h1>
-              <p class="hero-subtitle">Immerse yourself in ancient history and coastal splendor across Italy's most captivating destinations</p>
+<!--              <span class="tour-type" th:text="${calatorie.category}">Cultural Explorer</span>-->
+              <h1 th:text="${calatorie.title}">Mediterranean Coast Discovery</h1>
+<!--              <p class="hero-subtitle" th:text="${calatorie.subtitle}">-->
+                Immerse yourself in ancient history and coastal splendor
+              </p>
               <div class="hero-stats">
-                  <span class="stat-item">
-                    <i class="bi bi-clock"></i>
-                    10 Days
-                  </span>
+            <span class="stat-item">
+              <i class="bi bi-clock"></i>
+<!--              <span th:text="${calatorie.duration}">10 Days</span>-->
+            </span>
                 <span class="stat-item">
-                    <i class="bi bi-geo-alt"></i>
-                    Rome • Florence • Amalfi
-                  </span>
+              <i class="bi bi-geo-alt"></i>
+<!--              <span th:text="${calatorie.locations}">Rome • Florence • Amalfi</span>-->
+          </span>
                 <span class="stat-item">
-                    <i class="bi bi-people"></i>
-                    Max 16 Guests
-                  </span>
+              <i class="bi bi-people"></i>
+<!--              <span th:text="${calatorie.maxGuests}">Max 16 Guests</span>-->
+          </span>
               </div>
             </div>
           </div>
         </div>
       </div>
+
 
       <!-- Tour Essence -->
       <div class="tour-essence">

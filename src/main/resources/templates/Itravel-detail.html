@@ -1,348 +1,123 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
       layout:decorate="~{layout}">
 
 <div layout:fragment="content">
-    <!-- Page Title -->
+    <!-- Titlul paginii -->
     <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
         <div class="container position-relative">
-            <h1>Welcome to ITravel</h1>
-            <p>Create memorable moments with us.</p>
-
+            <h1>Bine ați venit la ITravel</h1>
+            <p>Creează momente memorabile alături de noi.</p>
         </div>
-    </div><!-- End Page Title -->
-    <section id="travel-destination-details" class="travel-destination-details section">
+    </div>
 
+    <section id="detalii-destinatie" class="travel-destination-details section">
         <div class="container">
 
-            <!-- Hero Section -->
+            <!-- Secțiunea Hero -->
             <div class="destination-hero">
                 <div class="hero-content">
-                    <h1 class="destination-name" th:text="${calatorie.title}">Bali, Indonesia</h1>
-                    <p class="destination-tagline">Island of the Gods</p>
+                    <h1 class="destination-name" th:text="${calatorie.name}">Numele Destinației</h1>
+                    <p class="destination-tagline" th:text="${calatorie.continent}">Continent</p>
                 </div>
                 <div class="hero-image">
-                 <img th:src="@{/imagini/Croatia.png}" alt="Bali destination" class="img-fluid">
+                    <img th:src="@{/uploads/{img}(img=${calatorie.image})}" th:alt="${calatorie.name}" class="img-fluid">
                 </div>
-
             </div>
 
-            <!-- Overview Section -->
+            <!-- Secțiunea Descriere -->
             <div class="destination-overview">
                 <div class="row align-items-center">
                     <div class="col-lg-8">
                         <div class="overview-content">
-                            <h2>Discover Paradise</h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                            <p>Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida risus commodo viverra maecenas accumsan lacus vel facilisis.</p>
+                            <h2>Descoperă Paradisul</h2>
+                            <p class="destination-description" th:text="${calatorie.description != null ? calatorie.description : 'Fără descriere'}"></p>
                         </div>
-                        <a class="btn-explore" th:href="@{/Itravel/{id}/delete(id=${calatorie.id})}">
-                            Delete <i class="bi bi-arrow-right"></i>
-                        </a>
                     </div>
                     <div class="col-lg-4">
                         <div class="overview-image">
-                            <img src="assets/img/travel/destination-5.webp" alt="Bali culture" class="img-fluid">
+                            <img th:src="@{/uploads/{img}(img=${calatorie.image})}" th:alt="${calatorie.name}" class="img-fluid">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Highlights Section -->
-            <div class="destination-highlights">
-                <div class="section-header">
-                    <h2>Must-See Attractions</h2>
-                    <p>Explore the most captivating places and experiences</p>
-                </div>
-
-                <div class="row gy-4">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="highlight-item">
-                            <div class="highlight-image">
-                                <img src="assets/img/travel/destination-8.webp" alt="Temple complex" class="img-fluid">
-                            </div>
-                            <div class="highlight-content">
-                                <h4>Sacred Temples</h4>
-                                <p>Discover ancient Hindu temples with intricate stone carvings and spiritual significance.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="highlight-item">
-                            <div class="highlight-image">
-                                <img src="assets/img/travel/destination-12.webp" alt="Rice terraces" class="img-fluid">
-                            </div>
-                            <div class="highlight-content">
-                                <h4>Rice Terraces</h4>
-                                <p>Walk through emerald green terraced landscapes that showcase traditional farming methods.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="highlight-item">
-                            <div class="highlight-image">
-                                <img src="assets/img/travel/destination-15.webp" alt="Pristine beaches" class="img-fluid">
-                            </div>
-                            <div class="highlight-content">
-                                <h4>Pristine Beaches</h4>
-                                <p>Relax on white sand beaches with crystal clear waters perfect for swimming and surfing.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="highlight-item">
-                            <div class="highlight-image">
-                                <img src="assets/img/travel/destination-3.webp" alt="Traditional markets" class="img-fluid">
-                            </div>
-                            <div class="highlight-content">
-                                <h4>Traditional Markets</h4>
-                                <p>Immerse yourself in local culture at vibrant markets filled with crafts and delicacies.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="highlight-item">
-                            <div class="highlight-image">
-                                <img src="assets/img/travel/destination-7.webp" alt="Volcano hiking" class="img-fluid">
-                            </div>
-                            <div class="highlight-content">
-                                <h4>Volcano Adventures</h4>
-                                <p>Challenge yourself with sunrise hikes to active volcanoes offering breathtaking views.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="highlight-item">
-                            <div class="highlight-image">
-                                <img src="assets/img/travel/destination-11.webp" alt="Cultural performances" class="img-fluid">
-                            </div>
-                            <div class="highlight-content">
-                                <h4>Cultural Shows</h4>
-                                <p>Experience traditional Balinese dance performances and artistic expressions.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Available Tours Section -->
+            <!-- Secțiunea Tururi Disponibile -->
             <div class="available-tours">
                 <div class="section-header">
-                    <h2>Available Tours</h2>
-                    <p>Choose from our carefully crafted experiences</p>
+                    <h2>Tururi Disponibile</h2>
+                    <p>Alege din experiențele noastre atent pregătite</p>
                 </div>
 
-                <div class="row gy-4">
-                    <div class="col-lg-4 col-md-6">
+                <div class="row gy-4" th:if="${calatorie.tours != null and !calatorie.tours.isEmpty()}">
+                    <div class="col-lg-4 col-md-6" th:each="tour : ${calatorie.tours}">
                         <div class="tour-card">
                             <div class="tour-image">
-                                <img src="assets/img/travel/tour-8.webp" alt="Cultural Heritage Tour" class="img-fluid">
-                                <div class="tour-duration">
-                                    <span>5 Days</span>
-                                </div>
+                                <img th:src="@{/uploads/{img}(img=${tour.image})}" th:alt="${tour.title}" class="img-fluid">
                             </div>
                             <div class="tour-content">
-                                <h4>Cultural Heritage Tour</h4>
-                                <p>Explore ancient temples, traditional villages, and local artisan workshops in this immersive cultural journey.</p>
+                                <h4 th:text="${tour.title}">Titlu Tur</h4>
+                                <p th:text="${tour.summary != null ? tour.summary : 'Fără descriere'}">Descriere Tur</p>
                                 <div class="tour-meta">
-                                    <span class="tour-price">$589</span>
-                                    <span class="tour-rating">
-                      <i class="bi bi-star-fill"></i>
-                      <span>4.8</span>
-                    </span>
+                                    <span class="tour-price" th:text="${tour.pricePoints != null ? tour.pricePoints + ' p' : '0 p'}">0 p</span>
                                 </div>
-                                <a href="#" class="btn-tour">View Details <i class="bi bi-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="tour-card">
-                            <div class="tour-image">
-                                <img src="assets/img/travel/tour-12.webp" alt="Adventure Package" class="img-fluid">
-                                <div class="tour-duration">
-                                    <span>7 Days</span>
-                                </div>
-                            </div>
-                            <div class="tour-content">
-                                <h4>Adventure Package</h4>
-                                <p>Volcano hiking, white water rafting, and jungle trekking combined with beautiful beach relaxation.</p>
-                                <div class="tour-meta">
-                                    <span class="tour-price">$759</span>
-                                    <span class="tour-rating">
-                      <i class="bi bi-star-fill"></i>
-                      <span>4.9</span>
-                    </span>
-                                </div>
-                                <a href="#" class="btn-tour">View Details <i class="bi bi-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="tour-card">
-                            <div class="tour-image">
-                                <img src="assets/img/travel/tour-15.webp" alt="Wellness Retreat" class="img-fluid">
-                                <div class="tour-duration">
-                                    <span>4 Days</span>
-                                </div>
-                            </div>
-                            <div class="tour-content">
-                                <h4>Wellness Retreat</h4>
-                                <p>Rejuvenate your mind and body with yoga sessions, spa treatments, and healthy organic cuisine.</p>
-                                <div class="tour-meta">
-                                    <span class="tour-price">$445</span>
-                                    <span class="tour-rating">
-                      <i class="bi bi-star-fill"></i>
-                      <span>4.7</span>
-                    </span>
-                                </div>
-                                <a href="#" class="btn-tour">View Details <i class="bi bi-arrow-right"></i></a>
+                                <a th:href="@{/tours/{id}(id=${tour.id})}" class="btn-tour">Vezi Detalii <i class="bi bi-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
                 </div>
+                <p th:if="${calatorie.tours == null or calatorie.tours.isEmpty()}">Nu există tururi disponibile pentru această destinație.</p>
             </div>
 
-            <!-- Practical Information Section -->
-            <div class="practical-info">
-                <div class="section-header">
-                    <h2>Travel Information</h2>
-                    <p>Essential details for planning your trip</p>
-                </div>
+<!--            &lt;!&ndash; Secțiunea Galerie Foto &ndash;&gt;-->
+<!--            <div class="destination-gallery" th:if="${calatorie.tours != null}">-->
+<!--                <div class="section-header">-->
+<!--                    <h2>Galerie Foto</h2>-->
+<!--                    <p>Priveliști ale frumuseții naturale și bogăției culturale</p>-->
+<!--                </div>-->
+<!--                <div class="gallery-grid">-->
+<!--                    <div class="gallery-item" th:each="img : ${calatorie.galleryImages}">-->
+<!--                        <a th:href="@{/uploads/{img}(img=${img})}" class="glightbox">-->
+<!--                            <img th:src="@{/uploads/{img}(img=${img})}" th:alt="${calatorie.name}" class="img-fluid">-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
-                <div class="row gy-4">
-                    <div class="col-lg-6">
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <div class="info-icon">
-                                    <i class="bi bi-calendar3"></i>
-                                </div>
-                                <div class="info-content">
-                                    <h5>Best Time to Visit</h5>
-                                    <p>April to October (dry season) offers the best weather with minimal rainfall and plenty of sunshine.</p>
-                                </div>
-                            </div>
-
-                            <div class="info-item">
-                                <div class="info-icon">
-                                    <i class="bi bi-thermometer-sun"></i>
-                                </div>
-                                <div class="info-content">
-                                    <h5>Climate</h5>
-                                    <p>Tropical climate with temperatures ranging from 26°C to 30°C year-round.</p>
-                                </div>
-                            </div>
-
-                            <div class="info-item">
-                                <div class="info-icon">
-                                    <i class="bi bi-cash-coin"></i>
-                                </div>
-                                <div class="info-content">
-                                    <h5>Currency</h5>
-                                    <p>Indonesian Rupiah (IDR). Credit cards accepted in most tourist areas.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6">
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <div class="info-icon">
-                                    <i class="bi bi-translate"></i>
-                                </div>
-                                <div class="info-content">
-                                    <h5>Language</h5>
-                                    <p>Bahasa Indonesia is the official language. English widely spoken in tourist areas.</p>
-                                </div>
-                            </div>
-
-                            <div class="info-item">
-                                <div class="info-icon">
-                                    <i class="bi bi-passport"></i>
-                                </div>
-                                <div class="info-content">
-                                    <h5>Visa Requirements</h5>
-                                    <p>30-day visa on arrival available for most nationalities. Passport must be valid for 6 months.</p>
-                                </div>
-                            </div>
-
-                            <div class="info-item">
-                                <div class="info-icon">
-                                    <i class="bi bi-shield-check"></i>
-                                </div>
-                                <div class="info-content">
-                                    <h5>Safety Tips</h5>
-                                    <p>Generally safe for tourists. Respect local customs and dress modestly when visiting temples.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Gallery Section -->
-            <div class="destination-gallery">
-                <div class="section-header">
-                    <h2>Photo Gallery</h2>
-                    <p>Glimpses of natural beauty and cultural richness</p>
-                </div>
-
-                <div class="gallery-grid">
-                    <div class="gallery-item large">
-                        <a href="assets/img/travel/showcase-5.webp" class="glightbox">
-                            <img src="assets/img/travel/showcase-5.webp" alt="Gallery image" class="img-fluid">
-                        </a>
-                    </div>
-
-                    <div class="gallery-item">
-                        <a href="assets/img/travel/destination-9.webp" class="glightbox">
-                            <img src="assets/img/travel/destination-9.webp" alt="Gallery image" class="img-fluid">
-                        </a>
-                    </div>
-
-                    <div class="gallery-item">
-                        <a href="assets/img/travel/destination-13.webp" class="glightbox">
-                            <img src="assets/img/travel/destination-13.webp" alt="Gallery image" class="img-fluid">
-                        </a>
-                    </div>
-
-                    <div class="gallery-item">
-                        <a href="assets/img/travel/destination-16.webp" class="glightbox">
-                            <img src="assets/img/travel/destination-16.webp" alt="Gallery image" class="img-fluid">
-                        </a>
-                    </div>
-
-                    <div class="gallery-item">
-                        <a href="assets/img/travel/destination-18.webp" class="glightbox">
-                            <img src="assets/img/travel/destination-18.webp" alt="Gallery image" class="img-fluid">
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Call to Action Section -->
+            <!-- Secțiunea Call to Action -->
             <div class="destination-cta">
                 <div class="cta-content">
-                    <h2>Ready to Start Your Journey?</h2>
-                    <p>Let our travel experts help you create the perfect Bali experience tailored to your preferences and budget.</p>
+                    <h2>Gata să pornești în călătoria ta?</h2>
+                    <p>Lasă experții noștri în turism să te ajute să creezi experiența perfectă, adaptată preferințelor și bugetului tău.</p>
                     <div class="cta-actions">
-                        <a href="tours.html" class="btn-primary">Explore Tours</a>
-                        <a href="contact.html" class="btn-outline">Contact Expert</a>
+                        <a th:href="@{/tours}" class="btn-primary">Explorează Tururile</a>
+
+                        <!-- Buton Contactează Expertul -->
+                        <a href="#" id="contact-expert-btn" class="btn-outline">
+                            Contactează Expertul
+                        </a>
+
+                        <!-- Chat Box -->
+                        <div id="chat-box" class="chat-text" style="display: none;">
+                            <div id="chat-header">
+                                Chat cu experții noștri
+                                <span id="close-chat" style="cursor:pointer;">✖</span>
+                            </div>
+                            <div id="chat-messages"></div>
+                            <input type="text" id="chat-input" placeholder="Scrie mesajul..." />
+                            <span id="chat-username" style="display:none;" sec:authentication="name"></span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-        </div>
+            <script th:src="@{/js/chatBotDestinations.js}"></script>
 
-    </section><!-- /Travel Destination Details Section -->
+                    </div>
 
+
+
+    </section>
 </div>
 </html>

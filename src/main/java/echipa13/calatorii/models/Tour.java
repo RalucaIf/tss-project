@@ -20,7 +20,6 @@ public class Tour {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Legatura catre ghid
     @Column(name = "guide_id", nullable = false)
     private Long guideId;
 
@@ -38,9 +37,10 @@ public class Tour {
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Continent
-    @Enumerated(EnumType.STRING)
-    private Continent continent;
-
     private String image;
+
+    // Corect: numele câmpului trebuie să fie exact "destination"
+    @ManyToOne
+    @JoinColumn(name = "destination_id")
+    private Destinations destination;
 }

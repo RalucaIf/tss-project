@@ -1,15 +1,16 @@
 package echipa13.calatorii.controller;
 
+import echipa13.calatorii.Dto.DestinationsDto;
+import echipa13.calatorii.Dto.TourDto;
+import echipa13.calatorii.models.Destinations;
 import echipa13.calatorii.models.Guide;
 import echipa13.calatorii.models.Tour;
-import echipa13.calatorii.Dto.TourDto;
 import echipa13.calatorii.models.UserEntity;
 import echipa13.calatorii.repository.GuideRepository;
 import echipa13.calatorii.repository.TourRepository;
 import echipa13.calatorii.repository.UserRepository;
-import echipa13.calatorii.service.GuideService;
+import echipa13.calatorii.service.DestinationsService;
 import echipa13.calatorii.service.TourService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,269 +22,164 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 
 @Controller
-
 public class TourController {
 
-    private final TourService tourService;
     @Autowired
-    private GuideService guideService;
+    private TourService tourService;
 
     @Autowired
-    public TourController(TourService tourService) {
-        this.tourService = tourService;
-    }
+    private DestinationsService destinationsService;
+
+    @Autowired
+    private GuideRepository guideRepository;
 
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/test500")
-    public String test500() {
-        throw new RuntimeException("Test 500");
-    }
-
     @Autowired
-    GuideRepository guideRepository;
+    private TourRepository tourRepository;
 
-    @Autowired
-    TourRepository tourRepository;
 
+    /* ===================== PAGINI SIMPLE ===================== */
 
     @GetMapping("/Itravel")
-    public String Itravel(Model model) {
-        List<TourDto> calatorii = tourService.findAll();
-        model.addAttribute("calatorii", calatorii);
+    public String itravel(Model model) {
+        model.addAttribute("calatorii", tourService.findAll());
 
-        // preluare user logat
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String emailOrUsername = auth.getName();
-
-        UserEntity user = userRepository.findByEmail(emailOrUsername);
-        if (user == null) {
-            user = userRepository.findByUsername(emailOrUsername);
-        }
-        model.addAttribute("user", user);
-
-        return "Itravel-list";  // numele HTML-ului de listare
+        return "Itravel-list";
     }
 
-
     @GetMapping("/About")
+    public String about(Model model) {
+        model.addAttribute("calatorii", tourService.findAll());
 
-    public String About(Model model) {
-        List<TourDto> calatorii = tourService.findAll();
-        model.addAttribute("calatorii", calatorii);
-
-        // preluare user logat
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        model.addAttribute("user", username);
         return "About-list";
     }
 
     @GetMapping("/Privacy")
+    public String privacy(Model model) {
+        model.addAttribute("calatorii", tourService.findAll());
 
-    public String Privacy(Model model) {
-        List<TourDto> calatorii = tourService.findAll();
-        model.addAttribute("calatorii", calatorii);
-
-        // preluare user logat
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        model.addAttribute("user", username);
         return "privacy";
     }
 
     @GetMapping("/Terms")
+    public String terms(Model model) {
+        model.addAttribute("calatorii", tourService.findAll());
 
-    public String Terms(Model model) {
-        List<TourDto> calatorii = tourService.findAll();
-        model.addAttribute("calatorii", calatorii);
-
-        // preluare user logat
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        model.addAttribute("user", username);
         return "terms-list";
     }
 
-    @GetMapping("/Destinations")
-    public String Destinations(@RequestParam(defaultValue = "0") int page, Model model) {
-        int size = 12;
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<Tour> calatoriiPage = tourRepository.findAll(pageable);
-
-        List<TourDto> calatorii = calatoriiPage.stream().map(t -> {
-            TourDto dto = new TourDto();
-            dto.setId(t.getId());
-            dto.setTitle(t.getTitle());
-            dto.setSummary(t.getSummary());
-            dto.setPricePoints(t.getPricePoints());
-            dto.setCreatedAt(t.getCreatedAt());
-            dto.setImage(t.getImage());
-            dto.setContinent(t.getContinent());
-            return dto;
-        }).toList();
-
-        model.addAttribute("calatorii", calatorii);
-        model.addAttribute("page", calatoriiPage.getNumber());
-        model.addAttribute("totalPages", calatoriiPage.getTotalPages());
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        model.addAttribute("user", auth.getName());
-
-        return "destinations-list";
-    }
-
-
-
-
-
     @GetMapping("/Contact")
+    public String contact(Model model) {
+        model.addAttribute("calatorii", tourService.findAll());
 
-    public String Contact(Model model) {
-        List<TourDto> calatorii = tourService.findAll();
-        model.addAttribute("calatorii", calatorii);
-        // preluare user logat
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        model.addAttribute("user", username);
         return "contact-list";
+
     }
 
-    @GetMapping("/Tours")
-
-    public String Tours(Model model) {
-        List<TourDto> calatorii = tourService.findAll();
-        model.addAttribute("calatorii", calatorii);
-        // preluare user logat
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        model.addAttribute("user", username);
-        return "tours-list";
+    @GetMapping("/Itravel/{id}")
+    public String showDestinationDetail(@PathVariable Long id, Model model) {
+        DestinationsDto calatorie = destinationsService.findDtoById(id);
+        model.addAttribute("calatorie", calatorie);
+        return "Itravel-detail";
     }
 
-    @GetMapping("/Tour_details")
-
-    public String Tour_details(Model model) {
-        List<TourDto> calatorii = tourService.findAll();
-        model.addAttribute("calatorii", calatorii);
-
-        // preluare user logat
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        model.addAttribute("user", username);
+    @GetMapping("/tours/{id}")  // schimbat T mare → mic
+    public String showTourDetail(@PathVariable Long id, Model model) {
+        TourDto tur = tourService.findTourById(id);
+        model.addAttribute("calatorie", tur);
         return "tour-details";
     }
 
-    // Formular pentru adăugarea unei noi călătorii
-    @GetMapping({"/Itravel/new", "/Itravel/edit/{id}"})
-    public String ItravelNew(Model model, @PathVariable(required = false ) Long id) {
-        Tour c;
-        if (id == null) {
-            c = new Tour();
-        }
-        else {
-            c = tourRepository.findById(id).orElse(null);
-        }
-        model.addAttribute("calatorii", c);
 
+
+
+    /* ===================== LISTARE TURURI CU PAGINARE ===================== */
+
+    @GetMapping("/Tours")
+    public String tours(@RequestParam(defaultValue = "0") int page, Model model) {
+
+        int size = 12;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Tour> pageResult = tourRepository.findAll(pageable);
+
+        List<TourDto> calatorii = pageResult.getContent().stream()
+                .map(t -> tourService.findTourById(t.getId())) // ✅ aici e fix-ul
+                .toList();
+
+        model.addAttribute("calatorii", calatorii);
+        model.addAttribute("page", pageResult.getNumber());
+        model.addAttribute("totalPages", pageResult.getTotalPages());
+
+        return "tours-list";
+    }
+
+
+    // Formular pentru adăugarea/edita tur
+    @GetMapping({"/Itravel/new", "/Itravel/edit/{id}"})
+    public String showTourForm(Model model, @PathVariable(required = false) Long id) {
+        TourDto dto;
+        if (id == null) {
+            dto = new TourDto();
+        } else {
+            Tour tour = tourRepository.findById(id).orElseThrow(() -> new RuntimeException("Tour not found"));
+            dto = new TourDto(tour.getId(), tour.getTitle(), tour.getPricePoints());
+            dto.setDestinationId(tour.getDestination() != null ? tour.getDestination().getId() : null);
+        }
+
+        model.addAttribute("calatorii", dto);
+        model.addAttribute("destinations", destinationsService.findAllDTOs());
         return "Itravel-new";
     }
 
-
-    @GetMapping("/nuEstiGhid")
-    public String nuEstiGhid(Model model) {
-        return "nuEstiGhid";
-    }
-
-//    @PostMapping("/Itravel/new")
-//    public String saveItravel(@ModelAttribute("calatorii") Tour c,
-//                              @RequestParam("imagine") MultipartFile imagine) {
-//        try {
-//            if (!imagine.isEmpty()) {
-//                // folderul "imagine" în directorul proiectului
-//                String uploadDir = System.getProperty("user.dir") + "/imagine/";
-//                File folder = new File(uploadDir);
-//                if (!folder.exists()) folder.mkdirs();
-//
-//                File file = new File(uploadDir + imagine.getOriginalFilename());
-//                imagine.transferTo(file);
-//
-//                c.setImage(imagine.getOriginalFilename());
-//            }
-//            tourService.saveTour(c);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return "redirect:/Itravel";
-//    }
-
+    // POST - adăugare/edita tur
     @PostMapping({"/Itravel/new", "/Itravel/edit/{id}"})
-    public String addTour(@ModelAttribute("tour") Tour c,
-                          @RequestParam("imagine") MultipartFile imagine) {
+    public String saveTour(@ModelAttribute("calatorii") TourDto dto,
+                           @RequestParam("imagine") MultipartFile imagine) {
 
         try {
             // 1️⃣ Preluare user logat
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String emailOrUsername = auth.getName();
-
             UserEntity user = userRepository.findByEmail(emailOrUsername);
-            if (user == null) {
-                user = userRepository.findByUsername(emailOrUsername);
-            }
+            if (user == null) user = userRepository.findByUsername(emailOrUsername);
 
-            // 2️⃣ Preluare ghid asociat userului
+            // 2️⃣ Ghid asociat
             Guide guide = guideRepository.findByUser_Id(user.getId()).orElse(null);
-            if (guide == null) {
-                return "redirect:/nuEstiGhid";
-            }
+            if (guide == null) return "redirect:/nuEstiGhid";
 
-            // 3️⃣ Setări pentru tur nou sau editat
-            if (c.getGuideId() == null) { // tur nou
-                c.setGuideId(guide.getId());
-                c.setStatus("PUBLISHED");
-                c.setCreatedAt(LocalDateTime.now());
-            } else { // edit tur existent
-                Tour existingTour = tourRepository.findById(c.getId()).orElse(null);
-                if (existingTour != null) {
-                    c.setGuideId(existingTour.getGuideId());
-                    c.setCreatedAt(existingTour.getCreatedAt());
-                    c.setStatus(existingTour.getStatus());
+            // 3️⃣ Preluare destinație
+            Destinations destination =
+                    destinationsService.findEntityById(dto.getDestinationId());
 
-                    // păstrează imaginea existentă dacă nu se încarcă alta
-                    if (imagine == null || imagine.isEmpty()) {
-                        c.setImage(existingTour.getImage());
-                    }
 
-                    // păstrează continentul existent dacă nu se schimbă
-                    if (c.getContinent() == null) {
-                        c.setContinent(existingTour.getContinent());
-                    }
-                }
-            }
+            // 4️⃣ Transformare DTO -> Entity
+            Tour tour = dto.toEntity(destination);
+            tour.setGuideId(guide.getId());
+            if (tour.getCreatedAt() == null) tour.setCreatedAt(LocalDateTime.now());
+            if (tour.getStatus() == null) tour.setStatus("PUBLISHED");
 
-            // 4️⃣ Upload imagine dacă există
+            // 5️⃣ Upload imagine
             if (imagine != null && !imagine.isEmpty()) {
                 String uploadDir = new File("src/main/resources/static/uploads/").getAbsolutePath();
                 File folder = new File(uploadDir);
                 if (!folder.exists()) folder.mkdirs();
-
                 String filename = System.currentTimeMillis() + "_" + imagine.getOriginalFilename();
                 File file = new File(folder, filename);
                 imagine.transferTo(file);
-
-                c.setImage(filename);
+                tour.setImage(filename);
             }
 
-            // ✅ 5️⃣ Salvează turul cu tot, inclusiv continent
-            tourService.saveTour(c);
+            // 6️⃣ Salvare tur
+            tourService.saveTour(tour);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -291,20 +187,4 @@ public class TourController {
 
         return "redirect:/Itravel";
     }
-
-
-
-
-    @PostMapping("/tours/delete/{id}")
-    public String deleteTour(@PathVariable Long id) {
-        tourService.delete(id);
-        return "redirect:/user_profile";
-        }
-    }
-//    @GetMapping("/Itravel/search")
-//        public String searchByTitle(@RequestParam(value="query") String query,  Model model) {
-//        List<TourDto> c = tourService.searchByTitle(query);
-//        model.addAttribute("calatorii", c);
-//        return "Itravel-list";
-//        }
-
+}
