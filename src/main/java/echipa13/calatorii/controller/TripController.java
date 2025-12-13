@@ -37,13 +37,42 @@ public class TripController {
         throw new IllegalStateException("Nu am putut identifica utilizatorul curent.");
     }
 
-    // LIST
     @GetMapping
-    public String list(@AuthenticationPrincipal UserDetails principal, Model model) {
+    public String list(@AuthenticationPrincipal UserDetails principal,
+                       @RequestParam(name = "c", required = false) String c,
+                       Model model) {
         Long uid = currentUserId(principal);
-        model.addAttribute("trips", tripService.listForUser(uid));
+
+        // categorii fixe – apar mereu în UI
+        var categories = java.util.List.of("City_break", "Adventure", "Business", "Relax", "Family");
+
+        // normalizăm param c
+        String current = (c == null || c.isBlank()) ? "all" : c;
+
+        java.util.List<echipa13.calatorii.models.Trip> trips;
+
+        if ("all".equalsIgnoreCase(current)) {
+            trips = tripService.listForUser(uid);
+        } else {
+            // dacă e o categorie ne-suportată, forțăm "fără rezultate"
+            boolean supported = categories.stream().anyMatch(cat -> cat.equalsIgnoreCase(current));
+            if (!supported) {
+                trips = java.util.List.of(); // gol => va apărea mesajul
+            } else {
+                trips = tripService.listForUserByCategory(uid, current);
+            }
+        }
+
+        model.addAttribute("categories", categories);    // pastilele din UI
+        model.addAttribute("trips", trips);              // rezultatele
+        model.addAttribute("c", current);                // pt. starea „active”
+        model.addAttribute("noTripsForCategory",
+                !"all".equalsIgnoreCase(current) && trips.isEmpty()); // pt. mesajul special
+
         return "trips/list";
     }
+
+
 
     // FORM CREATE
     @GetMapping("/new")
