@@ -11,6 +11,10 @@ import echipa13.calatorii.service.GuideService;
 import echipa13.calatorii.service.TourService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -109,17 +114,36 @@ public class TourController {
     }
 
     @GetMapping("/Destinations")
+    public String Destinations(@RequestParam(defaultValue = "0") int page, Model model) {
+        int size = 12;
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Tour> calatoriiPage = tourRepository.findAll(pageable);
 
-    public String Destinations(Model model) {
-        List<TourDto> calatorii = tourService.findAll();
+        List<TourDto> calatorii = calatoriiPage.stream().map(t -> {
+            TourDto dto = new TourDto();
+            dto.setId(t.getId());
+            dto.setTitle(t.getTitle());
+            dto.setSummary(t.getSummary());
+            dto.setPricePoints(t.getPricePoints());
+            dto.setCreatedAt(t.getCreatedAt());
+            dto.setImage(t.getImage());
+            dto.setContinent(t.getContinent());
+            return dto;
+        }).toList();
+
         model.addAttribute("calatorii", calatorii);
+        model.addAttribute("page", calatoriiPage.getNumber());
+        model.addAttribute("totalPages", calatoriiPage.getTotalPages());
 
-        // preluare user logat
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        model.addAttribute("user", username);
+        model.addAttribute("user", auth.getName());
+
         return "destinations-list";
     }
+
+
+
+
 
     @GetMapping("/Contact")
 
@@ -222,41 +246,43 @@ public class TourController {
             }
 
             // 3️⃣ Setări pentru tur nou sau editat
-            if (c.getGuideId() == null) {
+            if (c.getGuideId() == null) { // tur nou
                 c.setGuideId(guide.getId());
                 c.setStatus("PUBLISHED");
                 c.setCreatedAt(LocalDateTime.now());
-            } else {
+            } else { // edit tur existent
                 Tour existingTour = tourRepository.findById(c.getId()).orElse(null);
                 if (existingTour != null) {
                     c.setGuideId(existingTour.getGuideId());
                     c.setCreatedAt(existingTour.getCreatedAt());
                     c.setStatus(existingTour.getStatus());
 
-                    // Păstrează imaginea existentă dacă nu se încarcă alta
+                    // păstrează imaginea existentă dacă nu se încarcă alta
                     if (imagine == null || imagine.isEmpty()) {
                         c.setImage(existingTour.getImage());
+                    }
+
+                    // păstrează continentul existent dacă nu se schimbă
+                    if (c.getContinent() == null) {
+                        c.setContinent(existingTour.getContinent());
                     }
                 }
             }
 
             // 4️⃣ Upload imagine dacă există
             if (imagine != null && !imagine.isEmpty()) {
-                // folderul static/uploads
                 String uploadDir = new File("src/main/resources/static/uploads/").getAbsolutePath();
                 File folder = new File(uploadDir);
                 if (!folder.exists()) folder.mkdirs();
 
-                // nume unic pentru imagine
                 String filename = System.currentTimeMillis() + "_" + imagine.getOriginalFilename();
                 File file = new File(folder, filename);
                 imagine.transferTo(file);
 
-                // salvează doar numele fișierului în DB
                 c.setImage(filename);
             }
 
-            // 5️⃣ Salvare tur
+            // ✅ 5️⃣ Salvează turul cu tot, inclusiv continent
             tourService.saveTour(c);
 
         } catch (IOException e) {
@@ -265,6 +291,7 @@ public class TourController {
 
         return "redirect:/Itravel";
     }
+
 
 
 

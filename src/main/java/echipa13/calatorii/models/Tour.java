@@ -38,5 +38,9 @@ public class Tour {
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    // Continent
+    @Enumerated(EnumType.STRING)
+    private Continent continent;
+
     private String image;
 }

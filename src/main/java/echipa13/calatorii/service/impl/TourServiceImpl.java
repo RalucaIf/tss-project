@@ -1,12 +1,15 @@
 package echipa13.calatorii.service.impl;
 
 import echipa13.calatorii.Dto.TourDto;
+import echipa13.calatorii.models.Continent;
 import echipa13.calatorii.models.Tour;
 import echipa13.calatorii.repository.TourRepository;
 import echipa13.calatorii.service.TourService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +46,19 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
+    public Page<TourDto> findAll(Pageable pageable) {
+        return tourRepository.findAll((org.springframework.data.domain.Pageable) pageable).map(t -> mapToTourDto(t));
+    }
+
+    @Override
+    public List<TourDto> findByContinent(Continent continent) {
+        return tourRepository.findByContinent(continent).stream()
+                .map(this::mapToTourDto)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
     public Tour saveTour(Tour tour) {
         return tourRepository.save(tour);
     }
@@ -77,6 +93,7 @@ public class TourServiceImpl implements TourService {
         dto.setStatus(t.getStatus());
         dto.setCreatedAt(t.getCreatedAt());
         dto.setImage(t.getImage());
+        dto.setContinent(t.getContinent());
         return dto;
     }
 }

@@ -1783,7 +1783,7 @@ section,
 }
 
 .featured-tours .destination-card .destination-overlay .card-details {
-    color: var(--contrast-color);
+    color: var(--contrast-color) /* Albastru dorit */
 }
 
 .featured-tours .destination-card .destination-overlay .card-details h5 {
@@ -1944,12 +1944,12 @@ section,
     }
 
     .featured-tours .destination-card .destination-overlay .card-overlay {
-        opacity: 1;
-        background: linear-gradient(180deg, color-mix(in srgb, var(--default-color), transparent 60%) 0%, color-mix(in srgb, var(--default-color), transparent 20%) 100%);
+        background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
     }
 
     .featured-tours .destination-card .destination-overlay .card-details h5 {
         font-size: 18px;
+        text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
     }
 
     .featured-tours .destination-card .destination-overlay .card-details p {
@@ -2535,17 +2535,7 @@ section,
     transition: transform 0.5s ease;
 }
 
-.travel-destinations .destination-grid .destination-overlay::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--default-color), transparent 70%) 0%, color-mix(in srgb, var(--default-color), transparent 40%) 100%);
-    transition: all 0.3s ease;
-    z-index: 1;
-}
+
 
 .travel-destinations .destination-grid .destination-overlay:hover img {
     transform: scale(1.05);
@@ -8627,5 +8617,9 @@ body.dark-background .btn-theme i {
     background-color: rgba(0,0,0,0.15);
     border-radius: 3px;
 }
+
+
+
+
 
 

@@ -168,13 +168,14 @@
 
             <div class="container">
                 <div class="row gy-4">
-                    <div class="col-lg-4 col-md-6" th:each="c : ${calatorii}">
+                    <div class="col-lg-4 col-md-6"
+                         th:each="c, iterStat : ${calatorii}"
+                         th:if="${iterStat.index} < 6">
                         <div class="destination-card">
                             <div class="image-wrapper">
-                                <!-- imaginea preluată din static/uploads -->
                                 <img th:src="@{/uploads/{img}(img=${c.image})}" alt="Destinație" class="img-fluid">
                                 <div class="overlay">
-                                    <div class="badge">Popular</div>
+                                    <div class="destination-tag popular">Popular</div>
                                 </div>
                             </div>
                             <div class="content">
@@ -188,6 +189,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -201,8 +203,8 @@
                         <h3>Nu te poți hotărî unde să mergi?</h3>
                         <p>Experții noștri în călătorii te pot ajuta să găsești destinația perfectă, în funcție de preferințele, bugetul și stilul tău de călătorie.</p>
                         <div class="cta-buttons">
-                            <a href="destinations.html" class="btn btn-primary">Vezi Toate Destinațiile</a>
-                            <a href="contact.html" class="btn btn-outline">Contact</a>
+                           <a th:href="@{/Destinations}" class="btn btn-primary">Vezi Toate Destinațiile</a>
+                            <a th:href="@{/Destinations}" class="btn btn-outline">Contact</a>
                         </div>
 
                         <!-- Buton pentru deschiderea chatului -->
