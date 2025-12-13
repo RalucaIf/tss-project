@@ -10,4 +10,8 @@ public interface TripService {
     Trip create(Long userId, Trip trip);
     Trip update(Long userId, Long tripId, Trip updated);
     void delete(Long userId, Long tripId);
+    List<Trip> listForUserByCategory(Long userId, String category);
+    List<String> listCategoriesForUser(Long userId);
+
+
 }
