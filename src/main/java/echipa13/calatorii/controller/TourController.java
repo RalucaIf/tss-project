@@ -207,6 +207,8 @@ public class TourController {
         }
         model.addAttribute("calatorii", c);
 
+        System.out.println(c.getImage());
+
         return "Itravel-new";
     }
 
@@ -239,51 +241,43 @@ public class TourController {
 //    }
 
     @PostMapping({"/Itravel/new", "/Itravel/edit/{id}"})
-    public String addTour(@ModelAttribute("tour") Tour c,
+    public String addTour(@ModelAttribute("tour") Tour formTour,
                           @RequestParam("imagine") MultipartFile imagine) {
 
-        try {
-            // 1️⃣ Preluare user logat
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String emailOrUsername = auth.getName();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String emailOrUsername = auth.getName();
 
-            UserEntity user = userRepository.findByEmail(emailOrUsername);
-            if (user == null) {
-                user = userRepository.findByUsername(emailOrUsername);
-            }
+        UserEntity user = userRepository.findByEmail(emailOrUsername);
+        if (user == null) {
+            user = userRepository.findByUsername(emailOrUsername);
+        }
 
-            // 2️⃣ Preluare ghid asociat userului
-            Guide guide = guideRepository.findByUser_Id(user.getId()).orElse(null);
-            if (guide == null) {
-                return "redirect:/nuEstiGhid";
-            }
+        Guide guide = guideRepository.findByUser_Id(user.getId())
+                .orElseThrow(() -> new RuntimeException("Nu ești ghid"));
 
-            // 3️⃣ Setări pentru tur nou sau editat
-            if (c.getGuideId() == null) { // tur nou
-                c.setGuideId(guide.getId());
-                c.setStatus("PUBLISHED");
-                c.setCreatedAt(LocalDateTime.now());
-            } else { // edit tur existent
-                Tour existingTour = tourRepository.findById(c.getId()).orElse(null);
-                if (existingTour != null) {
-                    c.setGuideId(existingTour.getGuideId());
-                    c.setCreatedAt(existingTour.getCreatedAt());
-                    c.setStatus(existingTour.getStatus());
+        Tour tour;
 
-                    // păstrează imaginea existentă dacă nu se încarcă alta
-                    if (imagine == null || imagine.isEmpty()) {
-                        c.setImage(existingTour.getImage());
-                    }
+        if (formTour.getId() == null) {
+            // 🆕 CREATE
+            tour = new Tour();
+            tour.setGuideId(guide.getId());
+            tour.setCreatedAt(LocalDateTime.now());
+            tour.setStatus("PUBLISHED");
+        } else {
+            // ✏️ EDIT
+            tour = tourRepository.findById(formTour.getId())
+                    .orElseThrow(() -> new RuntimeException("Tour not found"));
+        }
 
-                    // păstrează continentul existent dacă nu se schimbă
-                    if (c.getContinent() == null) {
-                        c.setContinent(existingTour.getContinent());
-                    }
-                }
-            }
+        // ✅ COPIEM DOAR CE VINE DIN FORM
+        tour.setTitle(formTour.getTitle());
+        tour.setSummary(formTour.getSummary());
+        tour.setPricePoints(formTour.getPricePoints());
+        tour.setContinent(formTour.getContinent());
 
-            // 4️⃣ Upload imagine dacă există
-            if (imagine != null && !imagine.isEmpty()) {
+        // 🖼️ imagine DOAR dacă userul a ales una nouă
+        if (imagine != null && !imagine.isEmpty()) {
+            try {
                 String uploadDir = new File("src/main/resources/static/uploads/").getAbsolutePath();
                 File folder = new File(uploadDir);
                 if (!folder.exists()) folder.mkdirs();
@@ -292,21 +286,17 @@ public class TourController {
                 File file = new File(folder, filename);
                 imagine.transferTo(file);
 
-                c.setImage(filename);
+                tour.setImage(filename);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            // ✅ 5️⃣ Salvează turul cu tot, inclusiv continent
-            tourService.saveTour(c);
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        // ❗ dacă nu vine imagine → NU atingem tour.getImage()
+
+        tourRepository.save(tour);
 
         return "redirect:/Itravel";
     }
-
-
-
 
     @PostMapping("/tours/delete/{id}")
     public String deleteTour(@PathVariable Long id) {
