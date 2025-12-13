@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ro"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>Jurnalul meu</title>
+</head>
+
+<div layout:fragment="content">
+    <!-- HERO identic cu celelalte pagini -->
+    <div class="page-title dark-background"
+         th:style="|background-image: url('@{/walpaper/showcase-9.webp}');|">
+        <div class="container position-relative">
+            <h1>Jurnalul meu</h1>
+            <p>Toate itinerariile tale</p>
+        </div>
+    </div>
+
+    <!-- GRID de carduri, cu markup identic cu „Destinations” -->
+    <section id="featured-destinations" class="featured-destinations section">
+        <div class="container section-title">
+            <h2>Itinerariile mele</h2>
+            <div><span>Explorează</span> <span class="description-title">jurnalul de călătorii</span></div>
+        </div>
+
+        <div class="container">
+            <div th:if="${#lists.isEmpty(trips)}" class="alert alert-info">
+                Încă nu ai itinerarii în jurnal.
+            </div>
+
+            <div class="row gy-4" th:if="${!#lists.isEmpty(trips)}">
+                <!-- Folosim exact cardul de tip „destination-card” -->
+                <div class="col-lg-4 col-md-6" th:each="t, stat : ${trips}">
+                    <div class="destination-card">
+
+                        <div class="image-wrapper">
+                            <!-- Dacă pe viitor vei avea imagine pe Trip, înlocuiești cu t.image.
+                                 Deocamdată, alternăm 4 imagini existente ca să fie varietate. -->
+                            <img class="img-fluid"
+                                 th:src="${stat.index % 4 == 0} ? @{/walpaper/showcase-7.webp}
+                         : (${stat.index % 4 == 1} ? @{/walpaper/showcase-9.webp}
+                         : (${stat.index % 4 == 2} ? @{/walpaper/showcase-11.webp}
+                         : @{/walpaper/showcase-12.webp}))"
+                                 alt="cover">
+                        </div>
+
+                        <div class="content">
+                            <h4 th:text="${t.title}">Titlu itinerariu</h4>
+                            <!-- poți adăuga aici un scurt rezumat dacă ai -->
+                            <p th:text="${#strings.isEmpty(t.description) ? '—' : #strings.abbreviate(t.description, 120)}">—</p>
+
+                            <div class="card-footer d-flex justify-content-between align-items-center">
+                                <a class="btn btn-outline-primary" th:href="@{|/journal/${t.id}|}">Deschide</a>
+                                <small class="text-muted">
+                                    <span th:text="${t.startDate}">2025-01-01</span> – <span th:text="${t.endDate}">2025-01-05</span>
+                                </small>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+</html>
