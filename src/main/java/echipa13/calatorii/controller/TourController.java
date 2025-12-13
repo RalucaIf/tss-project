@@ -1,14 +1,11 @@
 package echipa13.calatorii.controller;
 
-import echipa13.calatorii.models.Guide;
-import echipa13.calatorii.models.Tour;
+import echipa13.calatorii.models.*;
 import echipa13.calatorii.Dto.TourDto;
-import echipa13.calatorii.models.UserEntity;
-import echipa13.calatorii.repository.GuideRepository;
-import echipa13.calatorii.repository.TourRepository;
-import echipa13.calatorii.repository.UserRepository;
+import echipa13.calatorii.repository.*;
 import echipa13.calatorii.service.GuideService;
 import echipa13.calatorii.service.TourService;
+import echipa13.calatorii.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +26,8 @@ public class TourController {
     private final TourService tourService;
     @Autowired
     private GuideService guideService;
+    @Autowired
+    private TourPurchaseRepository tourPurchaseRepository;
 
     @Autowired
     public TourController(TourService tourService) {
@@ -49,6 +48,12 @@ public class TourController {
     @Autowired
     TourRepository tourRepository;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserPointsRepository userPointsRepository;
+
 
     @GetMapping("/Itravel")
     public String Itravel(Model model) {
@@ -64,6 +69,14 @@ public class TourController {
             user = userRepository.findByUsername(emailOrUsername);
         }
         model.addAttribute("user", user);
+
+        List<Long> boughtTourIds = tourPurchaseRepository
+                .findByBuyer(user)
+                .stream()
+                .map(tp -> tp.getTour().getId())
+                .toList();
+
+        model.addAttribute("boughtTourIds", boughtTourIds);
 
         return "Itravel-list";  // numele HTML-ului de listare
     }
@@ -267,7 +280,45 @@ public class TourController {
         tourService.delete(id);
         return "redirect:/user_profile";
         }
+
+    @PostMapping("/tours/buy/{id}")
+    public String buyTours(@PathVariable Long id, Authentication authentication) {
+        String username = authentication.getName();
+        System.out.println("Logged in username: " + username);
+
+        UserEntity user = userService.findByUsername(username);
+        if (user == null) {
+            System.out.println("User not found in DB!");
+            return "redirect:/login";
+        }
+
+        TourDto tour = tourService.findTourById(id);
+        UserPoints userPoints = userPointsRepository.findByUserId(user.getId()).orElse(null);
+
+        int tourCost = tour.getPricePoints();
+        int myPoints = userPoints.getPoints();
+
+        if(myPoints < tourCost){
+            return "redirect:/Itravel?error=" + id;
+        }
+
+        myPoints = myPoints - tourCost;
+        userPoints.setPoints(myPoints);
+        userPointsRepository.save(userPoints);
+
+        Tour tourEntity = tourService.findEntityById(tour.getId());
+
+        TourPurchase tourPurchase = new TourPurchase();
+        tourPurchase.setBuyer(user);
+        tourPurchase.setTour(tourEntity);
+        tourPurchase.setPointsPaid(tourCost);
+        tourPurchaseRepository.save(tourPurchase);
+
+        return "redirect:/Itravel?success=" + id;
     }
+}
+
+
 //    @GetMapping("/Itravel/search")
 //        public String searchByTitle(@RequestParam(value="query") String query,  Model model) {
 //        List<TourDto> c = tourService.searchByTitle(query);

@@ -4,13 +4,8 @@ import echipa13.calatorii.Dto.LoginDto;
 import echipa13.calatorii.Dto.RegistrationDto;
 import echipa13.calatorii.Dto.TourDto;
 import echipa13.calatorii.Dto.registerDto;
-import echipa13.calatorii.models.Guide;
-import echipa13.calatorii.models.Role;
-import echipa13.calatorii.models.UserEntity;
-import echipa13.calatorii.models.UserPoints;
-import echipa13.calatorii.repository.GuideRepository;
-import echipa13.calatorii.repository.RoleRepository;
-import echipa13.calatorii.repository.UserRepository;
+import echipa13.calatorii.models.*;
+import echipa13.calatorii.repository.*;
 import echipa13.calatorii.service.GuideService;
 import echipa13.calatorii.service.TourService;
 import echipa13.calatorii.service.UserService;
@@ -26,12 +21,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
-import java.util.List;
-
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class UserProfileController {
@@ -46,9 +38,15 @@ public class UserProfileController {
     private GuideRepository guideRepository;
 
     @Autowired
+    private UserPointsRepository userPointsRepository;
+
+    @Autowired
     private GuideService guideService;
     @Autowired
     private TourService tourService;
+
+    @Autowired
+    private TourPurchaseRepository tourPurchaseRepository;
 
     @GetMapping("/user_profile")
     public String userProfile(Model model, Authentication authentication) {
@@ -91,6 +89,9 @@ public class UserProfileController {
             frameNumbers.put(userPoint.getUser().getId(), frameNumber); // use user's ID as key
         }
         model.addAttribute("frameNumbers", frameNumbers);
+
+        List<TourPurchase> purchases = tourPurchaseRepository.findByBuyer(user);
+        model.addAttribute("purchases", purchases);
 
         return "user_profile";
     }

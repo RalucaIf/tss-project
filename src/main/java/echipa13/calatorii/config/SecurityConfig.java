@@ -59,8 +59,10 @@ public class SecurityConfig {
                         // === TRIPS: DOAR USER ===
                         .requestMatchers("/trips/**").hasRole("User")   // => necesită autoritate ROLE_USER
 
+                        .requestMatchers("/tours/buy/**").hasRole("User")
                         // === GHID: creare/administrare tours ===
                         .requestMatchers("/Itravel/new", "/tours/**", "/Tours/**").hasRole("Guide") // => ROLE_GUIDE
+
 
                         // restul – lasă-le publice ca până acum
                         .anyRequest().permitAll()

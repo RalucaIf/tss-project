@@ -1,12 +1,16 @@
 package echipa13.calatorii.controller;
 
 
+import echipa13.calatorii.Dto.TourDto;
 import echipa13.calatorii.Dto.UserProfileDto;
 import echipa13.calatorii.models.UserEntity;
 import echipa13.calatorii.models.UserPoints;
 import echipa13.calatorii.repository.UserRepository;
 import echipa13.calatorii.repository.UserPointsRepository;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")

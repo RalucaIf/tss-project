@@ -79,4 +79,10 @@ public class TourServiceImpl implements TourService {
         dto.setImage(t.getImage());
         return dto;
     }
+
+    @Override
+    public Tour findEntityById(Long id) {
+        return tourRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tour not found"));
+    }
 }

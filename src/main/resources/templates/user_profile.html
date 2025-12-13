@@ -60,7 +60,8 @@
         }
         .profile-avatar,
         .profile-info ,
-        .leaderboard{
+        .leaderboard,
+        .purchased_tours{
             background: var(--surface-color);
             border-radius: 10px;
             border: 1px solid rgba(0,0,0,0.1);
@@ -72,7 +73,8 @@
         /* Hover effect */
         .profile-avatar:hover,
         .profile-info:hover ,
-        .leaderboard:hover{
+        .leaderboard:hover,
+        .purchased_tours:hover{
             transform: translateY(-8px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             border-color: rgba(0,0,0,0.2);
@@ -183,6 +185,22 @@
 
                 <span th:text="${up.user.username}"></span> -
                 <span th:text="${up.points} + 'p'"></span>
+            </li>
+        </ul>
+    </div>
+    <div sec:authorize="hasRole('User') and !hasRole('Guide')" class="purchased_tours">
+        <h4>Excursiile mele</h4>
+
+        <div th:if="${#lists.isEmpty(purchases)}">
+            <p>Nu ai cumpărat nimic încă 😢</p>
+        </div>
+
+        <ul th:if="${!#lists.isEmpty(purchases)}">
+            <li th:each="p : ${purchases}">
+                <span th:text="${p.tour.title}"></span>
+                –
+                <span th:text="${p.pointsPaid} + 'p'"></span>
+                <small th:text="${#temporals.format(p.purchasedAt, 'dd.MM.yyyy')}"></small>
             </li>
         </ul>
     </div>

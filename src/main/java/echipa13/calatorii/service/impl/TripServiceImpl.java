@@ -1,10 +1,13 @@
 package echipa13.calatorii.service.impl;
 
+import echipa13.calatorii.models.Tour;
 import echipa13.calatorii.models.Trip;
 import echipa13.calatorii.models.UserEntity;
+import echipa13.calatorii.repository.TourRepository;
 import echipa13.calatorii.repository.TripRepository;
 import echipa13.calatorii.repository.UserRepository;
 import echipa13.calatorii.service.TripService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
