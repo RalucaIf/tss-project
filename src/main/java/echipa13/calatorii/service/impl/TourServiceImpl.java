@@ -102,6 +102,7 @@ public class TourServiceImpl implements TourService {
         dto.setStatus(t.getStatus());
         dto.setCreatedAt(t.getCreatedAt());
         dto.setImage(t.getImage());
+        dto.setDescription(t.getDescription());
         dto.setDestinationId(t.getDestination() != null ? t.getDestination().getId() : null);
         return dto;
     }

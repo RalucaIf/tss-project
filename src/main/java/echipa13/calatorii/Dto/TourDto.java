@@ -1,3 +1,4 @@
+
 package echipa13.calatorii.Dto;
 
 import echipa13.calatorii.models.Destinations;
@@ -27,6 +28,8 @@ public class TourDto {
 
     private LocalDateTime createdAt;
 
+    private String description;
+
     private String image;
 
     private Long destinationId;
@@ -34,11 +37,15 @@ public class TourDto {
         this.createdAt = LocalDateTime.now();
     }
 
-    public TourDto(Long id, String title, Integer pricePoints) {
+    public TourDto(Long id, String title, Integer pricePoints, String summary, String status, String image, String description) {
         this.id = id;
         this.title = title;
         this.pricePoints = pricePoints;
         this.createdAt = LocalDateTime.now();
+        this.summary = summary;
+        this.status = status;
+        this.image = image;
+        this.description = description;
     }
 
     // 🔹 Transformare DTO -> Entity
@@ -52,6 +59,7 @@ public class TourDto {
         t.setStatus(this.status);
         t.setCreatedAt(this.createdAt);
         t.setImage(this.image);
+        t.setDescription(this.description);
         t.setDestination(destination); // legătura către destinație
         return t;
     }

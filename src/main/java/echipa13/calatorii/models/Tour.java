@@ -29,6 +29,9 @@ public class Tour {
     @Column(length = 2000)
     private String summary;
 
+    @Column(length = 2000)
+    private String description;
+
     @Column(name = "price_points")
     private Integer pricePoints;
 
