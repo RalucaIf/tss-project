@@ -49,12 +49,6 @@ public class BuyTourController {
 
     /* ===================== PAGINI SIMPLE ===================== */
 
-    @GetMapping("/Itravel")
-    public String itravel(Model model) {
-        model.addAttribute("calatorii", tourService.findAll());
-
-        return "Itravel-list";
-    }
 
     @GetMapping("/About")
     public String about(Model model) {
@@ -138,7 +132,7 @@ public class BuyTourController {
             dto = new TourDto();
         } else {
             Tour tour = tourRepository.findById(id).orElseThrow(() -> new RuntimeException("Tour not found"));
-            dto = new TourDto(tour.getId(), tour.getTitle(), tour.getPricePoints());
+            dto = new TourDto(tour.getId(), tour.getTitle(), tour.getPricePoints(), tour.getSummary(), tour.getStatus(), tour.getImage());
             dto.setDestinationId(tour.getDestination() != null ? tour.getDestination().getId() : null);
         }
 
@@ -153,45 +147,69 @@ public class BuyTourController {
                            @RequestParam("imagine") MultipartFile imagine) {
 
         try {
-            // 1️⃣ Preluare user logat
+            // 1️⃣ user logat
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String emailOrUsername = auth.getName();
+
             UserEntity user = userRepository.findByEmail(emailOrUsername);
-            if (user == null) user = userRepository.findByUsername(emailOrUsername);
+            if (user == null) {
+                user = userRepository.findByUsername(emailOrUsername);
+            }
 
-            // 2️⃣ Ghid asociat
+            // 2️⃣ ghid
             Guide guide = guideRepository.findByUser_Id(user.getId()).orElse(null);
-            if (guide == null) return "redirect:/nuEstiGhid";
+            if (guide == null) {
+                return "redirect:/nuEstiGhid";
+            }
 
-            // 3️⃣ Preluare destinație
+            // 3️⃣ destinație
             Destinations destination =
                     destinationsService.findEntityById(dto.getDestinationId());
 
+            // 4️⃣ CREATE vs EDIT
+            Tour tour;
+            if (dto.getId() != null) {
+                // ✏️ EDIT – luăm turul EXISTENT
+                tour = tourRepository.findById(dto.getId())
+                        .orElseThrow(() -> new RuntimeException("Tour not found"));
+            } else {
+                // 🆕 CREATE
+                tour = new Tour();
+                tour.setCreatedAt(LocalDateTime.now());
+                tour.setStatus("PUBLISHED");
+            }
 
-            // 4️⃣ Transformare DTO -> Entity
-            Tour tour = dto.toEntity(destination);
+            // 5️⃣ setăm câmpurile (fără imagine)
+            tour.setTitle(dto.getTitle());
+            tour.setSummary(dto.getSummary());
+            tour.setPricePoints(dto.getPricePoints());
+            tour.setStatus(dto.getStatus());
             tour.setGuideId(guide.getId());
-            if (tour.getCreatedAt() == null) tour.setCreatedAt(LocalDateTime.now());
-            if (tour.getStatus() == null) tour.setStatus("PUBLISHED");
+            tour.setDestination(destination);
 
-            // 5️⃣ Upload imagine
+            // 6️⃣ imagine DOAR dacă userul a ales una nouă
             if (imagine != null && !imagine.isEmpty()) {
                 String uploadDir = new File("src/main/resources/static/uploads/").getAbsolutePath();
                 File folder = new File(uploadDir);
                 if (!folder.exists()) folder.mkdirs();
+
                 String filename = System.currentTimeMillis() + "_" + imagine.getOriginalFilename();
                 File file = new File(folder, filename);
                 imagine.transferTo(file);
+
                 tour.setImage(filename);
             }
+            // ❗ dacă nu a ales imagine → rămâne cea veche AUTOMAT
 
-            // 6️⃣ Salvare tur
-            tourService.saveTour(tour);
+            // 7️⃣ save
+            tourRepository.save(tour);
 
-        } catch (IOException e) {
+            return "redirect:/Itravel";
+
+        } catch (Exception e) {
             e.printStackTrace();
+            return "redirect:/Itravel";
         }
-
-        return "redirect:/Itravel";
     }
+
 }

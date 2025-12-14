@@ -34,11 +34,14 @@ public class TourDto {
         this.createdAt = LocalDateTime.now();
     }
 
-    public TourDto(Long id, String title, Integer pricePoints) {
+    public TourDto(Long id, String title, Integer pricePoints, String summary, String status, String image) {
         this.id = id;
         this.title = title;
         this.pricePoints = pricePoints;
         this.createdAt = LocalDateTime.now();
+        this.summary = summary;
+        this.status = status;
+        this.image = image;
     }
 
     // 🔹 Transformare DTO -> Entity
