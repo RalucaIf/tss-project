@@ -49,6 +49,12 @@ public class BuyTourController {
 
     /* ===================== PAGINI SIMPLE ===================== */
 
+    @GetMapping("/Itravel")
+    public String itravel(Model model) {
+        model.addAttribute("calatorii", tourService.findAll());
+
+        return "Itravel-list";
+    }
 
     @GetMapping("/About")
     public String about(Model model) {
