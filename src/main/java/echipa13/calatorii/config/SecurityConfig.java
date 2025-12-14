@@ -60,8 +60,9 @@ public class SecurityConfig {
                         .requestMatchers("/trips/**").hasRole("User")   // => necesită autoritate ROLE_USER
 
                         .requestMatchers("/tours/buy/**").hasRole("User")
+                        .requestMatchers("/tours/**").hasRole("User")
                         // === GHID: creare/administrare tours ===
-                        .requestMatchers("/Itravel/new", "/tours/**", "/Tours/**").hasRole("Guide") // => ROLE_GUIDE
+                        .requestMatchers("/Itravel/new").hasRole("Guide") // => ROLE_GUIDE
 
 
                         // DESTINATIONS (admin poate adăuga/edita/șterge țări)
