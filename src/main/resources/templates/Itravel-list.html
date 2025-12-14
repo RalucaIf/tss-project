@@ -183,9 +183,7 @@
                                 <h4 th:text="${c.title}">Titlu</h4>
                                 <p th:text="${#strings.abbreviate(c.pricePoints, 100)}">Descriere</p>
                                 <div class="card-footer">
-                                    <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">
-                                        Explorează <i class="bi bi-arrow-right"></i>
-                                    </a>
+                                    <a th:href="@{/tours/{id}(id=${c.id})}" class="btn-tour">Exploreaza <i class="bi bi-arrow-right"></i></a>
                                     <!-- Mesaje BUY -->
                                     <p th:if="${param.success != null and param.success[0] == c.id.toString()}"
                                        class="text-success">
