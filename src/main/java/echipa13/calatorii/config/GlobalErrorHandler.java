@@ -1,5 +1,8 @@
 package echipa13.calatorii.config;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -27,4 +30,13 @@ public class GlobalErrorHandler {
 //        return "error/500";
 //    }
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalErrorHandler.class);
+
+    // WHY: evităm randarea paginii de eroare după commit; facem redirect curat
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String illegalArg(IllegalArgumentException ex, HttpServletResponse resp) {
+        log.warn("Redirect /journal din cauza: {}", ex.getMessage());
+        resp.setStatus(302);
+        return "redirect:/journal";
+    }
 }

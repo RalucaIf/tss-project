@@ -61,7 +61,9 @@
         .profile-avatar,
         .profile-info ,
         .leaderboard,
-        .purchase-list{
+        .purchase-list,
+        .destination-card,
+        .journal-card{
             background: var(--surface-color);
             border-radius: 10px;
             border: 1px solid rgba(0,0,0,0.1);
@@ -74,7 +76,9 @@
         .profile-avatar:hover,
         .profile-info:hover ,
         .leaderboard:hover,
-        .purchase-list:hover{
+        .purchase-list:hover,
+        .destination-card:hover,
+        .journal-card:hover{
             transform: translateY(-8px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             border-color: rgba(0,0,0,0.2);
@@ -95,6 +99,72 @@
                 box-shadow: 0 0 20px #ffd60a;
             }
         }
+
+        /* Cardul Jurnal – să ocupe ambele coloane (sub Leaderboard + Excursiile mele) */
+        .journal-card{
+            grid-column: 1 / -1;      /* întinde cardul pe 2 coloane */
+            position: relative;       /* pt .stretched-link */
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Colaj de poze pentru cardul de Jurnal */
+        .journal-collage{
+            --rad: 12px;
+            --gap: 6px;
+            display: grid;
+            grid-template-areas:
+    "A B C"
+    "A D D";
+            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: var(--gap);
+            width: min(100%, 520px);
+            aspect-ratio: 16/7;       /* ține proporția elegantă */
+            border-radius: var(--rad);
+            overflow: hidden;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+            flex-shrink: 0;           /* nu se strânge când e lângă text */
+        }
+
+        /* Plasarea fiecărei imagini în mozaic */
+        .journal-collage > img:nth-child(1){ grid-area: A; }
+        .journal-collage > img:nth-child(2){ grid-area: B; }
+        .journal-collage > img:nth-child(3){ grid-area: C; }
+        .journal-collage > img:nth-child(4){ grid-area: D; }
+
+        .journal-collage > img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .35s ease, filter .35s ease;
+        }
+
+        /* Efect subtil la hover pe colaj (nu schimbă stilul cardului) */
+        .journal-collage:hover > img{ filter: saturate(.95) contrast(1.05); }
+        .journal-collage:hover > img:nth-child(1){ transform: scale(1.02); }
+
+        /* Responsive: pe ecrane mici colaj 2x2 și cardul devine pe o coloană */
+        @media (max-width: 992px){
+            .journal-card{ flex-direction: column; align-items: stretch; }
+            .journal-collage{
+                width: 100%;
+                max-width: none;
+                aspect-ratio: 16/9;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                grid-template-areas:
+      "A B"
+      "D C";
+            }
+        }
+
+
+
+
+
+
     </style>
 <div class="profile-container">
     <div class="profile-avatar">
@@ -148,6 +218,27 @@
            <!-- <li>Roles: <span th:text="${user.roles}">Username</span></li>-->
         </ul>
     </div>
+    <!-- Jurnalul meu – card banner orizontal -->
+    <div sec:authorize="hasRole('User') and !hasRole('Guide')" class="journal-card">
+        <!-- Colaj poze -->
+        <div class="journal-collage">
+            <img th:src="@{/imagini/poza1.png}" alt="">
+            <img th:src="@{/imagini/Italia.png}" alt="">
+            <img th:src="@{/imagini/Norvegia.png}" alt="">
+            <img th:src="@{/imagini/Portugalia.png}" alt="">
+        </div>
+
+        <!-- Text -->
+        <div>
+            <h4 class="mb-1">Jurnalul meu</h4>
+            <p class="text-muted mb-0">Salvează amintiri din excursii.</p>
+        </div>
+
+        <!-- Link pe tot cardul -->
+        <a class="stretched-link" th:href="@{/journal}" aria-label="Deschide Jurnalul meu"></a>
+    </div>
+
+
     <div sec:authorize="hasRole('User') and !hasRole('Guide')" class="leaderboard">
         <h4>Leaderboard</h4>
         <ul>
@@ -204,6 +295,10 @@
             </li>
         </ul>
     </div>
+    <!-- CARD: Jurnalul meu (sub Leaderboard + Excursiile mele) -->
+
+
+
     <div sec:authorize="hasRole('Guide')" class="list_tours">
         <section id="featured-destinations" class="featured-destinations section">
             <div class="container section-title">

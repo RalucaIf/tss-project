@@ -63,14 +63,15 @@ public class SecurityConfig {
                         .requestMatchers("/tours/**").hasRole("User")
                         // === GHID: creare/administrare tours ===
                         .requestMatchers("/Itravel/new").hasRole("Guide") // => ROLE_GUIDE
+                                .requestMatchers("/journal/**").authenticated()
 
-
-                        // DESTINATIONS (admin poate adăuga/edita/șterge țări)
+                                // DESTINATIONS (admin poate adăuga/edita/șterge țări)
 //                        .requestMatchers("/Destinations/new", "/Destinations/edit/**", "/Destinations/delete/**").hasRole("Admin")
 
                         // restul – lasă-le publice ca până acum
                         .anyRequest().permitAll()
                 )
+
                 .formLogin(form -> form
                         .loginProcessingUrl("/auth/login")
                         .usernameParameter("usernameOrEmail")

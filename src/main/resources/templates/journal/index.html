@@ -15,14 +15,47 @@
        th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
     <div class="container position-relative">
       <h1>Jurnalul meu</h1>
-      <p>Note, amintiri și momente preferate din călătorii.</p>
+      <p>Itinerariile tale salvate.</p>
     </div>
   </div>
 
-  <div class="container py-5">
-    <h2 class="h4 mb-0">Jurnalul meu</h2>
-    <p class="text-muted">— deocamdată doar titlul.</p>
-  </div>
+  <!-- GRID DE CARDURI (stilizare IDENTICĂ cu pagina de destinații) -->
+  <section id="featured-destinations" class="featured-destinations section">
+    <div class="container section-title">
+      <h2>Itinerariile mele</h2>
+      <div><span>Toate</span> <span class="description-title">Itinerariile</span></div>
+    </div>
+
+    <div class="container">
+      <div th:if="${#lists.isEmpty(trips)}">
+        <p>Nu ai încă itinerarii.</p>
+      </div>
+
+      <div class="row gy-4" th:if="${!#lists.isEmpty(trips)}">
+        <div class="col-lg-4 col-md-6" th:each="t : ${trips}">
+          <a th:href="@{/journal/trips/{id}(id=${t.id})}" class="text-decoration-none">
+            <div class="destination-card">
+              <div class="image-wrapper">
+                <!-- Folosim același mod ca la tour-uri pentru imagini -->
+                <img th:if="${t.coverImage != null}"
+                     th:src="@{/uploads/{img}(img=${t.coverImage})}"
+                     alt="Copertă itinerariu"
+                     class="img-fluid">
+                <img th:if="${t.coverImage == null}"
+                     th:src="@{/imagini/placeholder.jpg}"
+                     alt="Fără imagine"
+                     class="img-fluid">
+              </div>
+
+              <div class="content">
+                <h4 th:text="${t.title}">Titlu itinerariu</h4>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
 </div>
 </html>
