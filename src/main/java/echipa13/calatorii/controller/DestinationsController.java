@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-@RequestMapping("/destinations") // 🔹 lowercase pentru URL
+@RequestMapping("/Destinations") // 🔹 lowercase pentru URL
 public class DestinationsController {
 
     private final DestinationsService destinationsService;

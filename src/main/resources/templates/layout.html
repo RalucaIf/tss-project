@@ -66,7 +66,7 @@
                 </li>
 
                 <!-- Ghid → Tours -->
-                <li sec:authorize="hasRole('Guide')">
+                <li sec:authorize="hasRole('User')">
                     <a th:href="@{/Tours}">Tours</a>
                 </li>
 
@@ -155,9 +155,12 @@
                           th:text="${navbarPoints} + 'p'"></span>
 
                     <!-- Badge nivel -->
+
+                    <!-- Badge nivel (doar dacă NU e Admin) -->
                     <span class="badge level"
-                          sec:authorize="isAuthenticated()"
+                          sec:authorize="isAuthenticated() and !hasRole('Admin')"
                           th:text="'Lvl ' + ${navbarLevel}"></span>
+
 
                     <!-- Badge User -->
                     <span class="badge role User"
@@ -170,6 +173,10 @@
                           sec:authorize="hasRole('Guide')">
         <i class="bi bi-geo-alt-fill"></i> Guide
     </span>
+                    <!-- Badge Admin -->
+                    <span class="badge role Admin" sec:authorize="hasRole('Admin')">
+    <i class="bi bi-shield-fill"></i> Admin
+</span>
 
                 </div>
 

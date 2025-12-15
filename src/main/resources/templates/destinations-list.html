@@ -100,33 +100,37 @@
         </div>
       </div>
     </div>
-    <!-- Pagination -->
-    <div class="pagination-wrapper">
-      <ul class="pagination justify-content-center">
+    <div class="pagination-wrapper my-8">
+      <ul class="pagination flex justify-center items-center gap-2">
 
-        <a class="page-link"
-           th:href="@{|/Destinations?page=${page > 0 ? page - 1 : 0}|}">
-          &laquo; Anterior
-        </a>
-
-
-        <!-- Numere pagini -->
-        <li class="page-item"
-            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-            th:classappend="${i == page} ? ' active'">
-          <a class="page-link"
-             th:href="@{'/Destinations?page=' + ${i}}"
-             th:text="${i + 1}">1</a>
+        <!-- Prev -->
+        <li>
+          <a class="page-link px-4 py-2 rounded-lg bg-[var(--accent-color)] text-[var(--contrast-color)] font-semibold shadow-md transition-all duration-200 hover:scale-105 hover:shadow-xl"
+             th:href="@{|/Destinations?page=${page > 0 ? page - 1 : 0}|}">
+            &laquo; Anterior
+          </a>
         </li>
 
-        <a class="page-link"
-           th:href="@{|/Destinations?page=${page < totalPages - 1 ? page + 1 : totalPages - 1}|}">
-          Următor &raquo;
-        </a>
+        <!-- Page numbers -->
+        <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+          <a class="page-link px-4 py-2 rounded-lg font-semibold transition-all duration-200
+                    hover:scale-110 hover:shadow-lg"
+             th:href="@{'/Destinations?page=' + ${i}}"
+             th:text="${i + 1}"
+             th:classappend="${i == page} ? ' bg-[var(--accent-color)] text-[var(--contrast-color)] shadow-xl' : ' bg-white text-[var(--accent-color)] border border-[var(--accent-color)]'">
+          </a>
+        </li>
+
+        <!-- Next -->
+        <li>
+          <a class="page-link px-4 py-2 rounded-lg bg-[var(--accent-color)] text-[var(--contrast-color)] font-semibold shadow-md transition-all duration-200 hover:scale-105 hover:shadow-xl"
+             th:href="@{|/Destinations?page=${page < totalPages - 1 ? page + 1 : totalPages - 1}|}">
+            Următor &raquo;
+          </a>
+        </li>
 
       </ul>
     </div>
-
 
   </section><!-- Sfârșit Secțiune Destinații -->
 

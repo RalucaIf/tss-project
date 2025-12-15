@@ -118,6 +118,13 @@ public class BuyTourController {
         return "tours-list";
     }
 
+    @GetMapping("/destinations/new")
+    public String showDestinationForm(Model model) {
+        DestinationsDto dto = new DestinationsDto(); // DTO gol
+        model.addAttribute("destination", dto);
+        return "destinations-new"; // template Thymeleaf
+    }
+
     /* ===================== FORMULAR CREATE / EDIT ===================== */
     @GetMapping({"/Itravel/new", "/Itravel/edit/{id}"})
     public String showTourForm(Model model, @PathVariable(required = false) Long id) {
