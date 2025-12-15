@@ -270,7 +270,8 @@
                 </div>
 
                 <span th:text="${up.user.username}"></span> -
-                <span th:text="${up.points} + 'p'"></span>
+                <!--<span th:text="${up.points} + 'p'"></span> -->
+                <span th:text="${pointsSpent[up.user.id]} + 'p cheltuite'"></span>
             </li>
         </ul>
     </div>

@@ -52,13 +52,6 @@
             </select>
         </div>
 
-        <div class="form-group mb-3">
-            <label for="inputDestination">Destination</label>
-            <select class="form-control" id="inputDestination" th:field="*{id}">
-                <option th:each="d : ${destinations}" th:value="${d.id}" th:text="${d.name}">Destination</option>
-            </select>
-        </div>
-
         <div class="d-grid">
             <button type="submit" class="btn btn-login w-100">Save Destination</button>
         </div>

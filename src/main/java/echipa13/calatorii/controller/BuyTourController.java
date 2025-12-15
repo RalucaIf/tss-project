@@ -153,7 +153,7 @@ public class BuyTourController {
                     tour.getLocations(),
                     tour.getHighlights(),
                     itinerariuDtoList,
-                    tour.getTrip().getId()
+                    tour.getTrip() != null ? tour.getTrip().getId() : null
             );
 
             dto.setDestinationId(tour.getDestination() != null ? tour.getDestination().getId() : null);
