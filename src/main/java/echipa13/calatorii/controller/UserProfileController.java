@@ -98,6 +98,21 @@ public class UserProfileController {
         }
         model.addAttribute("frameNumbers", frameNumbers);
 
+        // Calcul puncte cheltuite pentru leaderboard
+        Map<Long, Integer> pointsSpent = new HashMap<>();
+        for(UserPoints up : userPoints){
+            List<TourPurchase> purchases = tourPurchaseRepository.findByBuyer(up.getUser());
+            int totalSpent = purchases.stream().mapToInt(TourPurchase::getPointsPaid).sum();
+            pointsSpent.put(up.getUser().getId(), totalSpent);
+        }
+        model.addAttribute("pointsSpent", pointsSpent);
+
+        userPoints.sort( (a, b) -> {
+            int spentA = pointsSpent.getOrDefault(a.getUser().getId(), 0);
+            int spentB = pointsSpent.getOrDefault(b.getUser().getId(), 0);
+            return Integer.compare(spentB, spentA);
+        });
+
         List<TourPurchase> purchases = tourPurchaseRepository.findByBuyer(user);
         model.addAttribute("purchases", purchases);
 
