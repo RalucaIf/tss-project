@@ -66,6 +66,8 @@ public class SecurityConfig {
                         .requestMatchers("/Itravel/new").hasRole("Guide") // => ROLE_GUIDE
                                 .requestMatchers("/journal/**").authenticated()
 
+                                .requestMatchers("/destinations/new").hasRole("Admin")
+
                                 // DESTINATIONS (admin poate adăuga/edita/șterge țări)
 //                        .requestMatchers("/Destinations/new", "/Destinations/edit/**", "/Destinations/delete/**").hasRole("Admin")
 

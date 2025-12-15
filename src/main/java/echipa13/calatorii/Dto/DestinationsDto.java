@@ -22,7 +22,8 @@ public class DestinationsDto {
     private List<TourDto> tours;
     private LocalDateTime createdAt;
 
-    public DestinationsDto(String name, Continent continent, String description, String image, Integer minPrice, Integer toursCount, List<TourDto> tours, LocalDateTime createdAt) {
+    public DestinationsDto(Long id, String name, Continent continent, String description, String image, Integer minPrice, Integer toursCount, List<TourDto> tours, LocalDateTime createdAt) {
+        this.id = id;
         this.name = name;
         this.continent = continent;
         this.description = description;
@@ -42,6 +43,7 @@ public class DestinationsDto {
         this.toursCount = toursCount;
         this.tours = tours;
         this.createdAt = createdAt;
+        this.id = id;
     }
 
     // 🔹 Transformare DTO -> Entity
