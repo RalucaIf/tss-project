@@ -18,6 +18,7 @@
 
     <!-- Fonts -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -464,6 +465,29 @@
            th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 </form>
 <!-- JS -->
+
+<script>
+    let dayIndex = 1;
+
+    function addDay() {
+        const container = document.getElementById('itinerariu-container');
+        const firstDay = container.querySelector('.itinerariu-day');
+        const clone = firstDay.cloneNode(true);
+
+        // Reset values
+        clone.querySelectorAll('input, textarea').forEach(i => i.value = '');
+
+        // Update names
+        clone.querySelectorAll('input, textarea').forEach(field => {
+            const name = field.name;
+            const newName = name.replace(/\d+/, dayIndex);
+            field.name = newName;
+        });
+
+        container.appendChild(clone);
+        dayIndex++;
+    }
+</script>
 
 <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
 <script th:src="@{/js/isotope.js}"></script>

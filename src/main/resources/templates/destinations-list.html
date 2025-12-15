@@ -46,13 +46,13 @@
                     <span class="destination-tag featured">Recomandat</span>
                   </div>
                   <div class="content-wrapper">
-                    <h3 th:text="${calatorii[0].name}">Titlu Excursie</h3>
-                    <p class="destination-excerpt" th:text="${#strings.abbreviate(calatorii[0].description, 150)}">Descriere excursie</p>
+                    <h3 class="tour-type" th:text="${calatorii[0].name}">Titlu Excursie</h3>
+                    <p class="destination-excerpt tour-type" th:text="${#strings.abbreviate(calatorii[0].description, 100)}">Descriere excursie</p>
                     <div class="destination-info">
-                      <div class="info-item">
+                      <div class="info-item ">
                         <i class="bi bi-geo-alt"></i>
-                        <span th:text="${calatorii[0].tours.size()} + ' Tururi'">10 Tururi</span>
-                        <span class="tours-count" th:text="${calatorii[0].minPrice > 0 ? 'From ' + calatorii[0].minPrice + ' p' : 'No tours available'}">0 points</span>
+                        <span class="tour-type" th:text="${calatorii[0].tours.size()} + ' Tururi'">10 Tururi</span>
+                        <span class="tours-count tour-type" th:text="${calatorii[0].minPrice > 0 ? 'From ' + calatorii[0].minPrice + ' p' : 'No tours available'}">0 points</span>
                       </div>
                     </div>
                     <a th:href="@{/Itravel/{id}(id=${calatorii[0].id})}" class="explore-btn">
@@ -80,11 +80,11 @@
                     <span class="destination-tag popular">Popular</span>
                   </div>
                   <div class="content-wrapper">
-                    <h4 th:text="${c.name}">Titlu Excursie</h4>
-                    <p class="destination-excerpt" th:text="${#strings.abbreviate(c.description, 100)}">Descriere excursie</p>
+                    <h4 class="tour-type" th:text="${c.name}">Titlu Excursie</h4>
+                    <p class="destination-excerpt tour-type" th:text="${#strings.abbreviate(c.description, 50)}">Descriere excursie</p>
                     <div class="destination-info">
-                      <span class="tours-count" th:text="${c.tours.size()} + ' Tururi'">10 Tururi</span>
-                      <span class="tours-count" th:text="${c.minPrice > 0 ? 'From ' + c.minPrice + ' p' : 'No tours available'}">0 points</span>
+                      <span class="tours-count tour-type" th:text="${c.tours.size()} + ' Tururi'">10 Tururi</span>
+                      <span class="tours-count tour-type" th:text="${c.minPrice > 0 ? 'From ' + c.minPrice + ' p' : 'No tours available'}">0 points</span>
                     </div>
 
                     <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">

@@ -1,7 +1,10 @@
 package echipa13.calatorii.service.impl;
 
+import echipa13.calatorii.Dto.ItinerariuZiDto;
 import echipa13.calatorii.Dto.TourDto;
 import echipa13.calatorii.models.Destinations;
+import echipa13.calatorii.models.Highlight;
+import echipa13.calatorii.models.ItinerariuZi;
 import echipa13.calatorii.models.Tour;
 import echipa13.calatorii.repository.TourRepository;
 import echipa13.calatorii.service.DestinationsService;
@@ -11,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,9 +107,26 @@ public class TourServiceImpl implements TourService {
         dto.setCreatedAt(t.getCreatedAt());
         dto.setImage(t.getImage());
         dto.setDescription(t.getDescription());
+        dto.setDuration(t.getDuration());
+        dto.setMaxGuests(t.getMaxGuests());
+        dto.setSubtitle(t.getSubtitle());
+        dto.setCategory(t.getCategory());
+        dto.setLocations(t.getLocations());
+        dto.setHighlights(t.getHighlights());
         dto.setDestinationId(t.getDestination() != null ? t.getDestination().getId() : null);
+
+        // mapare itinerariu
+        dto.setItinerariu(
+                t.getItinerariu() != null
+                        ? t.getItinerariu().stream()
+                        .map(zi -> new ItinerariuZiDto(zi.getZi(), zi.getTitlu(), zi.getLocatie(), zi.getDescriere(), zi.getFeatures()))
+                        .toList()
+                        : new ArrayList<>()
+        );
+
         return dto;
     }
+
 
     @Override
     public Tour findEntityById(Long id) {

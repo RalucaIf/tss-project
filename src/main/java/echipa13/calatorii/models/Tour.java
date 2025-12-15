@@ -7,6 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import echipa13.calatorii.models.ItinerariuZi;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -40,7 +45,31 @@ public class Tour {
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(name = "max_guests")
+    private Integer maxGuests;
+
+    private Integer duration;
+
     private String image;
+
+    private String subtitle;
+
+    @Column(length = 100)
+    private String category;
+
+    @Column(length = 500)
+    private String locations; // ex: "Rome • Florence • Amalfi"
+
+    @ElementCollection(targetClass = Highlight.class)
+    @Enumerated(EnumType.STRING)
+    private Set<Highlight> highlights = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItinerariuZi> itinerariu = new ArrayList<>();
+
+
+// getter/setter
 
     // Corect: numele câmpului trebuie să fie exact "destination"
     @ManyToOne

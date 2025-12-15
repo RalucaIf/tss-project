@@ -26,24 +26,30 @@
                th:alt="${calatorie.title}" class="hero-image">
           <div class="hero-overlay">
             <div class="hero-content">
-<!--              <span class="tour-type" th:text="${calatorie.category}">Cultural Explorer</span>-->
+              <span class="tour-type" th:text="'Category: ' + ${calatorie.category}">Category: Cultural Explorer</span>
               <h1 th:text="${calatorie.title}">Mediterranean Coast Discovery</h1>
-<!--              <p class="hero-subtitle" th:text="${calatorie.subtitle}">-->
-                Immerse yourself in ancient history and coastal splendor
-              </p>
-              <div class="hero-stats">
-            <span class="stat-item">
-              <i class="bi bi-clock"></i>
-<!--              <span th:text="${calatorie.duration}">10 Days</span>-->
-            </span>
-                <span class="stat-item">
-              <i class="bi bi-geo-alt"></i>
-<!--              <span th:text="${calatorie.locations}">Rome • Florence • Amalfi</span>-->
-          </span>
-                <span class="stat-item">
-              <i class="bi bi-people"></i>
-<!--              <span th:text="${calatorie.maxGuests}">Max 16 Guests</span>-->
-          </span>
+              <p class="hero-subtitle tour-type" th:text="${calatorie.subtitle}"></p>
+
+              <div class="hero-stats d-flex justify-content-between align-items-center">
+
+                <!-- Left side: duration & guests -->
+                <div class="stat-left d-flex gap-3">
+                <span class="stat-item tour-type">
+                  <i class="bi bi-clock"></i>
+                  <span th:text="${calatorie.duration} + ' Days'">10 Days</span>
+                </span>
+                  <span class="stat-item tour-type">
+                  <i class="bi bi-people"></i>
+                  <span th:text="'Max ' + ${calatorie.maxGuests} + ' Guests'">Max 16 Guests</span>
+                </span>
+                </div>
+
+                <!-- Right side: locations -->
+                <div class="stat-right d-flex gap-2 flex-wrap">
+                <span class="location-badge tour-type" th:each="loc : ${#strings.arraySplit(calatorie.locations, '•')}"
+                      th:text="${loc.trim()}"></span>
+                </div>
+
               </div>
             </div>
           </div>
@@ -53,37 +59,28 @@
 
       <!-- Tour Essence -->
       <div class="tour-essence">
-        <div class="row align-items-center">
+        <div class="row align-items-start">
+          <!-- Left content -->
           <div class="col-lg-8">
             <div class="essence-content">
-              <h2>The Essence of Italy</h2>
-                <p th:text="${calatorie.description}">Sed ut perspiciatis unde omnis iste natus...</p>
+              <h2 th:text="${calatorie.title}">The Essence of Italy</h2>
+              <p th:text="${calatorie.description}">Sed ut perspiciatis unde omnis iste natus...</p>
 
-                <div class="highlights-compact">
-                <div class="highlight-item">
-                  <i class="bi bi-palette"></i>
-                  <span>Renaissance Art Tours</span>
-                </div>
-                <div class="highlight-item">
-                  <i class="bi bi-cup-hot"></i>
-                  <span>Culinary Experiences</span>
-                </div>
-                <div class="highlight-item">
-                  <i class="bi bi-building"></i>
-                  <span>Boutique Accommodations</span>
-                </div>
-                <div class="highlight-item">
-                  <i class="bi bi-car-front"></i>
-                  <span>Private Transport</span>
+              <div class="highlights-compact">
+                <div class="highlight-item" th:each="h : ${calatorie.highlights}">
+                  <i class="fa-solid" th:classappend="${h.icon}"></i>
+                  <span th:text="${h.label}">Highlight</span>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-lg-4">
-            <div class="pricing-card">
+
+          <!-- Right card -->
+          <div class="col-lg-4 d-flex justify-content-lg-end mt-4 mt-lg-0">
+            <div class="pricing-card" style="width: 100%; max-width: 350px;">
               <div class="price-header">
                 <span class="price-label">From</span>
-                <span class="price-amount">€3,450</span>
+                <span th:text="${calatorie.pricePoints}" class="price-amount">€3,450</span>
               </div>
               <p class="price-description">per person, twin accommodation</p>
               <a href="#booking" class="btn-reserve">Reserve Your Journey</a>
@@ -94,100 +91,32 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Journey Timeline -->
-      <div class="journey-timeline">
-        <h2>Your Journey Unfolds</h2>
 
-        <div class="timeline-wrapper">
-          <div class="timeline-item">
-            <div class="timeline-marker">
-              <span class="day-number">01</span>
-            </div>
-            <div class="timeline-content">
-              <div class="day-header">
-                <h3>Roman Grandeur</h3>
-                <span class="location">Rome</span>
-              </div>
-              <p>Arrival at Rome Fiumicino Airport with private transfer to your centrally located boutique hotel. Evening aperitivo walking tour through Trastevere, discovering hidden local gems and authentic Roman cuisine at a family-owned trattoria.</p>
-              <div class="day-features">
-                <span class="feature-tag">Hotel Del Greco</span>
-                <span class="feature-tag">Welcome Dinner</span>
-              </div>
-            </div>
+    <div class="journey-timeline" th:if="${calatorie.itinerariu != null}">
+      <h2>Your Journey Unfolds</h2>
+      <div class="timeline-wrapper">
+        <div class="timeline-item" th:each="zi, ziStat : ${calatorie.itinerariu}">
+          <div class="timeline-marker">
+            <span class="day-number" th:text="${zi.zi < 10 ? '0' + zi.zi : zi.zi}"></span>
           </div>
-
-          <div class="timeline-item">
-            <div class="timeline-marker">
-              <span class="day-number">02</span>
+          <div class="timeline-content">
+            <div class="day-header">
+              <h3 th:text="${zi.titlu}">Day Title</h3>
+              <span class="location" th:text="${zi.locatie}">Location</span>
             </div>
-            <div class="timeline-content">
-              <div class="day-header">
-                <h3>Ancient Wonders</h3>
-                <span class="location">Rome</span>
-              </div>
-              <p>Private guided exploration of the Colosseum and Roman Forum with skip-the-line access. Afternoon visit to Vatican Museums and Sistine Chapel. Evening cooking class with a local chef in charming neighborhood setting.</p>
-              <div class="day-features">
-                <span class="feature-tag">Skip-the-line Tours</span>
-                <span class="feature-tag">Cooking Experience</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="timeline-item">
-            <div class="timeline-marker">
-              <span class="day-number">03</span>
-            </div>
-            <div class="timeline-content">
-              <div class="day-header">
-                <h3>Renaissance Beauty</h3>
-                <span class="location">Florence</span>
-              </div>
-              <p>High-speed train journey to Florence. Private tour of Uffizi Gallery with art historian guide. Afternoon exploring Oltrarno district artisan workshops. Evening at leisure in your elegant historic palazzo hotel.</p>
-              <div class="day-features">
-                <span class="feature-tag">Palazzo Magnani Feroni</span>
-                <span class="feature-tag">Art Expert Guide</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="timeline-item">
-            <div class="timeline-marker">
-              <span class="day-number">04</span>
-            </div>
-            <div class="timeline-content">
-              <div class="day-header">
-                <h3>Tuscan Countryside</h3>
-                <span class="location">Chianti</span>
-              </div>
-              <p>Day trip to Chianti region with private driver. Wine tasting at boutique vineyard followed by lunch at family estate. Visit San Gimignano's medieval towers and enjoy gelato making workshop.</p>
-              <div class="day-features">
-                <span class="feature-tag">Wine Tasting</span>
-                <span class="feature-tag">Gelato Making</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="timeline-item">
-            <div class="timeline-marker">
-              <span class="day-number">05</span>
-            </div>
-            <div class="timeline-content">
-              <div class="day-header">
-                <h3>Coastal Paradise</h3>
-                <span class="location">Amalfi Coast</span>
-              </div>
-              <p>Private transfer to Amalfi Coast via scenic route. Check-in to cliffside hotel with panoramic sea views. Sunset boat excursion along the dramatic coastline with prosecco and local appetizers.</p>
-              <div class="day-features">
-                <span class="feature-tag">Casa Angelina</span>
-                <span class="feature-tag">Sunset Cruise</span>
-              </div>
+            <p th:text="${zi.descriere}">Day description goes here</p>
+            <div class="day-features">
+              <span class="feature-tag" th:each="feat : ${zi.features}" th:text="${feat}">Feature</span>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Inclusions Overview -->
+
+    <!-- Inclusions Overview -->
       <div class="inclusions-overview">
         <div class="row">
           <div class="col-lg-6">
@@ -440,8 +369,6 @@
           </div>
         </div>
       </div>
-
-    </div>
 
   </section><!-- /Travel Tour Details Section -->
 

@@ -3992,6 +3992,81 @@ section,
     margin-bottom: 16px;
     backdrop-filter: blur(10px);
 }
+/* Card mare - Recomandat Neon Vibe (unchanged) */
+.destination-large .tour-type {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff6ec4, #7873f5);
+    color: #fff;
+    padding: 6px 20px;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    text-shadow: 0 0 6px rgba(255,255,255,0.8);
+    box-shadow: 0 4px 18px rgba(255,110,196,0.5), 0 0 20px rgba(120,115,245,0.6);
+    transition: all 0.3s ease;
+}
+
+/* Hover Glow pentru card mare (unchanged) */
+.destination-large .tour-type:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 28px rgba(255,110,196,0.7), 0 0 32px rgba(120,115,245,0.8);
+    text-shadow: 0 0 10px rgba(255,255,255,1);
+}
+
+/* Card mic Neon Vibe */
+.destination-small .tour-type {
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.1); /* super transparent, ~10% */
+    color: #fff;
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    text-shadow: 0 0 2px rgba(255,255,255,0.5);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+    backdrop-filter: blur(6px);
+    transition: all 0.25s ease;
+}
+
+/* Hover Glow pentru card mic */
+.destination-small .tour-type:hover {
+    background: rgba(0, 0, 0, 0.25); /* mai vizibil la hover */
+    transform: scale(1.05);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+    text-shadow: 0 0 4px rgba(255,255,255,0.8);
+}
+
+/* Frosted glass pentru descriere, nr de tururi și preț */
+.destination-small .overlay-content p,
+.destination-small .overlay-content .tours-count {
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.1); /* super subtil */
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    backdrop-filter: blur(6px);
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover effect: devine mai vizibil dar subtil */
+.destination-small .overlay-content p:hover,
+.destination-small .overlay-content .tours-count:hover {
+    background: rgba(0, 0, 0, 0.3); /* ușor mai vizibil la hover */
+    transform: scale(1.05);
+}
+
+/* Spacing între badge-uri */
+.destination-small .overlay-content .tours-count + .tours-count {
+    margin-left: 6px;
+}
+
 
 .travel-tour-details .tour-hero .hero-image-wrapper .hero-overlay .hero-content h1 {
     font-size: 3.5rem;
@@ -8657,8 +8732,44 @@ body.dark-background .btn-theme i {
 }
 
 
+/* Hero content stats flex */
+.hero-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
 
+/* Left and right containers */
+.stat-left {
+    display: flex;
+    gap: 16px;
+}
 
+.stat-right {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Badges */
+.location-badge {
+    background: rgba(0,0,0,0.15);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #fff;
+    text-shadow: 0 0 4px rgba(0,0,0,0.5);
+}
+
+/* Optional hover effect */
+.location-badge:hover {
+    background: rgba(0,0,0,0.3);
+    transform: scale(1.05);
+    transition: all 0.25s ease;
+}
 
 
 

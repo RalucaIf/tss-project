@@ -8,7 +8,7 @@
     <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/walpaper-image.jpg}');|">
         <div class="container position-relative">
             <h1>Destination Details</h1>
-            <p>Esse dolorum voluptatum ullam est sint nemo et est ipsa porro placeat quibusdam quia assumenda numquam molestias.</p>
+            <p>Create or edit your tour with all details including daily itinerary.</p>
             <nav class="breadcrumbs">
                 <ol>
                     <li><a th:href="@{/Itravel}">Home</a></li>
@@ -16,56 +16,131 @@
                 </ol>
             </nav>
         </div>
-    </div><!-- End Page Title -->
+    </div>
 
-    <section  class="py-5">
-
+    <section class="py-5">
         <form role="form"
               th:action="${calatorii.id} != null ? '/Itravel/edit/' + ${calatorii.id} : '/Itravel/new'"
-              th:object="${calatorii}" method="post" enctype="multipart/form-data">
+              th:object="${calatorii}"
+              method="post"
+              enctype="multipart/form-data"
+              class="card shadow-sm p-4 mx-auto"
+              style="max-width: 800px; border-radius: 16px;">
 
-            <div class="form-group">
-                <label for="inputTitle">Title</label>
-                <input type="text" class="form-control" id="inputTitle" th:field="*{title}" placeholder="Title">
+            <h3 class="mb-4 fw-bold text-center text-dark">
+                ✨ Create / Edit Tour
+            </h3>
+
+            <!-- Title -->
+            <div class="form-group mb-3">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-control" th:field="*{title}" placeholder="Ex: Adventure in Alps">
             </div>
 
-            <div class="form-group">
-                <label for="inputDescription">Summary</label>
-                <textarea class="form-control" id="inputDescription" th:field="*{summary}" rows="4" placeholder="Description"></textarea>
+            <!-- Subtitle -->
+            <div class="form-group mb-3">
+                <label class="form-label">Subtitle / Tagline</label>
+                <input type="text" class="form-control" th:field="*{subtitle}" placeholder="Ex: Where adventure meets nature">
             </div>
 
-            <div class="form-group">
-                <label for="inputDescription">Description</label>
-                <textarea class="form-control"  th:field="*{description}" rows="4" placeholder="Description"></textarea>
+            <!-- Summary -->
+            <div class="form-group mb-3">
+                <label class="form-label">Short Summary</label>
+                <textarea class="form-control" th:field="*{summary}" rows="3" placeholder="Short catchy description"></textarea>
             </div>
 
-            <div class="form-group">
-                <label for="inputPrice">Price Points</label>
-                <input type="number" class="form-control" id="inputPrice" th:field="*{pricePoints}" placeholder="Price Points">
+            <!-- Description -->
+            <div class="form-group mb-3">
+                <label class="form-label">Full Description</label>
+                <textarea class="form-control" th:field="*{description}" rows="4" placeholder="Full experience details"></textarea>
             </div>
 
-            <div class="form-group">
-                <label for="inputStatus">Status</label>
-                <input type="text" class="form-control" id="inputStatus" th:field="*{status}" placeholder="Status">
-            </div>
-
-            <!-- 🔹 Select destinație -->
-            <div class="form-group">
-                <label for="inputDestination">Destination</label>
-                <select class="form-control" id="inputDestination" th:field="*{destinationId}">
-                    <option th:each="d : ${destinations}" th:value="${d.id}" th:text="${d.name}">Destination Name</option>
+            <!-- Category -->
+            <div class="form-group mb-3">
+                <label class="form-label">Categorie Tur</label>
+                <select class="form-control" th:field="*{category}">
+                    <option value="" disabled>Selectează categorie</option>
+                    <option value="Cultural" th:selected="${calatorii.category == 'Cultural'}">Cultural</option>
+                    <option value="Adventure" th:selected="${calatorii.category == 'Adventure'}">Adventure</option>
+                    <option value="Relax" th:selected="${calatorii.category == 'Relax'}">Relax</option>
+                    <option value="Gastronomic" th:selected="${calatorii.category == 'Gastronomic'}">Gastronomic</option>
+                    <option value="Family" th:selected="${calatorii.category == 'Family'}">Family</option>
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Imagine</label>
+            <!-- Locations -->
+            <div class="form-group mb-3">
+                <label class="form-label">Locations</label>
+                <input type="text" class="form-control" th:field="*{locations}" placeholder="Ex: Rome • Florence • Amalfi">
+            </div>
+
+            <!-- Price, Duration & Guests -->
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Price Points</label>
+                    <input type="number" class="form-control" th:field="*{pricePoints}" placeholder="Ex: 500">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Duration (days)</label>
+                    <input type="number" class="form-control" th:field="*{duration}" placeholder="Ex: 7">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Max Guests</label>
+                    <input type="number" class="form-control" th:field="*{maxGuests}" placeholder="Ex: 12">
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="form-group mb-3">
+                <label class="form-label">Status</label>
+                <input type="text" class="form-control" th:field="*{status}" placeholder="PUBLISHED / DRAFT">
+            </div>
+
+            <!-- Destination -->
+            <div class="form-group mb-3">
+                <label class="form-label">Destination</label>
+                <select class="form-control" th:field="*{destinationId}">
+                    <option disabled selected value="">Select destination</option>
+                    <option th:each="d : ${destinations}" th:value="${d.id}" th:text="${d.name}"></option>
+                </select>
+            </div>
+
+            <!-- Highlights -->
+            <div class="form-group mb-3">
+                <label class="form-label">Selectează highlights</label>
+                <div th:each="hl : ${highlights}">
+                    <input type="checkbox" th:field="*{highlights}" th:value="${hl}" />
+                    <span th:text="${hl.label}"></span>
+                </div>
+            </div>
+
+            <!-- Cover Image -->
+            <div class="mb-4">
+                <label class="form-label">Cover Image</label>
                 <input type="file" class="form-control" name="imagine" accept="image/*">
             </div>
 
-            <div class="d-grid">
-                <button type="submit" class="btn btn-login w-100">Send Vacation <i class="bi bi-send-fill ms-2"></i></button>
+            <h4>Itinerar Zile</h4>
+            <div id="itinerariu-container">
+                <div class="itinerariu-day card p-3 mb-3">
+                    <input type="number" name="itinerariu[0].zi" placeholder="Zi" class="form-control mb-2">
+                    <input type="text" name="itinerariu[0].titlu" placeholder="Titlu" class="form-control mb-2">
+                    <input type="text" name="itinerariu[0].locatie" placeholder="Locatie" class="form-control mb-2">
+                    <textarea name="itinerariu[0].descriere" placeholder="Descriere" class="form-control mb-2"></textarea>
+                    <input type="text" name="itinerariu[0].features" placeholder="Features (comma separated)" class="form-control mb-2">
+                </div>
             </div>
+            <button type="button" class="btn btn-secondary mb-4" onclick="addDay()">➕ Add Day</button>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-login btn-lg">🚀 Publish Tour</button>
+            </div>
+
         </form>
     </section>
+
 </div>
+
+
+
 </html>

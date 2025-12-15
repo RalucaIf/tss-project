@@ -1,13 +1,18 @@
-
 package echipa13.calatorii.Dto;
 
 import echipa13.calatorii.models.Destinations;
+import echipa13.calatorii.models.Highlight;
+import echipa13.calatorii.models.ItinerariuZi;
 import echipa13.calatorii.models.Tour;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
 public class TourDto {
@@ -30,14 +35,30 @@ public class TourDto {
 
     private String description;
 
+    private Integer maxGuests;
+    private Integer duration;
+    private String subtitle;
+
+    private String category;
+    private String locations;
     private String image;
 
+    private Set<Highlight> highlights = new HashSet<>();
+
+    // 🔹 Lista de zile pentru itinerariu
+    private List<ItinerariuZiDto> itinerariu = new ArrayList<>();
+
     private Long destinationId;
+
     public TourDto() {
         this.createdAt = LocalDateTime.now();
     }
 
-    public TourDto(Long id, String title, Integer pricePoints, String summary, String status, String image, String description) {
+    public TourDto(Long id, String title, Integer pricePoints, String summary, String status,
+                   String image, String description, Integer duration, Integer maxGuests,
+                   String subtitle, String category, String locations, Set<Highlight> highlights,
+                   List<ItinerariuZiDto> itinerariu) {
+
         this.id = id;
         this.title = title;
         this.pricePoints = pricePoints;
@@ -46,6 +67,13 @@ public class TourDto {
         this.status = status;
         this.image = image;
         this.description = description;
+        this.duration = duration;
+        this.maxGuests = maxGuests;
+        this.subtitle = subtitle;
+        this.category = category;
+        this.locations = locations;
+        this.highlights = highlights != null ? highlights : new HashSet<>();
+        this.itinerariu = itinerariu != null ? itinerariu : new ArrayList<>();
     }
 
     // 🔹 Transformare DTO -> Entity
@@ -60,7 +88,38 @@ public class TourDto {
         t.setCreatedAt(this.createdAt);
         t.setImage(this.image);
         t.setDescription(this.description);
-        t.setDestination(destination); // legătura către destinație
+        t.setDuration(this.duration);
+        t.setMaxGuests(this.maxGuests);
+        t.setSubtitle(this.subtitle);
+        t.setCategory(this.category);
+        t.setLocations(this.locations);
+        t.setHighlights(this.highlights);
+        t.setDestination(destination);
+
+        // 🔹 Mapare itinerariu DTO -> Entity
+        if (this.itinerariu != null && !this.itinerariu.isEmpty()) {
+            List<ItinerariuZi> itinerariuList = new ArrayList<>();
+            for (ItinerariuZiDto dayDto : this.itinerariu) {
+                ItinerariuZi day = new ItinerariuZi();
+                day.setZi(dayDto.getZi());
+                day.setTitlu(dayDto.getTitlu());
+                day.setLocatie(dayDto.getLocatie());
+                day.setDescriere(dayDto.getDescriere());
+
+                // Dacă features vin ca String comma-separated, poți converti aici:
+                if (dayDto.getFeatures() != null) {
+                    day.setFeatures(dayDto.getFeatures());
+                } else {
+                    day.setFeatures(new ArrayList<>());
+                }
+
+                day.setTour(t); // legătura inversă
+                itinerariuList.add(day);
+            }
+            t.setItinerariu(itinerariuList);
+        }
+
         return t;
     }
+
 }

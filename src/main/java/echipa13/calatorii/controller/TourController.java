@@ -95,7 +95,7 @@ public class TourController {
     public String deleteTour(@PathVariable Long id) {
         tourService.delete(id);
         return "redirect:/user_profile";
-        }
+    }
 
     @PostMapping("/tours/buy/{id}")
     public String buyTours(@PathVariable Long id, Authentication authentication) {
@@ -141,4 +141,3 @@ public class TourController {
 //        model.addAttribute("calatorii", c);
 //        return "Itravel-list";
 //        }
-
