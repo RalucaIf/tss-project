@@ -33,6 +33,7 @@ public class DestinationsServiceImpl implements DestinationsService {
                 .orElseThrow(() -> new RuntimeException("Destination not found"));
     }
 
+
     @Override
     public DestinationsDto findDtoById(Long id) {
         return toDto(findEntityById(id));

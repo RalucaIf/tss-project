@@ -4,12 +4,7 @@ import echipa13.calatorii.Dto.DestinationsDto;
 import echipa13.calatorii.models.Continent;
 import echipa13.calatorii.models.Destinations;
 import echipa13.calatorii.service.DestinationsService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-@RequestMapping("/Destinations") // 🔹 lowercase pentru URL
+@RequestMapping("/destinations") // ✅ LOWERCASE
 public class DestinationsController {
 
     private final DestinationsService destinationsService;
@@ -29,27 +24,54 @@ public class DestinationsController {
         this.destinationsService = destinationsService;
     }
 
-    // 🔹 Formular creare / editare destinație
+    /* ===============================
+       FORM CREATE / EDIT
+       =============================== */
+
     @GetMapping({"/new", "/edit/{id}"})
-    public String newDestination(Model model, @PathVariable(required = false) Long id) {
-        DestinationsDto destinationDto = (id == null)
+    public String destinationForm(
+            @PathVariable(required = false) Long id,
+            Model model
+    ) {
+        DestinationsDto destination = (id == null)
                 ? new DestinationsDto()
                 : destinationsService.findById(id);
 
-        model.addAttribute("destination", destinationDto);
+        model.addAttribute("destination", destination);
         model.addAttribute("continents", Continent.values());
+
         return "destinations-new";
     }
 
-    @PostMapping({"/new", "/edit/{id}"})
-    public String saveDestination(@ModelAttribute("destination") DestinationsDto dto,
-                                  @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
-        try {
-            Destinations destination = dto.toEntity();
+    /* ===============================
+       SAVE (CREATE + UPDATE)
+       =============================== */
 
-            // upload imagine
+    @PostMapping({"/new", "/edit/{id}"})
+    public String saveDestination(
+            @PathVariable(required = false) Long id,
+            @ModelAttribute("destination") DestinationsDto dto,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile
+    ) {
+        try {
+            Destinations destination;
+
+            if (id != null) {
+                // 🔁 UPDATE – luăm entity-ul existent
+                destination = destinationsService.findEntityById(id);
+            } else {
+                // ➕ CREATE
+                destination = new Destinations();
+            }
+
+            // update câmpuri
+            destination.setName(dto.getName());
+            destination.setDescription(dto.getDescription());
+            destination.setContinent(dto.getContinent());
+
+            // 📸 doar dacă există imagine nouă
             if (imageFile != null && !imageFile.isEmpty()) {
-                String uploadDir = new File("src/main/resources/static/uploads/").getAbsolutePath();
+                String uploadDir = new File("src/main/resources/static/uploads").getAbsolutePath();
                 File folder = new File(uploadDir);
                 if (!folder.exists()) folder.mkdirs();
 
@@ -59,8 +81,8 @@ public class DestinationsController {
 
                 destination.setImage(filename);
             }
+            // 🔥 dacă NU e imagine → nu atingi destination.image
 
-            // salvează destinația împreună cu tururile
             destinationsService.save(destination);
 
         } catch (IOException e) {
@@ -70,35 +92,43 @@ public class DestinationsController {
         return "redirect:/destinations";
     }
 
+    /* ===============================
+       DELETE
+       =============================== */
 
-    // 🔹 Ștergere destinație
     @PostMapping("/delete/{id}")
     public String deleteDestination(@PathVariable Long id) {
         destinationsService.delete(id);
         return "redirect:/destinations";
     }
 
-    // 🔹 Listare destinații cu paginare
-    @GetMapping
-    public String listDestinations(@RequestParam(defaultValue = "0") int page, Model model) {
-        int size = 12;
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<Destinations> destinationsPage = destinationsService.findAll(pageable);
+    /* ===============================
+       LIST + PAGINATION
+       =============================== */
 
-        List<DestinationsDto> calatorii = destinationsPage.stream().map(d -> {
-            DestinationsDto dto = destinationsService.toDto(d);
-            if (dto.getTours() == null) {
-                dto.setTours(List.of()); // prevenim null pointer
-            }
-            return dto;
-        }).toList();
+    @GetMapping
+    public String listDestinations(
+            @RequestParam(defaultValue = "0") int page,
+            Model model
+    ) {
+        int size = 12;
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by("createdAt").descending()
+        );
+
+        Page<Destinations> destinationsPage =
+                destinationsService.findAll(pageable);
+
+        List<DestinationsDto> calatorii = destinationsPage
+                .stream()
+                .map(destinationsService::toDto)
+                .toList();
 
         model.addAttribute("calatorii", calatorii);
         model.addAttribute("page", destinationsPage.getNumber());
         model.addAttribute("totalPages", destinationsPage.getTotalPages());
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        model.addAttribute("user", auth.getName());
 
         return "destinations-list";
     }
