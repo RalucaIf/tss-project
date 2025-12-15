@@ -8824,6 +8824,43 @@ body.dark-background .btn-theme i {
     box-shadow: 0 6px 12px rgba(0,0,0,0.25);
 }
 
+.list_tours .destination-card {
+    background: var(--surface-color);
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* ca butoanele să fie jos */
+    min-height: 400px; /* mai înalt, să încapă butoanele */
+}
+
+.list_tours .destination-card .image-wrapper img {
+    width: 100%;
+    height: 220px; /* mai mare decât înainte */
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.list_tours .destination-card .content h4 {
+    font-size: 1.25rem; /* puțin mai mare */
+    margin-bottom: 10px;
+}
+
+.list_tours .destination-card .content p {
+    flex-grow: 1; /* ocupa spațiul disponibil */
+    margin-bottom: 15px;
+}
+
+.list_tours .destination-card .card-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
 
 
 
