@@ -113,12 +113,11 @@
 
         <!-- Page numbers -->
         <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-          <a class="page-link px-4 py-2 rounded-lg text-[var(--contrast-color)] font-semibold transition-all duration-200
-                  hover:scale-110 hover:shadow-lg"
+          <a class="page-link px-4 py-2 rounded-lg font-semibold transition-all duration-200
+                    hover:scale-110 hover:shadow-lg"
              th:href="@{'/Destinations?page=' + ${i}}"
              th:text="${i + 1}"
-             th:classappend="${i == page} ? ' bg-[var(--accent-color)] shadow-xl' : ' bg-white border border-[var(--accent-color)]'">
-            1
+             th:classappend="${i == page} ? ' bg-[var(--accent-color)] text-[var(--contrast-color)] shadow-xl' : ' bg-white text-[var(--accent-color)] border border-[var(--accent-color)]'">
           </a>
         </li>
 

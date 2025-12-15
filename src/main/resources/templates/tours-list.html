@@ -195,25 +195,37 @@
                 </div>
             </section>
 
-            <!-- Pagination -->
-            <div class="row mt-4">
-                <div class="col-12 d-flex justify-content-center">
-                    <ul class="pagination">
-                        <li class="page-item">
-                            <a class="page-link" th:href="@{|/Tours?page=${page > 0 ? page - 1 : 0}|}">&laquo; Anterior</a>
-                        </li>
-                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-                            <a class="page-link"
-                               th:href="@{'/Tours?page=' + ${i}}"
-                               th:text="${i + 1}"
-                               th:classappend="${i == page} ? ' active' : ''">1</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" th:href="@{|/Tours?page=${page < totalPages - 1 ? page + 1 : totalPages - 1}|}">Următor &raquo;</a>
-                        </li>
-                    </ul>
-                </div>
+            <div class="pagination-wrapper my-8">
+                <ul class="pagination flex justify-center items-center gap-2">
+                    <!-- Prev -->
+                    <li>
+                        <a class="page-link px-4 py-2 rounded-lg bg-[var(--accent-color)] text-[var(--contrast-color)] font-semibold shadow-md transition-all duration-200 hover:scale-105 hover:shadow-xl"
+                           th:href="@{|/Tours?page=${page > 0 ? page - 1 : 0}|}">
+                            &laquo; Anterior
+                        </a>
+                    </li>
+
+                    <!-- Page numbers -->
+                    <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                        <a class="page-link px-4 py-2 rounded-lg text-[var(--contrast-color)] font-semibold transition-all duration-200
+                  hover:scale-110 hover:shadow-lg"
+                           th:href="@{'/Tours?page=' + ${i}}"
+                           th:text="${i + 1}"
+                           th:classappend="${i == page} ? ' bg-[var(--accent-color)] shadow-xl' : ' bg-white border border-[var(--accent-color)]'">
+                            1
+                        </a>
+                    </li>
+
+                    <!-- Next -->
+                    <li>
+                        <a class="page-link px-4 py-2 rounded-lg bg-[var(--accent-color)] text-[var(--contrast-color)] font-semibold shadow-md transition-all duration-200 hover:scale-105 hover:shadow-xl"
+                           th:href="@{|/Tours?page=${page < totalPages - 1 ? page + 1 : totalPages - 1}|}">
+                            Următor &raquo;
+                        </a>
+                    </li>
+                </ul>
             </div>
+
 
             <!-- Exclusive Offers -->
             <div class="row mb-5">

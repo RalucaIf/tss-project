@@ -8772,5 +8772,58 @@ body.dark-background .btn-theme i {
 }
 
 
+.pagination-wrapper {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination li a {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    background-color: #fff;
+}
+
+.pagination li a:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pagination li a.active,
+.pagination li a.active:hover {
+    background-color: var(--accent-color);
+    color: var(--contrast-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.pagination li a.prev,
+.pagination li a.next {
+    background-color: var(--accent-color);
+    color: var(--contrast-color);
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.pagination li a.prev:hover,
+.pagination li a.next:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+}
+
+
 
 
