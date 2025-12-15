@@ -8862,5 +8862,12 @@ body.dark-background .btn-theme i {
 }
 
 
+.badge.role.Admin {
+    background-color: #ff4d4f; /* roșu contrastant */
+    color: #fff;
+    font-weight: bold;
+}
+
+
 
 

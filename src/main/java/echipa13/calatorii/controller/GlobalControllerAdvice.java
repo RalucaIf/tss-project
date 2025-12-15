@@ -149,16 +149,25 @@ public class GlobalControllerAdvice {
         if (user == null) user = userRepository.findByUsername(name);
         if (user == null) return null;
 
+        // verificăm nivel și rol
         int level = userPointsRepository.findByUserId(user.getId())
                 .map(p -> p.getLevel())
                 .orElse(0);
 
+        boolean isAdmin = user.getRoles().stream()
+                .anyMatch(r -> r.getName().equals("Admin"));
+
+        if (isAdmin) {
+            return "/imagini/rame/frame-admin.gif"; // rama specială Admin
+        }
+
         if (level < 5) return null; // sub 5 nu ai rama
 
-        // Stabilim indexul GIF-ului (1-8)
-        int frameIndex = Math.min(8, (level - 5) / 2 + 1); // crește câte unul la fiecare 2 niveluri după lvl 5
+        // index rama standard pentru nivel > 5
+        int frameIndex = Math.min(8, (level - 5) / 2 + 1);
         return "/imagini/rame/frame" + frameIndex + ".gif";
     }
+
 
 
 }
