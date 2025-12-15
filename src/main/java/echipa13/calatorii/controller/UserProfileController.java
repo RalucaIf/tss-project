@@ -23,6 +23,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import echipa13.calatorii.repository.TripRepository;
+import echipa13.calatorii.models.Trip;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -48,6 +52,9 @@ public class UserProfileController {
 
     @Autowired
     private TourPurchaseRepository tourPurchaseRepository;
+
+    @Autowired
+    private TripRepository tripRepository;
 
     @GetMapping("/user_profile")
     public String userProfile(Model model, Authentication authentication) {
@@ -96,5 +103,5 @@ public class UserProfileController {
 
         return "user_profile";
     }
-
+    
 }

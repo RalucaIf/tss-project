@@ -1,24 +1,121 @@
+<!-- ============================================================================
+FILE: src/main/resources/templates/journal/detail.html
+Butonul face SUBMIT pe un <form> ascuns (POST clasic) => redirect => persistă sigur.
+UI rămâne ca în poză. JS e în fragmentul 'content', cum ai cerut.
+============================================================================ -->
 <!DOCTYPE html>
 <html lang="ro"
+      xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
-
 <head>
-    <title th:text="${trip.title}">Jurnal</title>
+    <title th:text="${trip.title}">Itinerariu</title>
+    <style>
+        .journey-wrapper{max-width:980px;margin:0 auto}
+        .journey-header{display:flex;align-items:center;gap:12px;justify-content:space-between;margin:2rem 0 1rem}
+        .journey-title{font-weight:700;margin:0}
+        .btn-add{border:0;background:#e65c50;color:#fff;border-radius:999px;padding:.55rem 1rem;font-weight:600;cursor:pointer}
+        .btn-add:hover{opacity:.9}
+        .timeline{position:relative;margin:0 auto}
+        .timeline:before{content:"";position:absolute;left:36px;top:0;bottom:0;width:2px;background:rgba(230,92,80,.35)}
+        .timeline-item{position:relative;display:grid;grid-template-columns:72px 1fr;gap:20px;padding:16px 0 32px}
+        .timeline-bullet{height:48px;width:48px;border-radius:50%;background:#ef8f84;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 0 0 6px #fde0dd}
+        .timeline-bullet small{opacity:.9;font-variant-numeric:tabular-nums}
+        .timeline-card{background:#fff;border-radius:16px;padding:20px 24px;box-shadow:0 8px 20px rgba(0,0,0,.06)}
+        .day-head{display:flex;align-items:baseline;gap:12px}
+        .day-date{font-size:.85rem;color:#6c757d}
+        .city-pill{margin-left:auto;background:#fde0dd;color:#a74a40;padding:4px 10px;border-radius:999px;font-size:.825rem}
+        .item-title{font-weight:600}
+        .item-notes{margin:.25rem 0 0;color:#6c757d}
+        @media (max-width:576px){
+            .timeline:before{left:28px}
+            .timeline-item{grid-template-columns:64px 1fr}
+            .timeline-bullet{height:42px;width:42px;box-shadow:0 0 0 5px #fde0dd}
+        }
+    </style>
 </head>
 
 <div layout:fragment="content">
-    <div class="page-title dark-background"
-         th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
+    <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
         <div class="container position-relative">
             <h1 th:text="${trip.title}">Titlu itinerariu</h1>
-            <p>Detaliu jurnal (deocamdată doar titlul).</p>
+            <p>Itinerariul tău, zi cu zi</p>
         </div>
     </div>
 
     <div class="container py-5">
-        <h2 class="h4" th:text="${trip.title}">Titlu itinerariu</h2>
+        <div class="journey-wrapper">
+            <div class="journey-header">
+                <h2 class="journey-title">Itinerariul tău</h2>
+
+                <!-- CSRF (dacă e în model) -->
+                <div th:if="${_csrf != null}" style="display:none">
+                    <input type="hidden" id="__csrf_param"  th:value="${_csrf.parameterName}"/>
+                    <input type="hidden" id="__csrf_token"  th:value="${_csrf.token}"/>
+                </div>
+
+                <!-- FORM fallback/standard: îl submităm la click (fără AJAX) -->
+                <form id="add-day-form"
+                      th:action="@{/journal/{id}/days(id=${trip.id})}"
+                      method="post" style="display:none">
+                    <input type="hidden" name="title" value="">
+                    <input type="hidden" name="notes" value="">
+                    <input type="hidden"
+                           th:if="${_csrf != null}"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}">
+                </form>
+
+                <!-- Buton: calculează ziua următoare, setează titlul și SUBMIT form -->
+                <button
+                        type="button"
+                        class="btn-add"
+                        onclick="(function(ev){
+            try{ev.preventDefault();ev.stopPropagation();}catch(_){}
+            var t=document.getElementById('timeline'); if(!t) return;
+            var c=parseInt(t.getAttribute('data-day-count')||'0',10); if(isNaN(c)) c=0; c++;
+            var form=document.getElementById('add-day-form'); if(!form) return;
+            form.querySelector('input[name=title]').value='Plan ziua '+c;
+            form.querySelector('input[name=notes]').value='';
+            form.submit(); // WHY: POST clasic -> redirect -> sigur salvat
+          })(event)">
+                    Adaugă zi
+                </button>
+            </div>
+
+            <div id="empty-alert" class="alert alert-info"
+                 th:if="${days == null or #maps.isEmpty(days)}">
+                Nu există încă zile în jurnal. Adaugă prima zi pentru a începe timeline-ul.
+            </div>
+
+            <!-- Timeline (zilele din DB) -->
+            <!-- Timeline (zilele din DB) -->
+            <div id="timeline" class="timeline"
+                 th:attr="data-day-count=${days != null ? #maps.size(days) : 0}">
+                <div class="timeline-item"
+                     th:if="${days != null and !#maps.isEmpty(days)}"
+                     th:each="entry : ${days}"
+                     th:id="|day-${entry.key}|">
+                    <div class="timeline-bullet">
+                        <small th:text="${#numbers.formatInteger(entry.key, 2)}">01</small>
+                    </div>
+                    <div class="timeline-card">
+                        <div class="day-head mb-1">
+                            <h3 class="h5 mb-0">Ziua <span th:text="${entry.key}">1</span></h3>
+                            <span class="day-date"
+                                  th:if="${trip.startDate != null}"
+                                  th:text="${#temporals.format(trip.startDate.plusDays(entry.key - 1), 'dd MMM yyyy')}"></span>
+                            <span class="city-pill" th:text="${trip.category}">Categorie</span>
+                        </div>
+                        <div class="item-title">Secțiune implicită</div>
+                        <div class="item-notes text-muted">Adaugă activități mai târziu.</div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
     </div>
 </div>
 </html>

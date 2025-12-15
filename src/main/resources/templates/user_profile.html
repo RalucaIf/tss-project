@@ -61,7 +61,9 @@
         .profile-avatar,
         .profile-info ,
         .leaderboard,
-        .purchase-list{
+        .purchase-list,
+        .destination-card,
+        .journal-card{
             background: var(--surface-color);
             border-radius: 10px;
             border: 1px solid rgba(0,0,0,0.1);
@@ -74,7 +76,9 @@
         .profile-avatar:hover,
         .profile-info:hover ,
         .leaderboard:hover,
-        .purchase-list:hover{
+        .purchase-list:hover,
+        .destination-card:hover,
+        .journal-card:hover{
             transform: translateY(-8px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             border-color: rgba(0,0,0,0.2);
@@ -95,157 +99,248 @@
                 box-shadow: 0 0 20px #ffd60a;
             }
         }
+
+        /* Cardul Jurnal – să ocupe ambele coloane (sub Leaderboard + Excursiile mele) */
+        .journal-card{
+            grid-column: 1 / -1;      /* întinde cardul pe 2 coloane */
+            position: relative;       /* pt .stretched-link */
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Colaj de poze pentru cardul de Jurnal */
+        .journal-collage{
+            --rad: 12px;
+            --gap: 6px;
+            display: grid;
+            grid-template-areas:
+    "A B C"
+    "A D D";
+            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: var(--gap);
+            width: min(100%, 520px);
+            aspect-ratio: 16/7;       /* ține proporția elegantă */
+            border-radius: var(--rad);
+            overflow: hidden;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+            flex-shrink: 0;           /* nu se strânge când e lângă text */
+        }
+
+        /* Plasarea fiecărei imagini în mozaic */
+        .journal-collage > img:nth-child(1){ grid-area: A; }
+        .journal-collage > img:nth-child(2){ grid-area: B; }
+        .journal-collage > img:nth-child(3){ grid-area: C; }
+        .journal-collage > img:nth-child(4){ grid-area: D; }
+
+        .journal-collage > img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .35s ease, filter .35s ease;
+        }
+
+        /* Efect subtil la hover pe colaj (nu schimbă stilul cardului) */
+        .journal-collage:hover > img{ filter: saturate(.95) contrast(1.05); }
+        .journal-collage:hover > img:nth-child(1){ transform: scale(1.02); }
+
+        /* Responsive: pe ecrane mici colaj 2x2 și cardul devine pe o coloană */
+        @media (max-width: 992px){
+            .journal-card{ flex-direction: column; align-items: stretch; }
+            .journal-collage{
+                width: 100%;
+                max-width: none;
+                aspect-ratio: 16/9;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                grid-template-areas:
+      "A B"
+      "D C";
+            }
+        }
+
+
+
+
+
+
     </style>
-    <div class="profile-container">
-        <div class="profile-avatar">
-            <!--<img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${user.avatar}}" style="height: 300px; width: 300px" class="rounded-circle me-2 border avatar-option-nav">-->
-            <div class="avatar-container me-6"
-                 data-bs-toggle="modal"
-                 data-bs-target="#avatarModal"
-                 style="cursor: pointer; position: relative;">
+<div class="profile-container">
+    <div class="profile-avatar">
+        <!--<img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${user.avatar}}" style="height: 300px; width: 300px" class="rounded-circle me-2 border avatar-option-nav">-->
+        <div class="avatar-container me-6"
+             data-bs-toggle="modal"
+             data-bs-target="#avatarModal"
+             style="cursor: pointer; position: relative;">
 
-                <!-- Avatar -->
-                <img th:src="${navbarAvatarUrl}"
-                     alt="Avatar"
-                     class="avatar"
-                     th:classappend="${navbarLevelClass}">
+            <!-- Avatar -->
+            <img th:src="${navbarAvatarUrl}"
+                 alt="Avatar"
+                 class="avatar"
+                 th:classappend="${navbarLevelClass}">
 
-                <!-- Rama GIF -->
-                <img th:if="${navbarFrameGif != null}"
-                     th:src="@{${navbarFrameGif}}"
-                     class="avatar-frame">
+            <!-- Rama GIF -->
+            <img th:if="${navbarFrameGif != null}"
+                 th:src="@{${navbarFrameGif}}"
+                 class="avatar-frame">
 
-                <!-- Badge puncte (doar User) -->
-                <span sec:authorize="hasRole('User') and !hasRole('Guide')"
-                      class="badge points"
-                      th:text="${navbarPoints} + 'p'"></span>
+            <!-- Badge puncte (doar User) -->
+            <span sec:authorize="hasRole('User') and !hasRole('Guide')"
+                  class="badge points"
+                  th:text="${navbarPoints} + 'p'"></span>
 
-                <!-- Badge nivel -->
-                <span class="badge level"
-                      sec:authorize="isAuthenticated()"
-                      th:text="'Lvl ' + ${navbarLevel}"></span>
+            <!-- Badge nivel -->
+            <span class="badge level"
+                  sec:authorize="isAuthenticated()"
+                  th:text="'Lvl ' + ${navbarLevel}"></span>
 
-                <!-- Badge User -->
-                <span class="badge role User"
-                      sec:authorize="hasRole('User') and !hasRole('Guide')">
+            <!-- Badge User -->
+            <span class="badge role User"
+                  sec:authorize="hasRole('User') and !hasRole('Guide')">
         <i class="bi bi-person-fill"></i> User
     </span>
 
-                <!-- Badge Guide -->
-                <span class="badge role Guide"
-                      sec:authorize="hasRole('Guide')">
+            <!-- Badge Guide -->
+            <span class="badge role Guide"
+                  sec:authorize="hasRole('Guide')">
         <i class="bi bi-geo-alt-fill"></i> Guide
     </span>
 
-            </div>
-            <h4 th:text="${user.username}">Nume utilizator</h4>
         </div>
-        <div class="profile-info">
-            <h4>Informatii profil</h4>
-            <ul>
-                <li>Email: <span th:text ="${user.email}">email@example.com</span></li>
-                <li> Created at: <span th:text="${user.createdAt}">2025-01-01</span></li>
-                <!-- <li>Roles: <span th:text="${user.roles}">Username</span></li>-->
-            </ul>
+        <h4 th:text="${user.username}">Nume utilizator</h4>
+    </div>
+    <div class="profile-info">
+        <h4>Informatii profil</h4>
+        <ul>
+            <li>Email: <span th:text ="${user.email}">email@example.com</span></li>
+            <li> Created at: <span th:text="${user.createdAt}">2025-01-01</span></li>
+           <!-- <li>Roles: <span th:text="${user.roles}">Username</span></li>-->
+        </ul>
+    </div>
+    <!-- Jurnalul meu – card banner orizontal -->
+    <div sec:authorize="hasRole('User') and !hasRole('Guide')" class="journal-card">
+        <!-- Colaj poze -->
+        <div class="journal-collage">
+            <img th:src="@{/imagini/poza1.png}" alt="">
+            <img th:src="@{/imagini/Italia.png}" alt="">
+            <img th:src="@{/imagini/Norvegia.png}" alt="">
+            <img th:src="@{/imagini/Portugalia.png}" alt="">
         </div>
-        <div sec:authorize="hasRole('User') and !hasRole('Guide')" class="leaderboard">
-            <h4>Leaderboard</h4>
-            <ul>
-                <li th:each="up : ${userPoints}"
-                    th:class="'leaderboard-row ' + (${up.user.username} == ${user.username} ? 'me' : '')"
-                    th:if="${up.user.roles.size()} == 1 and ${up.user.roles[0].name == 'User'}">
 
-                    <!-- Dacă e user-ul logat, avatar clickabil -->
-                    <div th:if="${up.user.username == user.username}"
-                         class="avatar-container me-1"
-                         data-bs-toggle="modal"
-                         data-bs-target="#avatarModal"
-                         style="cursor: pointer; position: relative;">
-                        <div style="position: relative; display: inline-block; margin-right: 10px;">
-                            <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${up.user.avatar}}"
-                                 alt="Avatar" class="avatar">
-                            <img th:if="${up.level >= 5}"
-                                 th:src="@{'/imagini/rame/frame' + ${frameNumbers[up.user.id]} + '.gif'}"
-                                 class="avatar-frame">
-                        </div>
+        <!-- Text -->
+        <div>
+            <h4 class="mb-1">Jurnalul meu</h4>
+            <p class="text-muted mb-0">Salvează amintiri din excursii.</p>
+        </div>
+
+        <!-- Link pe tot cardul -->
+        <a class="stretched-link" th:href="@{/journal}" aria-label="Deschide Jurnalul meu"></a>
+    </div>
+
+
+    <div sec:authorize="hasRole('User') and !hasRole('Guide')" class="leaderboard">
+        <h4>Leaderboard</h4>
+        <ul>
+            <li th:each="up : ${userPoints}"
+                th:class="'leaderboard-row ' + (${up.user.username} == ${user.username} ? 'me' : '')"
+                th:if="${up.user.roles.size()} == 1 and ${up.user.roles[0].name == 'User'}">
+
+                <!-- Dacă e user-ul logat, avatar clickabil -->
+                <div th:if="${up.user.username == user.username}"
+                     class="avatar-container me-1"
+                     data-bs-toggle="modal"
+                     data-bs-target="#avatarModal"
+                     style="cursor: pointer; position: relative;">
+                    <div style="position: relative; display: inline-block; margin-right: 10px;">
+                        <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${up.user.avatar}}"
+                             alt="Avatar" class="avatar">
+                        <img th:if="${up.level >= 5}"
+                             th:src="@{'/imagini/rame/frame' + ${frameNumbers[up.user.id]} + '.gif'}"
+                             class="avatar-frame">
                     </div>
-
-                    <!-- Dacă e alt user, avatar doar vizual -->
-                    <div th:if="${up.user.username != user.username}"
-                         class="avatar-container me-1"
-                         style="cursor: default; position: relative;">
-                        <div style="position: relative; display: inline-block; margin-right: 10px;">
-                            <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${up.user.avatar}}"
-                                 alt="Avatar" class="avatar">
-                            <img th:if="${up.level >= 5}"
-                                 th:src="@{'/imagini/rame/frame' + ${frameNumbers[up.user.id]} + '.gif'}"
-                                 class="avatar-frame">
-                        </div>
-                    </div>
-
-                    <span th:text="${up.user.username}"></span> -
-                    <span th:text="${up.points} + 'p'"></span>
-                </li>
-            </ul>
-        </div>
-        <div sec:authorize="hasRole('User') and !hasRole('Guide')" class="purchase-list">
-            <h4>Excursiile mele</h4>
-
-            <div th:if="${#lists.isEmpty(purchases)}">
-                <p>Nu ai cumpărat nimic încă 😢</p>
-            </div>
-
-            <ul th:if="${!#lists.isEmpty(purchases)}">
-                <li th:each="p : ${purchases}">
-                    <span th:text="${p.tour.title}"></span>
-                    –
-                    <span th:text="${p.tour.pricePoints} + 'p'"></span>
-                    <small th:text="${#temporals.format(p.purchasedAt, 'dd.MM.yyyy')}"></small>
-                </li>
-            </ul>
-        </div>
-        <div sec:authorize="hasRole('Guide')" class="list_tours">
-            <section id="featured-destinations" class="featured-destinations section">
-                <div class="container section-title">
-                    <h2>Tururile Dumneavoastra</h2>
-                    <div><span>Vizualizati</span> <span class="description-title">Tururile Postate</span></div>
                 </div>
 
-                <div class = 'container'>
-                    <div th:if="${#lists.isEmpty(calatorii)}">
-                        <p>Nu aveți încă tururi.</p>
+                <!-- Dacă e alt user, avatar doar vizual -->
+                <div th:if="${up.user.username != user.username}"
+                     class="avatar-container me-1"
+                     style="cursor: default; position: relative;">
+                    <div style="position: relative; display: inline-block; margin-right: 10px;">
+                        <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${up.user.avatar}}"
+                             alt="Avatar" class="avatar">
+                        <img th:if="${up.level >= 5}"
+                             th:src="@{'/imagini/rame/frame' + ${frameNumbers[up.user.id]} + '.gif'}"
+                             class="avatar-frame">
                     </div>
-                    <div class="row gy-4" th:if="${!#lists.isEmpty(calatorii)}">
-                        <div class="col-lg-4 col-md-6" th:each="c : ${calatorii}">
-                            <div class="destination-card">
-                                <div class="image-wrapper">
-                                    <img th:src="@{/uploads/{img}(img=${c.image})}" alt="Destinație" class="img-fluid">
-                                </div>
+                </div>
 
-                                <div class="content">
-                                    <h4 th:text="${c.title}">Titlu</h4>
-                                    <p th:text="${#strings.abbreviate(c.pricePoints, 100)}">Descriere</p>
+                <span th:text="${up.user.username}"></span> -
+                <span th:text="${up.points} + 'p'"></span>
+            </li>
+        </ul>
+    </div>
+    <div sec:authorize="hasRole('User') and !hasRole('Guide')" class="purchase-list">
+        <h4>Excursiile mele</h4>
 
-                                    <div class="card-footer">
-                                        <form th:action="@{/tours/delete/{id}(id=${c.id})}" method="post">
-                                            <button class="btn btn-danger"
-                                                    onclick="return confirm('Ești sigur că vrei să ștergi acest tur?');">
-                                                Delete
-                                            </button>
-                                        </form>
-                                        <form th:action="@{/Itravel/edit/{id}(id=${c.id})}" method="get">
-                                            <button  class="btn btn-login w-100">
-                                                Edit
-                                            </button>
-                                        </form>
-                                    </div>
+        <div th:if="${#lists.isEmpty(purchases)}">
+            <p>Nu ai cumpărat nimic încă 😢</p>
+        </div>
+
+        <ul th:if="${!#lists.isEmpty(purchases)}">
+            <li th:each="p : ${purchases}">
+                <span th:text="${p.tour.title}"></span>
+                –
+                <span th:text="${p.tour.pricePoints} + 'p'"></span>
+                <small th:text="${#temporals.format(p.purchasedAt, 'dd.MM.yyyy')}"></small>
+            </li>
+        </ul>
+    </div>
+    <!-- CARD: Jurnalul meu (sub Leaderboard + Excursiile mele) -->
+
+
+
+    <div sec:authorize="hasRole('Guide')" class="list_tours">
+        <section id="featured-destinations" class="featured-destinations section">
+            <div class="container section-title">
+                <h2>Tururile Dumneavoastra</h2>
+                <div><span>Vizualizati</span> <span class="description-title">Tururile Postate</span></div>
+            </div>
+
+            <div class = 'container'>
+                <div th:if="${#lists.isEmpty(calatorii)}">
+                    <p>Nu aveți încă tururi.</p>
+                </div>
+                <div class="row gy-4" th:if="${!#lists.isEmpty(calatorii)}">
+                    <div class="col-lg-4 col-md-6" th:each="c : ${calatorii}">
+                        <div class="destination-card">
+                            <div class="image-wrapper">
+                                <img th:src="@{/uploads/{img}(img=${c.image})}" alt="Destinație" class="img-fluid">
+                            </div>
+
+                            <div class="content">
+                                <h4 th:text="${c.title}">Titlu</h4>
+                                <p th:text="${#strings.abbreviate(c.pricePoints, 100)}">Descriere</p>
+
+                                <div class="card-footer">
+                                    <form th:action="@{/tours/delete/{id}(id=${c.id})}" method="post">
+                                        <button class="btn btn-danger"
+                                                onclick="return confirm('Ești sigur că vrei să ștergi acest tur?');">
+                                            Delete
+                                        </button>
+                                    </form>
+                                    <form th:action="@{/Itravel/edit/{id}(id=${c.id})}" method="get">
+                                        <button  class="btn btn-login w-100">
+                                            Edit
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-        </div>
+            </div>
+        </section>
+    </div>
     </div>
 </div>
 </div>
