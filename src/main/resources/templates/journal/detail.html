@@ -1,7 +1,7 @@
 <!-- ============================================================================
 FILE: src/main/resources/templates/journal/detail.html
-Butonul face SUBMIT pe un <form> ascuns (POST clasic) => redirect => persistă sigur.
-UI rămâne ca în poză. JS e în fragmentul 'content', cum ai cerut.
+Butonul "Adaugă zi" face SUBMIT pe un <form> ascuns (POST clasic) => redirect => persistă sigur.
+Am adăugat vizualizare + editare notițe pe fiecare zi (POST clasic), fără să stric fluxul existent.
 ============================================================================ -->
 <!DOCTYPE html>
 <html lang="ro"
@@ -17,6 +17,31 @@ UI rămâne ca în poză. JS e în fragmentul 'content', cum ai cerut.
         .journey-title{font-weight:700;margin:0}
         .btn-add{border:0;background:#e65c50;color:#fff;border-radius:999px;padding:.55rem 1rem;font-weight:600;cursor:pointer}
         .btn-add:hover{opacity:.9}
+        /* Buton secundar, în stilul paginii (pill, accent roșu) */
+        .btn-edit{
+            border:1px solid #e65c50;
+            background:transparent;
+            color:#e65c50;
+            border-radius:999px;
+            padding:.25rem .7rem;
+            font-weight:600;
+            line-height:1.1;
+            cursor:pointer;
+            transition:all .15s ease;
+            font-size:.875rem; /* puțin mai mic decât .btn-add */
+        }
+        .btn-edit:hover{
+            background:#e65c50;
+            color:#fff;
+        }
+        .btn-edit:focus{
+            outline:2px solid rgba(230,92,80,.35);
+            outline-offset:2px;
+        }
+        @media (max-width:576px){
+            .btn-edit{ padding:.25rem .6rem; font-size:.8rem; }
+        }
+
         .timeline{position:relative;margin:0 auto}
         .timeline:before{content:"";position:absolute;left:36px;top:0;bottom:0;width:2px;background:rgba(230,92,80,.35)}
         .timeline-item{position:relative;display:grid;grid-template-columns:72px 1fr;gap:20px;padding:16px 0 32px}
@@ -78,7 +103,7 @@ UI rămâne ca în poză. JS e în fragmentul 'content', cum ai cerut.
             var form=document.getElementById('add-day-form'); if(!form) return;
             form.querySelector('input[name=title]').value='Plan ziua '+c;
             form.querySelector('input[name=notes]').value='';
-            form.submit(); // WHY: POST clasic -> redirect -> sigur salvat
+            form.submit(); // POST clasic -> redirect -> sigur salvat
           })(event)">
                     Adaugă zi
                 </button>
@@ -89,7 +114,6 @@ UI rămâne ca în poză. JS e în fragmentul 'content', cum ai cerut.
                 Nu există încă zile în jurnal. Adaugă prima zi pentru a începe timeline-ul.
             </div>
 
-            <!-- Timeline (zilele din DB) -->
             <!-- Timeline (zilele din DB) -->
             <div id="timeline" class="timeline"
                  th:attr="data-day-count=${days != null ? #maps.size(days) : 0}">
@@ -108,12 +132,88 @@ UI rămâne ca în poză. JS e în fragmentul 'content', cum ai cerut.
                                   th:text="${#temporals.format(trip.startDate.plusDays(entry.key - 1), 'dd MMM yyyy')}"></span>
                             <span class="city-pill" th:text="${trip.category}">Categorie</span>
                         </div>
+
                         <div class="item-title">Secțiune implicită</div>
-                        <div class="item-notes text-muted">Adaugă activități mai târziu.</div>
+
+                        <!-- ===== VEDERE NOTIȚE + BUTON EDITEAZĂ ===== -->
+                        <div class="item-notes text-muted" th:id="|note-view-${entry.key}|">
+                            <span th:text="${(entry.value != null and !#lists.isEmpty(entry.value) and !#strings.isEmpty(entry.value.get(0).notes))
+                                             ? entry.value.get(0).notes
+                                             : 'Nu ai notițe încă.'}">
+                                Nu ai notițe încă.
+                            </span>
+
+                            <button type="button"
+                                    class="btn-edit ms-2"
+                                    th:attr="data-day=${entry.key}"
+                                    onclick="toggleNoteForm(this.getAttribute('data-day'))">
+                                Editează
+                            </button>
+
+                        </div>
+
+                        <!-- ===== FORMULAR NOTIȚE (ASCUNS IMPLICIT) ===== -->
+                        <form class="note-form mt-3"
+                              th:id="|note-form-${entry.key}|"
+                              th:action="@{/journal/{id}/days/{day}/notes(id=${trip.id}, day=${entry.key})}"
+                              method="post"
+                              style="display:none">
+                            <label class="form-label" th:for="|note-${entry.key}|">
+                                Notițe pentru ziua <span th:text="${entry.key}">1</span>
+                            </label>
+
+                            <textarea th:id="|note-${entry.key}|"
+                                      name="note"
+                                      rows="3"
+                                      class="form-control"
+                                      th:text="${(entry.value != null and !#lists.isEmpty(entry.value)) ? entry.value.get(0).notes : ''}"
+                                      placeholder="Scrie notițe pentru ziua asta..."></textarea>
+
+                            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                            <div class="d-flex gap-2 mt-2">
+                                <button type="submit" class="btn btn-sm btn-primary">Salvează</button>
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-secondary"
+                                        th:attr="data-day=${entry.key}"
+                                        onclick="cancelNoteEdit(this.getAttribute('data-day'))">
+                                    Anulează
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
 
+            <!-- JS simplu pentru toggling vizualizare <-> formular -->
+            <script>
+                function toggleNoteForm(day){
+                    var view = document.getElementById('note-view-' + day);
+                    var form = document.getElementById('note-form-' + day);
+                    if(!view || !form) return;
+
+                    // dacă textarea e goală, sincronizez cu textul vizibil
+                    var ta = form.querySelector('textarea');
+                    if(ta && (!ta.value || ta.value.trim().length === 0)) {
+                        var span = view.querySelector('span');
+                        if(span){
+                            var txt = (span.textContent || '').trim();
+                            if(txt && txt !== 'Nu ai notițe încă.') ta.value = txt;
+                        }
+                    }
+
+                    view.style.display = 'none';
+                    form.style.display = '';
+                }
+
+                function cancelNoteEdit(day){
+                    var view = document.getElementById('note-view-' + day);
+                    var form = document.getElementById('note-form-' + day);
+                    if(!view || !form) return;
+                    form.style.display = 'none';
+                    view.style.display = '';
+                }
+            </script>
 
         </div>
     </div>
