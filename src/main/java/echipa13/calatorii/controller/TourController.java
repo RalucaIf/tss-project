@@ -33,6 +33,8 @@ public class TourController {
     private GuideService guideService;
     @Autowired
     private TourPurchaseRepository tourPurchaseRepository;
+    @Autowired
+    private TripRepository tripRepository;
 
     @Autowired
     public TourController(TourService tourService) {
@@ -88,7 +90,7 @@ public class TourController {
 
         model.addAttribute("boughtTourIds", boughtTourIds);
 
-        return "Itravel-list";  // numele HTML-ului de listare
+        return "Itravel-list" ;  // numele HTML-ului de listare
     }
 
     @PostMapping("/tours/delete/{id}")
@@ -131,6 +133,37 @@ public class TourController {
         tourPurchaseRepository.save(tourPurchase);
 
         return "redirect:/Itravel?success=" + id;
+    }
+
+    @PostMapping("/tours/add-to-itinerary/{id}")
+    public String addToItinerary(@PathVariable Long id, Authentication authentication, @RequestParam Long tripId) {
+        String username = authentication.getName();
+        System.out.println("Logged in username: " + username);
+
+        UserEntity user = userService.findByUsername(username);
+        if (user == null) {
+            System.out.println("User not found in DB!");
+            return "redirect:/login";
+        }
+
+        TourDto tour = tourService.findTourById(id);
+
+        Trip trip = tripRepository.findById(tripId).orElse(null);
+
+        Tour tourEntity = tourService.findEntityById(tour.getId());
+
+        boolean alreadyUsed = tripRepository
+                .existsByUserAndExcursii_Id(user, id);
+
+        if (alreadyUsed) {
+            return "redirect:/tour/" + id + "?error=alreadyInTrip";
+        }
+        tourEntity.setTrip(trip);
+        trip.getExcursii().add(tourEntity);
+        tripRepository.save(trip);
+
+        return "redirect:/trips/" + tripId;
+
     }
 }
 

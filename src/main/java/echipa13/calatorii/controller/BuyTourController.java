@@ -4,9 +4,7 @@ import echipa13.calatorii.Dto.DestinationsDto;
 import echipa13.calatorii.Dto.ItinerariuZiDto;
 import echipa13.calatorii.Dto.TourDto;
 import echipa13.calatorii.models.*;
-import echipa13.calatorii.repository.GuideRepository;
-import echipa13.calatorii.repository.TourRepository;
-import echipa13.calatorii.repository.UserRepository;
+import echipa13.calatorii.repository.*;
 import echipa13.calatorii.service.DestinationsService;
 import echipa13.calatorii.service.TourService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +38,11 @@ public class BuyTourController {
 
     @Autowired
     private TourRepository tourRepository;
+
+    @Autowired
+    private TourPurchaseRepository tourPurchaseRepository;
+    @Autowired
+    private TripRepository tripRepository;
 
     /* ===================== PAGINI SIMPLE ===================== */
     @GetMapping("/About")
@@ -77,6 +80,24 @@ public class BuyTourController {
     public String showTourDetail(@PathVariable Long id, Model model) {
         TourDto tur = tourService.findTourById(id);
         model.addAttribute("calatorie", tur);
+
+        // user logat
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String emailOrUsername = auth.getName();
+        UserEntity user = userRepository.findByEmail(emailOrUsername);
+        if (user == null) user = userRepository.findByUsername(emailOrUsername);
+        model.addAttribute("user", user);
+        List<Long> boughtTourIds = tourPurchaseRepository
+                .findByBuyer(user)
+                .stream()
+                .map(tp -> tp.getTour().getId())
+                .toList();
+
+        List<Trip> trips = tripRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
+        model.addAttribute("trips", trips);
+
+        model.addAttribute("boughtTourIds", boughtTourIds);
+
         return "tour-details";
     }
 
@@ -131,7 +152,8 @@ public class BuyTourController {
                     tour.getCategory(),
                     tour.getLocations(),
                     tour.getHighlights(),
-                    itinerariuDtoList
+                    itinerariuDtoList,
+                    tour.getTrip().getId()
             );
 
             dto.setDestinationId(tour.getDestination() != null ? tour.getDestination().getId() : null);
