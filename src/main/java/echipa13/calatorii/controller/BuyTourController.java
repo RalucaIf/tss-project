@@ -137,6 +137,17 @@ public class BuyTourController {
             dto.setDestinationId(tour.getDestination() != null ? tour.getDestination().getId() : null);
         }
 
+        if (dto.getItinerariu() == null) {
+            dto.setItinerariu(new ArrayList<>());
+        }
+
+        if (dto.getItinerariu().isEmpty()) {
+            ItinerariuZiDto ziua1 = new ItinerariuZiDto();
+            ziua1.setZi(1);
+            dto.getItinerariu().add(ziua1);
+        }
+
+
         model.addAttribute("calatorii", dto);
         model.addAttribute("destinations", destinationsService.findAllDTOs());
         model.addAttribute("highlights", Highlight.values());

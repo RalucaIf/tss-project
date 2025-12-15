@@ -120,42 +120,46 @@
                 <input type="file" class="form-control" name="imagine" accept="image/*">
             </div>
 
-            <h4 class="mt-4">Itinerar Zile</h4>
+            <h4 class="mt-4">Itinerariu Zile</h4>
 
             <div id="itinerariu-container">
-
                 <div class="itinerariu-day card p-3 mb-3"
                      th:each="zi, stat : *{itinerariu}">
 
                     <input type="number"
                            th:field="*{itinerariu[__${stat.index}__].zi}"
                            class="form-control mb-2"
-                           placeholder="Zi">
+                           placeholder="Zi"
+                           th:value="${zi.zi != null ? zi.zi : stat.index + 1}">
 
                     <input type="text"
                            th:field="*{itinerariu[__${stat.index}__].titlu}"
                            class="form-control mb-2"
-                           placeholder="Titlu">
+                           placeholder="Titlu"
+                           th:value="${zi.titlu}">
 
                     <input type="text"
                            th:field="*{itinerariu[__${stat.index}__].locatie}"
                            class="form-control mb-2"
-                           placeholder="Locatie">
+                           placeholder="Locatie"
+                           th:value="${zi.locatie}">
 
                     <textarea
                             th:field="*{itinerariu[__${stat.index}__].descriere}"
                             class="form-control mb-2"
-                            placeholder="Descriere"></textarea>
+                            placeholder="Descriere"
+                            th:text="${zi.descriere}"></textarea>
 
                     <input type="text"
                            th:field="*{itinerariu[__${stat.index}__].features}"
                            class="form-control mb-2"
-                           placeholder="Features (comma separated)">
+                           placeholder="Features (comma separated)"
+                           th:value="${zi.features != null ? zi.features.join(', ') : ''}">
                 </div>
-
             </div>
 
-            <button type="button"
+
+                    <button type="button"
                     class="btn btn-secondary mb-4"
                     onclick="addDay()">➕ Add Day</button>
 

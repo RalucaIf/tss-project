@@ -465,29 +465,31 @@
            th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 </form>
 <!-- JS -->
-
 <script>
-    let dayIndex = 1;
+function addDay() {
+const container = document.getElementById('itinerariu-container');
+const days = container.querySelectorAll('.itinerariu-day');
+const firstDay = days[0];
+const clone = firstDay.cloneNode(true);
 
-    function addDay() {
-        const container = document.getElementById('itinerariu-container');
-        const firstDay = container.querySelector('.itinerariu-day');
-        const clone = firstDay.cloneNode(true);
+// Index pentru următoarea zi
+const newIndex = days.length;
 
-        // Reset values
-        clone.querySelectorAll('input, textarea').forEach(i => i.value = '');
+// Reset values și update name
+clone.querySelectorAll('input, textarea').forEach(field => {
+field.value = '';
 
-        // Update names
-        clone.querySelectorAll('input, textarea').forEach(field => {
-            const name = field.name;
-            const newName = name.replace(/\d+/, dayIndex);
-            field.name = newName;
-        });
+const nameAttr = field.getAttribute('name');
+if (nameAttr) {
+const newName = nameAttr.replace(/\d+/, newIndex);
+field.setAttribute('name', newName);
+}
+});
 
-        container.appendChild(clone);
-        dayIndex++;
-    }
+container.appendChild(clone);
+}
 </script>
+
 
 <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
 <script th:src="@{/js/isotope.js}"></script>
