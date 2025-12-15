@@ -115,11 +115,12 @@ public class TourServiceImpl implements TourService {
         dto.setHighlights(t.getHighlights());
         dto.setDestinationId(t.getDestination() != null ? t.getDestination().getId() : null);
 
+        List<ItinerariuZiDto> itinerariuDto = new ArrayList<>();
         // mapare itinerariu
         dto.setItinerariu(
                 t.getItinerariu() != null
                         ? t.getItinerariu().stream()
-                        .map(zi -> new ItinerariuZiDto(zi.getZi(), zi.getTitlu(), zi.getLocatie(), zi.getDescriere(), zi.getFeatures()))
+                        .map(zi -> new ItinerariuZiDto(zi.getId(), zi.getZi(), zi.getTitlu(), zi.getLocatie(), zi.getDescriere(), zi.getFeatures()))
                         .toList()
                         : new ArrayList<>()
         );

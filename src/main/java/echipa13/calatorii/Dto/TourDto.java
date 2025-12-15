@@ -101,6 +101,7 @@ public class TourDto {
             List<ItinerariuZi> itinerariuList = new ArrayList<>();
             for (ItinerariuZiDto dayDto : this.itinerariu) {
                 ItinerariuZi day = new ItinerariuZi();
+                day.setId(dayDto.getId()); // safe pt create, util pt debug
                 day.setZi(dayDto.getZi());
                 day.setTitlu(dayDto.getTitlu());
                 day.setLocatie(dayDto.getLocatie());

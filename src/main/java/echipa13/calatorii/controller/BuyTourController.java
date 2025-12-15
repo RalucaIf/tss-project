@@ -109,6 +109,7 @@ public class BuyTourController {
             // Mapare itinerariu entity -> DTO
             List<ItinerariuZiDto> itinerariuDtoList = tour.getItinerariu().stream()
                     .map(zi -> new ItinerariuZiDto(
+                            zi.getId(),
                             zi.getZi(),
                             zi.getTitlu(),
                             zi.getLocatie(),
@@ -189,27 +190,46 @@ public class BuyTourController {
             tour.setHighlights(dto.getHighlights());
 
             // 6️⃣ mapare itinerariu string -> List<String> și entity
-            List<ItinerariuZi> itinerariuEntities = new ArrayList<>();
-            if (dto.getItinerariu() != null) {
-                itinerariuEntities = dto.getItinerariu().stream().map(dayDto -> {
-                    if (dayDto.getFeatures() != null && dayDto.getFeatures().size() == 1) {
-                        dayDto.setFeatures(Arrays.stream(dayDto.getFeatures().get(0).split(","))
-                                .map(String::trim).toList());
-                    }
-                    ItinerariuZi zi = new ItinerariuZi();
-                    zi.setZi(dayDto.getZi());
-                    zi.setTitlu(dayDto.getTitlu());
-                    zi.setLocatie(dayDto.getLocatie());
-                    zi.setDescriere(dayDto.getDescriere());
-                    zi.setFeatures(dayDto.getFeatures());
+            List<ItinerariuZi> existing = tour.getItinerariu();
+            Map<Long, ItinerariuZi> existingMap = existing.stream()
+                    .filter(z -> z.getId() != null)
+                    .collect(Collectors.toMap(ItinerariuZi::getId, z -> z));
+
+            List<ItinerariuZi> finalList = new ArrayList<>();
+
+            for (ItinerariuZiDto dayDto : dto.getItinerariu()) {
+
+                ItinerariuZi zi;
+
+                if (dayDto.getId() != null && existingMap.containsKey(dayDto.getId())) {
+                    // ✏️ UPDATE
+                    zi = existingMap.get(dayDto.getId());
+                } else {
+                    // 🆕 CREATE
+                    zi = new ItinerariuZi();
                     zi.setTour(tour);
-                    return zi;
-                }).collect(Collectors.toList());
+                }
+
+                // features din string
+                if (dayDto.getFeatures() != null && dayDto.getFeatures().size() == 1) {
+                    dayDto.setFeatures(Arrays.stream(dayDto.getFeatures().get(0).split(","))
+                            .map(String::trim)
+                            .toList());
+                }
+
+                zi.setZi(dayDto.getZi());
+                zi.setTitlu(dayDto.getTitlu());
+                zi.setLocatie(dayDto.getLocatie());
+                zi.setDescriere(dayDto.getDescriere());
+                zi.setFeatures(dayDto.getFeatures());
+
+                finalList.add(zi);
             }
 
-// În loc să înlocuiești lista, curăță și adaugă
+// 🔥 AICI e cheia cu orphanRemoval
             tour.getItinerariu().clear();
-            tour.getItinerariu().addAll(itinerariuEntities);
+            tour.getItinerariu().addAll(finalList);
+
 
 
             // 7️⃣ imagine

@@ -120,17 +120,44 @@
                 <input type="file" class="form-control" name="imagine" accept="image/*">
             </div>
 
-            <h4>Itinerar Zile</h4>
+            <h4 class="mt-4">Itinerar Zile</h4>
+
             <div id="itinerariu-container">
-                <div class="itinerariu-day card p-3 mb-3">
-                    <input type="number" name="itinerariu[0].zi" placeholder="Zi" class="form-control mb-2">
-                    <input type="text" name="itinerariu[0].titlu" placeholder="Titlu" class="form-control mb-2">
-                    <input type="text" name="itinerariu[0].locatie" placeholder="Locatie" class="form-control mb-2">
-                    <textarea name="itinerariu[0].descriere" placeholder="Descriere" class="form-control mb-2"></textarea>
-                    <input type="text" name="itinerariu[0].features" placeholder="Features (comma separated)" class="form-control mb-2">
+
+                <div class="itinerariu-day card p-3 mb-3"
+                     th:each="zi, stat : *{itinerariu}">
+
+                    <input type="number"
+                           th:field="*{itinerariu[__${stat.index}__].zi}"
+                           class="form-control mb-2"
+                           placeholder="Zi">
+
+                    <input type="text"
+                           th:field="*{itinerariu[__${stat.index}__].titlu}"
+                           class="form-control mb-2"
+                           placeholder="Titlu">
+
+                    <input type="text"
+                           th:field="*{itinerariu[__${stat.index}__].locatie}"
+                           class="form-control mb-2"
+                           placeholder="Locatie">
+
+                    <textarea
+                            th:field="*{itinerariu[__${stat.index}__].descriere}"
+                            class="form-control mb-2"
+                            placeholder="Descriere"></textarea>
+
+                    <input type="text"
+                           th:field="*{itinerariu[__${stat.index}__].features}"
+                           class="form-control mb-2"
+                           placeholder="Features (comma separated)">
                 </div>
+
             </div>
-            <button type="button" class="btn btn-secondary mb-4" onclick="addDay()">➕ Add Day</button>
+
+            <button type="button"
+                    class="btn btn-secondary mb-4"
+                    onclick="addDay()">➕ Add Day</button>
 
             <div class="d-grid">
                 <button type="submit" class="btn btn-login btn-lg">🚀 Publish Tour</button>

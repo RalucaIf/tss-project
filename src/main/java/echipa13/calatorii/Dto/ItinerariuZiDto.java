@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItinerariuZiDto {
+    private Long id;   // 🔥 CHEIA EDIT-ULUI
     private int zi;
     private String titlu;
     private String locatie;
