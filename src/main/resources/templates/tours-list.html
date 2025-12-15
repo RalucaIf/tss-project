@@ -136,143 +136,82 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Tours Grid -->
-            <div class="row mb-5">
-                <div class="col-12">
-                    <div class="tours-header">
-                        <h3 class="section-subtitle">All Journeys</h3>
-                        <div class="view-toggle">
-                            <button class="toggle-btn active" data-view="grid">
-                                <i class="bi bi-grid-3x3-gap"></i>
-                            </button>
-                            <button class="toggle-btn" data-view="list">
-                                <i class="bi bi-list"></i>
-                            </button>
+            <section id="tour-packages" class="tour-packages section">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8 text-center">
+                            <h2>Descoperă Pachetele Noastre de Tururi</h2>
+                            <p class="mb-5">
+                                Alege turul perfect și trăiește experiențe memorabile alături de ghizii noștri profesioniști.
+                            </p>
                         </div>
                     </div>
 
-                    <div class="tours-grid">
-                        <div class="tour-item">
-                            <div class="tour-image">
-                                <img src="assets/img/travel/tour-12.webp" alt="Norwegian Fjords" class="img-fluid">
-                                <div class="tour-availability">5 dates available</div>
-                            </div>
-                            <div class="tour-details">
-                                <h4>Norwegian Fjords Explorer</h4>
-                                <p>Cruise through dramatic fjords and witness cascading waterfalls in one of nature's most spectacular theaters.</p>
-                                <div class="tour-highlights">
-                                    <span><i class="bi bi-clock"></i> 8 Days</span>
-                                    <span><i class="bi bi-people"></i> Small Group</span>
-                                    <span><i class="bi bi-star-fill"></i> 4.8</span>
-                                </div>
-                                <div class="tour-pricing">
-                                    <span class="price">$1,899</span>
-                                    <span class="per">per person</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="row gy-4">
+                        <!-- Loop prin toate tururile -->
+                        <div class="col-lg-4 col-md-6 mb-4" th:each="c : ${calatorii}">
+                            <div class="tour-item">
+                                <div class="tour-image position-relative">
+                                    <img th:src="@{/uploads/{img}(img=${c.image})}"
+                                         th:alt="${c.title}"
+                                         class="img-fluid"
+                                         style="width: 100%; height: 250px; object-fit: cover;"
+                                         loading="lazy">
 
-                        <div class="tour-item">
-                            <div class="tour-image">
-                                <img src="assets/img/travel/tour-4.webp" alt="Moroccan Odyssey" class="img-fluid">
-                                <div class="tour-availability">Limited spots</div>
-                            </div>
-                            <div class="tour-details">
-                                <h4>Moroccan Odyssey</h4>
-                                <p>Journey through ancient medinas, vast deserts, and vibrant markets in this sensory-rich adventure.</p>
-                                <div class="tour-highlights">
-                                    <span><i class="bi bi-clock"></i> 10 Days</span>
-                                    <span><i class="bi bi-people"></i> Private Option</span>
-                                    <span><i class="bi bi-star-fill"></i> 4.7</span>
+                                    <!-- Badge pentru status -->
+                                    <span class="tour-badge position-absolute top-0 start-0 m-2 px-2 py-1 text-white fw-bold rounded"
+                                          th:text="${c.status != null ? c.status : 'PUBLISHED'}"
+                                          style="background-color: var(--accent-color); font-size: 0.85rem;">
+        Disponibil
+    </span>
                                 </div>
-                                <div class="tour-pricing">
-                                    <span class="price">$1,299</span>
-                                    <span class="per">per person</span>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="tour-item">
-                            <div class="tour-image">
-                                <img src="assets/img/travel/tour-21.webp" alt="Patagonia Wilderness" class="img-fluid">
-                                <div class="tour-availability">Next: Mar 15</div>
-                            </div>
-                            <div class="tour-details">
-                                <h4>Patagonia Wilderness</h4>
-                                <p>Trek through pristine landscapes where glaciers meet granite peaks in Earth's most remote wilderness.</p>
-                                <div class="tour-highlights">
-                                    <span><i class="bi bi-clock"></i> 14 Days</span>
-                                    <span><i class="bi bi-people"></i> Adventure Level</span>
-                                    <span><i class="bi bi-star-fill"></i> 4.9</span>
-                                </div>
-                                <div class="tour-pricing">
-                                    <span class="price">$2,799</span>
-                                    <span class="per">per person</span>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="tour-item">
-                            <div class="tour-image">
-                                <img src="assets/img/travel/tour-9.webp" alt="Japanese Gardens" class="img-fluid">
-                                <div class="tour-availability">Cherry blossom season</div>
-                            </div>
-                            <div class="tour-details">
-                                <h4>Japanese Gardens &amp; Temples</h4>
-                                <p>Experience the harmony of ancient traditions and modern elegance in Japan's most sacred spaces.</p>
-                                <div class="tour-highlights">
-                                    <span><i class="bi bi-clock"></i> 11 Days</span>
-                                    <span><i class="bi bi-people"></i> Cultural Focus</span>
-                                    <span><i class="bi bi-star-fill"></i> 4.8</span>
-                                </div>
-                                <div class="tour-pricing">
-                                    <span class="price">$2,199</span>
-                                    <span class="per">per person</span>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="tour-item">
-                            <div class="tour-image">
-                                <img src="assets/img/travel/tour-16.webp" alt="Scottish Highlands" class="img-fluid">
-                                <div class="tour-availability">Year-round</div>
-                            </div>
-                            <div class="tour-details">
-                                <h4>Scottish Highlands &amp; Castles</h4>
-                                <p>Discover mist-shrouded lochs, ancient castles, and Highland culture in Scotland's most dramatic region.</p>
-                                <div class="tour-highlights">
-                                    <span><i class="bi bi-clock"></i> 7 Days</span>
-                                    <span><i class="bi bi-people"></i> History &amp; Nature</span>
-                                    <span><i class="bi bi-star-fill"></i> 4.6</span>
-                                </div>
-                                <div class="tour-pricing">
-                                    <span class="price">$1,599</span>
-                                    <span class="per">per person</span>
-                                </div>
-                            </div>
-                        </div>
+                                <div class="tour-details">
+                                    <h4 th:text="${c.title}">Titlu Tur</h4>
+                                    <p th:text="${#strings.abbreviate(c.summary, 100)}">Descriere scurtă</p>
+                                    <div class="tour-highlights d-flex justify-content-between mb-2" style="color: var(--accent-color);">
+                                        <span><i class="bi bi-clock"></i> <span th:text="${c.duration} + ' zile'">X Zile</span></span>
+                                        <span><i class="bi bi-people"></i> <span th:text="${c.maxGuests} + ' persoane'">X persoane</span></span>
+                                        <span><i class="bi bi-star-fill"></i> 4.8</span>
+                                    </div>
 
-                        <div class="tour-item">
-                            <div class="tour-image">
-                                <img src="assets/img/travel/tour-28.webp" alt="Costa Rica Wildlife" class="img-fluid">
-                                <div class="tour-availability">Eco-certified</div>
-                            </div>
-                            <div class="tour-details">
-                                <h4>Costa Rica Wildlife Immersion</h4>
-                                <p>Encounter diverse ecosystems from cloud forests to tropical beaches in this biodiversity hotspot.</p>
-                                <div class="tour-highlights">
-                                    <span><i class="bi bi-clock"></i> 9 Days</span>
-                                    <span><i class="bi bi-people"></i> Eco-Tourism</span>
-                                    <span><i class="bi bi-star-fill"></i> 4.7</span>
-                                </div>
-                                <div class="tour-pricing">
-                                    <span class="price">$1,499</span>
-                                    <span class="per">per person</span>
+                                    <div class="tour-pricing mb-3" style="color: var(--accent-color);">
+                                        <span class="fw-bold" th:text="${c.pricePoints > 0 ?  c.pricePoints : 'Preț la cerere'}">$0</span>
+                                        <span class="per">per person</span>
+                                    </div>
+
+                                    <a th:href="@{/tours/{id}(id=${c.id})}" class="explore-btn" style="color: var(--contrast-color); border-color: var(--contrast-color);">
+                                        <span>Explorează</span>
+                                        <i class="bi bi-arrow-right"></i>
+                                    </a>
+
                                 </div>
                             </div>
                         </div>
+                        <!-- Sfârșit loop -->
                     </div>
+                </div>
+            </section>
+
+            <!-- Pagination -->
+            <div class="row mt-4">
+                <div class="col-12 d-flex justify-content-center">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" th:href="@{|/Tours?page=${page > 0 ? page - 1 : 0}|}">&laquo; Anterior</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                            <a class="page-link"
+                               th:href="@{'/Tours?page=' + ${i}}"
+                               th:text="${i + 1}"
+                               th:classappend="${i == page} ? ' active' : ''">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" th:href="@{|/Tours?page=${page < totalPages - 1 ? page + 1 : totalPages - 1}|}">Următor &raquo;</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
 
