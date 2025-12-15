@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml"
       layout:decorate="~{layout}">
 
 <div layout:fragment="content">
@@ -82,8 +82,27 @@
                 <span class="price-label">From</span>
                 <span th:text="${calatorie.pricePoints}" class="price-amount">€3,450</span>
               </div>
-              <p class="price-description">per person, twin accommodation</p>
-              <a href="#booking" class="btn-reserve">Reserve Your Journey</a>
+                <p th:if="${param.success != null and param.success[0] == c.id.toString()}"
+                   class="text-success">
+                    Excursie cumpărată 🎉
+                </p>
+
+                <p th:if="${param.error != null and param.error[0] == c.id.toString()}"
+                   class="text-danger">
+                    Nu ai destule puncte 😭
+                </p>
+                <form
+                      th:action="@{/tours/buy/{id}(id=${calatorie.id})}" method="post">
+                    <button type="submit" class="btn btn-login w-100" data-bs-toggle="modal" data-bs-target="#buyModal"
+                            th:disabled="${boughtTourIds.contains(calatorie.id)}">
+                                            <span th:if="${boughtTourIds.contains(calatorie.id)}">
+                                                Cumparat!
+                                            </span>
+                        <span th:unless="${boughtTourIds.contains(calatorie.id)}">
+                                                Buy
+                                            </span>
+                    </button>
+                </form>
               <div class="booking-notes">
                 <span><i class="bi bi-shield-check"></i>Free cancellation up to 48h</span>
               </div>
@@ -93,8 +112,41 @@
       </div>
     </div>
 
+      <div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <form th:action="@{/tours/add-to-itinerary/{id}(id=${calatorie.id})}" method="post">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="buyModalLabel">Add to itinerary</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <input type="hidden" name="tourId" th:value="${calatorie.id}" />
 
-    <div class="journey-timeline" th:if="${calatorie.itinerariu != null}">
+                          <div class="mb-3">
+                              <label class="form-label">Select itinerary</label>
+                              <select class="form-select" name="tripId" required>
+                                  <option disabled selected value="">Choose itinerary</option>
+                                  <option th:each="t : ${trips}"
+                                          th:value="${t.id}"
+                                          th:text="${t.title}"></option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                          <button type="submit" class="btn btn-primary">Add</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+
+
+
+
+
+      <div class="journey-timeline" th:if="${calatorie.itinerariu != null}">
       <h2>Your Journey Unfolds</h2>
       <div class="timeline-wrapper">
         <div class="timeline-item" th:each="zi, ziStat : ${calatorie.itinerariu}">

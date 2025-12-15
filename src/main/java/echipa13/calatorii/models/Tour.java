@@ -75,4 +75,8 @@ public class Tour {
     @ManyToOne
     @JoinColumn(name = "destination_id")
     private Destinations destination;
+
+    @ManyToOne
+    @JoinColumn(name ="trip_id")
+    private Trip trip;
 }

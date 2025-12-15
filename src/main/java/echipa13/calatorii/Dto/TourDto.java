@@ -1,9 +1,6 @@
 package echipa13.calatorii.Dto;
 
-import echipa13.calatorii.models.Destinations;
-import echipa13.calatorii.models.Highlight;
-import echipa13.calatorii.models.ItinerariuZi;
-import echipa13.calatorii.models.Tour;
+import echipa13.calatorii.models.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -50,6 +47,8 @@ public class TourDto {
 
     private Long destinationId;
 
+    private Long tripId;
+
     public TourDto() {
         this.createdAt = LocalDateTime.now();
     }
@@ -57,7 +56,7 @@ public class TourDto {
     public TourDto(Long id, String title, Integer pricePoints, String summary, String status,
                    String image, String description, Integer duration, Integer maxGuests,
                    String subtitle, String category, String locations, Set<Highlight> highlights,
-                   List<ItinerariuZiDto> itinerariu) {
+                   List<ItinerariuZiDto> itinerariu, Long tripId) {
 
         this.id = id;
         this.title = title;
@@ -74,6 +73,7 @@ public class TourDto {
         this.locations = locations;
         this.highlights = highlights != null ? highlights : new HashSet<>();
         this.itinerariu = itinerariu != null ? itinerariu : new ArrayList<>();
+        this.tripId = tripId;
     }
 
     // 🔹 Transformare DTO -> Entity
@@ -122,5 +122,4 @@ public class TourDto {
 
         return t;
     }
-
 }

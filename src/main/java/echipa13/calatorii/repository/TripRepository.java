@@ -1,6 +1,7 @@
 package echipa13.calatorii.repository;
 
 import echipa13.calatorii.models.Trip;
+import echipa13.calatorii.models.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,5 +27,7 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
            order by t.category
            """)
     List<String> findDistinctCategoriesForUser(@Param("uid") Long uid);
+
+    boolean existsByUserAndExcursii_Id(UserEntity user, Long tourId);
 }
 

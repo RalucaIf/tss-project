@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "trips")
@@ -41,4 +43,8 @@ public class Trip {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private OffsetDateTime createdAt;
+
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
+    private List<Tour> excursii = new ArrayList<>();
+
 }

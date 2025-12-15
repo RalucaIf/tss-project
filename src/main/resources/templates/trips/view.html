@@ -58,6 +58,16 @@
         <p class="card-text" th:text="${trip.description}">—</p>
       </div>
     </div>
+      <div class="card">
+          <div class="card-body">
+              <h5 class="card-title">Excursii</h5>
+              <li th:each="e : ${trip.excursii}" >
+                  <a th:href="@{/tours/{id}(id = ${e.id})}"
+                      th:text="${e.title}">
+                  </a>
+              </li>
+          </div>
+      </div>
 
     <!-- Dacă vrei, poți afișa și item-urile itinerariului -->
     <!--
