@@ -498,6 +498,33 @@ container.appendChild(clone);
 }
 </script>
 
+<script>
+    const filterButtons = document.querySelectorAll('.filter-pill');
+    const tours = document.querySelectorAll('#tour-container .tour-card');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            filterButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const filter = this.getAttribute('data-filter');
+
+            tours.forEach(tour => {
+                if (filter === '*') {
+                    tour.classList.remove('hidden');
+                } else {
+                    if (tour.classList.contains(filter)) {
+                        tour.classList.remove('hidden');
+                    } else {
+                        tour.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    });
+</script>
+
 
 <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
 <script th:src="@{/js/isotope.js}"></script>
