@@ -55,7 +55,8 @@ public class SecurityConfig {
                                 "/Tour_details", "/Tours").permitAll()
                         .requestMatchers(String.valueOf(HttpMethod.POST), "/auth/login").permitAll()
                         .requestMatchers("/logout").permitAll()
-
+                                .requestMatchers(org.springframework.http.HttpMethod.GET, "/uploads/**").permitAll()
+                                .requestMatchers(org.springframework.http.HttpMethod.GET, "/imagine/**").permitAll()
                         // === TRIPS: DOAR USER ===
                         .requestMatchers("/trips/**").hasRole("User")   // => necesită autoritate ROLE_USER
 

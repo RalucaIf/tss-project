@@ -1,8 +1,10 @@
 <!-- ============================================================================
 FILE: src/main/resources/templates/journal/detail.html
-Butonul "Adaugă zi" face SUBMIT pe un <form> ascuns (POST clasic) => redirect => persistă sigur.
-Am adăugat vizualizare + editare notițe pe fiecare zi (POST clasic), fără să stric fluxul existent.
-============================================================================ -->
+Buton "Adaugă zi" => POST clasic (form ascuns) => redirect.
+Notițe per zi (POST clasic).
+Modal poze: listează pozele salvate + preview local + ștergere (POST clasic).
++ NEW: "Cover photo" pe zi (afișare în card + buton ★ în modal pentru setare).
+============================================================================= -->
 <!DOCTYPE html>
 <html lang="ro"
       xmlns="http://www.w3.org/1999/xhtml"
@@ -17,30 +19,16 @@ Am adăugat vizualizare + editare notițe pe fiecare zi (POST clasic), fără s�
         .journey-title{font-weight:700;margin:0}
         .btn-add{border:0;background:#e65c50;color:#fff;border-radius:999px;padding:.55rem 1rem;font-weight:600;cursor:pointer}
         .btn-add:hover{opacity:.9}
-        /* Buton secundar, în stilul paginii (pill, accent roșu) */
+
+        /* Butoane secundare (Editează / Poze) */
         .btn-edit{
-            border:1px solid #e65c50;
-            background:transparent;
-            color:#e65c50;
-            border-radius:999px;
-            padding:.25rem .7rem;
-            font-weight:600;
-            line-height:1.1;
-            cursor:pointer;
-            transition:all .15s ease;
-            font-size:.875rem; /* puțin mai mic decât .btn-add */
+            border:1px solid #e65c50;background:transparent;color:#e65c50;
+            border-radius:999px;padding:.25rem .7rem;font-weight:600;line-height:1.1;
+            cursor:pointer;transition:all .15s ease;font-size:.875rem;
         }
-        .btn-edit:hover{
-            background:#e65c50;
-            color:#fff;
-        }
-        .btn-edit:focus{
-            outline:2px solid rgba(230,92,80,.35);
-            outline-offset:2px;
-        }
-        @media (max-width:576px){
-            .btn-edit{ padding:.25rem .6rem; font-size:.8rem; }
-        }
+        .btn-edit:hover{ background:#e65c50; color:#fff; }
+        .btn-edit:focus{ outline:2px solid rgba(230,92,80,.35); outline-offset:2px; }
+        @media (max-width:576px){ .btn-edit{ padding:.25rem .6rem; font-size:.8rem; } }
 
         .timeline{position:relative;margin:0 auto}
         .timeline:before{content:"";position:absolute;left:36px;top:0;bottom:0;width:2px;background:rgba(230,92,80,.35)}
@@ -53,11 +41,109 @@ Am adăugat vizualizare + editare notițe pe fiecare zi (POST clasic), fără s�
         .city-pill{margin-left:auto;background:#fde0dd;color:#a74a40;padding:4px 10px;border-radius:999px;font-size:.825rem}
         .item-title{font-weight:600}
         .item-notes{margin:.25rem 0 0;color:#6c757d}
+
+        /* NEW: cover în cardul zilei (se afișează doar dacă există) */
+        .day-cover{height:180px;border-radius:12px;margin:-8px 0 12px;overflow:hidden;background:#f1f3f5}
+        .day-cover img{width:100%;height:100%;object-fit:cover;display:block}
+
         @media (max-width:576px){
             .timeline:before{left:28px}
             .timeline-item{grid-template-columns:64px 1fr}
             .timeline-bullet{height:42px;width:42px;box-shadow:0 0 0 5px #fde0dd}
+            .day-cover{height:150px}
         }
+
+        /* Hover identic cu cardurile din profil */
+        .timeline-card{
+            transition: transform .3s cubic-bezier(.2,.8,.2,1),
+            box-shadow .3s cubic-bezier(.2,.8,.2,1),
+            border-color .25s ease;
+            will-change: transform;
+            border: 1px solid rgba(0,0,0,0.10);
+        }
+        .timeline-card:hover{
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,.12);
+            border-color: rgba(0,0,0,.08);
+        }
+
+        /* Modal poze — fade+slide */
+        .photo-modal-backdrop{
+            position:fixed; inset:0; background:rgba(0,0,0,.28);
+            backdrop-filter: blur(2px);
+            display:flex; align-items:center; justify-content:center;
+            z-index:1050; opacity:0; visibility:hidden; pointer-events:none;
+            transition: opacity .42s cubic-bezier(.22,1,.36,1), visibility 0s linear .42s;
+        }
+        .photo-modal-backdrop.show{ opacity:1; visibility:visible; pointer-events:auto; transition: opacity .42s cubic-bezier(.22,1,.36,1), visibility 0s; }
+        .photo-modal{
+            background:#fff; border-radius:16px; box-shadow:0 18px 48px rgba(0,0,0,.22);
+            width:min(720px,92vw); max-height:85vh; display:flex; flex-direction:column;
+            transform:translateY(24px) scale(.965); opacity:0;
+            transition: transform .44s cubic-bezier(.22,1,.36,1), opacity .44s ease; transition-delay:.04s;
+            will-change: transform, opacity; transform-origin: 50% 46%;
+        }
+        .photo-modal-backdrop.show .photo-modal{ transform:translateY(0) scale(1); opacity:1; transition-delay:.06s; }
+        .photo-modal-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #eee}
+        .photo-modal-title{font-weight:700;margin:0}
+        .photo-modal-body{padding:16px;overflow:auto}
+        .photo-close{border:0;background:transparent;font-size:1.25rem;line-height:1;cursor:pointer}
+        .modal-foot{display:flex;gap:.5rem;justify-content:flex-end;padding:12px 16px;border-top:1px solid #eee}
+
+        @media (prefers-reduced-motion: reduce){
+            .photo-modal-backdrop{transition:none}
+            .photo-modal{transition:none}
+        }
+
+        .photo-uploader{margin-top:.5rem}
+        .photo-uploader input[type=file]{
+            display:block;width:100%;
+            border:1px dashed rgba(0,0,0,.25);
+            background:#fff;border-radius:12px;padding:.65rem;
+            font-size:.95rem;cursor:pointer
+        }
+        .photo-hint{font-size:.85rem;color:#6c757d;margin-top:.35rem}
+
+        .photo-grid{
+            display:grid;grid-template-columns:repeat(auto-fill, minmax(120px,1fr));
+            gap:12px;margin-top:1rem
+        }
+        .photo-grid .thumb{
+            position:relative;border-radius:12px;overflow:visible;
+            background:#f1f3f5;box-shadow:0 6px 16px rgba(0,0,0,.06);padding-top:75%;
+        }
+        .photo-grid .thumb img{
+            position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+            border-radius:12px; transition: transform .35s cubic-bezier(.22,.61,.36,1), box-shadow .35s;
+            transform-origin:center; pointer-events:none; will-change: transform;
+        }
+        .photo-grid .thumb:hover{ z-index:60; }
+        .photo-grid .thumb:hover img{ transform: scale(1.6); box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+        .photo-grid .thumb:focus-within img{ transform: scale(1.6); box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+
+        .thumb .del-form{ position:absolute; top:6px; right:6px; z-index:5; }
+        .thumb .thumb-del{
+            position:absolute; top:8px; left:6px; z-index:70;
+            background:rgba(0,0,0,.65); color:#fff; border:0; width:28px; height:28px;
+            border-radius:999px; font-weight:700; line-height:1; cursor:pointer;
+            opacity:0; transform: translateY(0) scale(.85); transition: opacity .18s ease, transform .18s ease;
+        }
+        .thumb:hover .thumb-del, .thumb .thumb-del:focus, .thumb .thumb-del:focus-visible{
+            opacity:1; transform: translateY(-4px) scale(1);
+        }
+        .thumb .thumb-del:hover{ background:#e65c50; }
+        .photo-grid .thumb:hover .thumb-del, .photo-grid .thumb:focus-within .thumb-del{ opacity:1; transform: scale(1); }
+        .photo-grid .thumb .thumb-del{ position:absolute; inset:4px auto auto 6px; right:auto; transform:none; }
+        .photo-grid .thumb:hover .thumb-del{ top:1px; }
+
+        /* NEW: buton "Setează ca cover" (stea) */
+        .thumb-cover{
+            position:absolute; top:6px; right:6px; z-index:70;
+            background:#e65c50; color:#fff; border:0; width:28px; height:28px;
+            border-radius:999px; font-weight:700; line-height:1; cursor:pointer;
+            opacity:0; transform: scale(.85); transition: opacity .18s ease, transform .18s ease;
+        }
+        .thumb:hover .thumb-cover{ opacity:1; transform: scale(1); }
     </style>
 </head>
 
@@ -74,37 +160,32 @@ Am adăugat vizualizare + editare notițe pe fiecare zi (POST clasic), fără s�
             <div class="journey-header">
                 <h2 class="journey-title">Itinerariul tău</h2>
 
-                <!-- CSRF (dacă e în model) -->
+                <!-- CSRF global pentru scripturi -->
                 <div th:if="${_csrf != null}" style="display:none">
                     <input type="hidden" id="__csrf_param"  th:value="${_csrf.parameterName}"/>
                     <input type="hidden" id="__csrf_token"  th:value="${_csrf.token}"/>
                 </div>
 
-                <!-- FORM fallback/standard: îl submităm la click (fără AJAX) -->
+                <!-- FORM ascuns pentru adăugarea unei zile (NEMODIFICAT) -->
                 <form id="add-day-form"
                       th:action="@{/journal/{id}/days(id=${trip.id})}"
                       method="post" style="display:none">
                     <input type="hidden" name="title" value="">
                     <input type="hidden" name="notes" value="">
-                    <input type="hidden"
-                           th:if="${_csrf != null}"
-                           th:name="${_csrf.parameterName}"
-                           th:value="${_csrf.token}">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 </form>
 
-                <!-- Buton: calculează ziua următoare, setează titlul și SUBMIT form -->
-                <button
-                        type="button"
-                        class="btn-add"
+                <!-- Buton: calculează următoarea zi și trimite (NEMODIFICAT) -->
+                <button type="button" class="btn-add"
                         onclick="(function(ev){
-            try{ev.preventDefault();ev.stopPropagation();}catch(_){}
-            var t=document.getElementById('timeline'); if(!t) return;
-            var c=parseInt(t.getAttribute('data-day-count')||'0',10); if(isNaN(c)) c=0; c++;
-            var form=document.getElementById('add-day-form'); if(!form) return;
-            form.querySelector('input[name=title]').value='Plan ziua '+c;
-            form.querySelector('input[name=notes]').value='';
-            form.submit(); // POST clasic -> redirect -> sigur salvat
-          })(event)">
+                  try{ev.preventDefault();ev.stopPropagation();}catch(_){}
+                  var t=document.getElementById('timeline'); if(!t) return;
+                  var c=parseInt(t.getAttribute('data-day-count')||'0',10); if(isNaN(c)) c=0; c++;
+                  var form=document.getElementById('add-day-form'); if(!form) return;
+                  form.querySelector('input[name=title]').value='Plan ziua '+c;
+                  form.querySelector('input[name=notes]').value='';
+                  form.submit();
+                })(event)">
                     Adaugă zi
                 </button>
             </div>
@@ -125,6 +206,14 @@ Am adăugat vizualizare + editare notițe pe fiecare zi (POST clasic), fără s�
                         <small th:text="${#numbers.formatInteger(entry.key, 2)}">01</small>
                     </div>
                     <div class="timeline-card">
+
+                        <!-- NEW: Cover, dacă există în model -->
+                        <div class="day-cover"
+                             th:if="${coverByDay != null and coverByDay[entry.key] != null}">
+                            <img th:src="${coverByDay[entry.key]}"
+                                 th:alt="|Copertă ziua ${entry.key}|">
+                        </div>
+
                         <div class="day-head mb-1">
                             <h3 class="h5 mb-0">Ziua <span th:text="${entry.key}">1</span></h3>
                             <span class="day-date"
@@ -133,15 +222,13 @@ Am adăugat vizualizare + editare notițe pe fiecare zi (POST clasic), fără s�
                             <span class="city-pill" th:text="${trip.category}">Categorie</span>
                         </div>
 
-                        <div class="item-title">Secțiune implicită</div>
-
-                        <!-- ===== VEDERE NOTIȚE + BUTON EDITEAZĂ ===== -->
+                        <!-- Notițe + butoane -->
                         <div class="item-notes text-muted" th:id="|note-view-${entry.key}|">
-                            <span th:text="${(entry.value != null and !#lists.isEmpty(entry.value) and !#strings.isEmpty(entry.value.get(0).notes))
-                                             ? entry.value.get(0).notes
-                                             : 'Nu ai notițe încă.'}">
-                                Nu ai notițe încă.
-                            </span>
+              <span th:text="${(entry.value != null and !#lists.isEmpty(entry.value) and !#strings.isEmpty(entry.value.get(0).notes))
+                               ? entry.value.get(0).notes
+                               : 'Nu ai notițe încă.'}">
+                Nu ai notițe încă.
+              </span>
 
                             <button type="button"
                                     class="btn-edit ms-2"
@@ -150,9 +237,14 @@ Am adăugat vizualizare + editare notițe pe fiecare zi (POST clasic), fără s�
                                 Editează
                             </button>
 
+                            <button type="button"
+                                    class="btn-edit btn-photos"
+                                    th:attr="onclick=|openPhotoModalForDay(${entry.key})|">
+                                Adaugă și vezi poze
+                            </button>
                         </div>
 
-                        <!-- ===== FORMULAR NOTIȚE (ASCUNS IMPLICIT) ===== -->
+                        <!-- Formular notițe -->
                         <form class="note-form mt-3"
                               th:id="|note-form-${entry.key}|"
                               th:action="@{/journal/{id}/days/{day}/notes(id=${trip.id}, day=${entry.key})}"
@@ -185,14 +277,13 @@ Am adăugat vizualizare + editare notițe pe fiecare zi (POST clasic), fără s�
                 </div>
             </div>
 
-            <!-- JS simplu pentru toggling vizualizare <-> formular -->
+            <!-- JS simplu pentru notițe (NEMODIFICAT) -->
             <script>
                 function toggleNoteForm(day){
                     var view = document.getElementById('note-view-' + day);
                     var form = document.getElementById('note-form-' + day);
                     if(!view || !form) return;
 
-                    // dacă textarea e goală, sincronizez cu textul vizibil
                     var ta = form.querySelector('textarea');
                     if(ta && (!ta.value || ta.value.trim().length === 0)) {
                         var span = view.querySelector('span');
@@ -201,11 +292,9 @@ Am adăugat vizualizare + editare notițe pe fiecare zi (POST clasic), fără s�
                             if(txt && txt !== 'Nu ai notițe încă.') ta.value = txt;
                         }
                     }
-
                     view.style.display = 'none';
                     form.style.display = '';
                 }
-
                 function cancelNoteEdit(day){
                     var view = document.getElementById('note-view-' + day);
                     var form = document.getElementById('note-form-' + day);
@@ -214,8 +303,282 @@ Am adăugat vizualizare + editare notițe pe fiecare zi (POST clasic), fără s�
                     view.style.display = '';
                 }
             </script>
-
         </div>
     </div>
+
+    <!-- MODAL poze -->
+    <div id="photo-modal-backdrop" class="photo-modal-backdrop" aria-hidden="true">
+        <div class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="photo-modal-title">
+            <div class="photo-modal-header">
+                <h4 id="photo-modal-title" class="photo-modal-title">
+                    Poze — Ziua <span id="photo-modal-day">1</span>
+                </h4>
+                <button type="button" class="photo-close" aria-label="Închide" onclick="closePhotoModal()">×</button>
+            </div>
+            <div class="photo-modal-body">
+
+                <!-- Galeria cu pozele SALVATE de pe server -->
+                <div id="photo-saved" class="photo-grid" aria-live="polite"></div>
+
+                <!-- Uploader + preview LOCAL -->
+                <form id="photo-form"
+                      th:action="@{/journal/{id}/photos(id=${trip.id})}"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    <input type="hidden" name="day" id="photo-day" value="">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                    <div class="photo-uploader">
+                        <label for="photo-input" class="form-label mb-1">Adaugă poze</label>
+                        <input id="photo-input" name="files" type="file" accept="image/*" multiple>
+                        <div class="photo-hint">Poți selecta una sau mai multe imagini.</div>
+                    </div>
+
+                    <div id="photo-preview" class="photo-grid" aria-live="polite"></div>
+                </form>
+
+            </div>
+            <div class="modal-foot">
+                <button type="button" class="btn-edit" data-close-photos>Renunță</button>
+                <button type="submit" form="photo-form" class="btn-edit">Încarcă</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Variabile server → JS -->
+    <script th:inline="javascript">
+        window.__PHOTOS_BY_DAY = /*[[${photosByDay}]]*/ {};
+        window.__OPEN_DAY      = /*[[${openDay}]]*/ null;
+        window.__DELETE_URL    = /*[[@{/journal/{id}/photos/delete(id=${trip.id})}]]*/ '';
+        /* NEW: endpoint pentru setarea cover-ului */
+        window.__SET_COVER_URL = /*[[@{/journal/{id}/photos/cover(id=${trip.id})}]]*/ '';
+        window.__MEDIA_BASE    = /*[[@{/uploads/}]]*/ '';
+    </script>
+
+    <!-- JS modal: saved + preview + delete + set cover + auto-open -->
+    <script>
+        (function(){
+            var backdrop = document.getElementById('photo-modal-backdrop');
+            var daySpan  = document.getElementById('photo-modal-day');
+            var dayInput = document.getElementById('photo-day');
+            var fileInput= document.getElementById('photo-input');
+            var preview  = document.getElementById('photo-preview');
+            var savedBox = document.getElementById('photo-saved');
+
+
+            function submitTinyPost(action, fields){
+                var csrfParam = document.getElementById('__csrf_param') ? document.getElementById('__csrf_param').value : null;
+                var csrfToken = document.getElementById('__csrf_token') ? document.getElementById('__csrf_token').value : null;
+
+                var f = document.createElement('form');
+                f.method = 'post'; f.action = action; f.style.display='none';
+                for (var k in fields){
+                    if(Object.prototype.hasOwnProperty.call(fields,k)){
+                        var inp = document.createElement('input');
+                        inp.type='hidden'; inp.name=k; inp.value=fields[k];
+                        f.appendChild(inp);
+                    }
+                }
+                if(csrfParam && csrfToken){
+                    var c = document.createElement('input');
+                    c.type='hidden'; c.name=csrfParam; c.value=csrfToken;
+                    f.appendChild(c);
+                }
+                document.body.appendChild(f); f.submit();
+            }
+
+            var deleteAction = window.__DELETE_URL || '';
+            var coverAction  = window.__COVER_URL  || '';
+
+            function renderSavedPhotos(day){
+                var savedBox = document.getElementById('photo-saved');
+                if(!savedBox) return;
+                savedBox.innerHTML = '';
+
+                var list = (window.__PHOTOS_BY_DAY && window.__PHOTOS_BY_DAY[day]) || [];
+                if(!list.length){
+                    var empty = document.createElement('div');
+                    empty.className = 'text-muted';
+                    empty.textContent = 'Nu există poze salvate încă.';
+                    savedBox.appendChild(empty);
+                    return;
+                }
+
+                var csrfParam = document.getElementById('__csrf_param')?.value;
+                var csrfToken = document.getElementById('__csrf_token')?.value;
+
+                // URL-urile de acțiune
+                var deleteAction = (window.__DELETE_URL || '').trim();
+                var coverAction  = (window.__COVER_URL  || '').trim();
+
+                // Fallback dacă __COVER_URL/__DELETE_URL n-au fost populate din Thymeleaf
+                if(!deleteAction){
+                    deleteAction = (location.pathname.replace(/\/$/, '')) + '/photos/delete';
+                }
+                if(!coverAction){
+                    coverAction  = (location.pathname.replace(/\/$/, '')) + '/photos/cover';
+                }
+
+                // Utilitar pt base-ul /uploads/
+                var mediaBase = (window.__MEDIA_BASE || '/uploads/').replace(/\/+$/,'') + '/';
+                function normalize(u){
+                    if(!u) return '';
+                    if(/^https?:\/\//i.test(u) || u.startsWith('/uploads/')) return u;
+                    return mediaBase + u.replace(/^\/+/, '');
+                }
+
+                list.forEach(function(u){
+                    var url = normalize(u);
+                    var fileName = url.split('/').pop();
+
+                    var card = document.createElement('div');
+                    card.className = 'thumb';
+
+                    var img = document.createElement('img');
+                    img.src = url;
+                    img.alt = '';
+
+                    /* ------- FORM COVER (POST) ------- */
+                    var coverForm = document.createElement('form');
+                    coverForm.method = 'post';
+                    coverForm.action = coverAction;      // <— important!
+                    coverForm.className = 'cover-form';
+
+                    var inDayC = document.createElement('input');
+                    inDayC.type = 'hidden'; inDayC.name = 'day'; inDayC.value = String(day);
+                    var inNameC = document.createElement('input');
+                    inNameC.type = 'hidden'; inNameC.name = 'name'; inNameC.value = fileName;
+
+                    coverForm.appendChild(inDayC);
+                    coverForm.appendChild(inNameC);
+
+                    if(csrfParam && csrfToken){
+                        var inCsrfC = document.createElement('input');
+                        inCsrfC.type = 'hidden'; inCsrfC.name = csrfParam; inCsrfC.value = csrfToken;
+                        coverForm.appendChild(inCsrfC);
+                    }
+
+                    var btnCover = document.createElement('button');
+                    btnCover.type = 'submit';
+                    btnCover.className = 'thumb-cover';
+                    btnCover.title = 'Setează ca poză de copertă';
+                    btnCover.textContent = '★';
+                    coverForm.appendChild(btnCover);
+
+                    /* ------- FORM DELETE (POST) ------- */
+                    var delForm = document.createElement('form');
+                    delForm.method = 'post';
+                    delForm.action = deleteAction;
+                    delForm.className = 'del-form';
+
+                    var inDay = document.createElement('input');
+                    inDay.type = 'hidden'; inDay.name = 'day'; inDay.value = String(day);
+                    var inName = document.createElement('input');
+                    inName.type = 'hidden'; inName.name = 'name'; inName.value = fileName;
+
+                    delForm.appendChild(inDay);
+                    delForm.appendChild(inName);
+
+                    if(csrfParam && csrfToken){
+                        var inCsrf = document.createElement('input');
+                        inCsrf.type = 'hidden'; inCsrf.name = csrfParam; inCsrf.value = csrfToken;
+                        delForm.appendChild(inCsrf);
+                    }
+
+                    var btnDel = document.createElement('button');
+                    btnDel.type = 'submit';
+                    btnDel.className = 'thumb-del';
+                    btnDel.title = 'Șterge fotografia';
+                    btnDel.textContent = '×';
+                    delForm.appendChild(btnDel);
+
+                    card.appendChild(img);
+                    card.appendChild(coverForm);
+                    card.appendChild(delForm);
+                    savedBox.appendChild(card);
+                });
+            }
+
+
+
+
+            function bindLocalPreview(){
+                if(!fileInput || !preview) return;
+                fileInput.addEventListener('change', function(e){
+                    preview.innerHTML = '';
+                    var files = Array.from(e.target.files || []).filter(function(f){ return f.type && f.type.startsWith('image/'); });
+                    if(!files.length) return;
+
+                    files.forEach(function(file){
+                        var holder = document.createElement('div');
+                        holder.className = 'thumb';
+
+                        var img = document.createElement('img');
+                        img.alt = '';
+
+                        holder.appendChild(img);
+                        preview.appendChild(holder);
+
+                        var reader = new FileReader();
+                        reader.onload = function(ev){ img.src = ev.target.result; };
+                        reader.readAsDataURL(file);
+                    });
+                });
+            }
+
+            function openPhotoModalForDay(day){
+                if(daySpan) daySpan.textContent = day;
+                if(dayInput) dayInput.value = String(day);
+                if(fileInput) fileInput.value = '';
+                if(preview)  preview.innerHTML = '';
+
+                renderSavedPhotos(day);
+
+                if(backdrop){
+                    backdrop.classList.add('show');
+                    try{ document.body.style.overflow = 'hidden'; }catch(_){}
+                }
+            }
+
+            function closePhotoModal(){
+                if(!backdrop) return;
+                backdrop.classList.remove('show');
+                backdrop.setAttribute('aria-hidden','true');
+                try{ document.body.style.overflow=''; }catch(_){}
+            }
+
+            // expun public
+            window.openPhotoModalForDay = openPhotoModalForDay;
+            window.closePhotoModal = closePhotoModal;
+
+            // Închidere pe buton
+            document.addEventListener('click', function(e){
+                var closer = e.target.closest('[data-close-photos]');
+                if(closer){ closePhotoModal(); }
+            });
+
+            // ESC
+            document.addEventListener('keydown', function(e){
+                if(e.key === 'Escape' && backdrop && backdrop.classList.contains('show')){
+                    closePhotoModal();
+                }
+            });
+
+            // Click pe backdrop
+            if(backdrop){
+                backdrop.addEventListener('click', function(e){
+                    if(e.target === backdrop){ closePhotoModal(); }
+                });
+            }
+
+            // Leagă preview local
+            bindLocalPreview();
+
+            // dacă vii din redirect după upload/ștergere -> redeschide modalul pentru ziua respectivă
+            var openDay = window.__OPEN_DAY;
+            if(openDay){ openPhotoModalForDay(openDay); }
+        })();
+    </script>
 </div>
 </html>
