@@ -145,7 +145,9 @@
                     <!-- Badge puncte (doar User) -->
                     <span sec:authorize="hasRole('User') and !hasRole('Guide')"
                           class="badge points"
-                          th:text="${navbarPoints} + 'p'"></span>
+                          th:utext="${navbarPoints} + ' <i class=\'fa-regular fa-money-bill-1\'></i>'">
+
+                    </span>
 
                     <!-- Badge nivel -->
 

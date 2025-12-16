@@ -183,7 +183,9 @@
             <!-- Badge puncte (doar User) -->
             <span sec:authorize="hasRole('User') and !hasRole('Guide')"
                   class="badge points"
-                  th:text="${navbarPoints} + 'p'"></span>
+                  th:utext="${navbarPoints} + ' <i class=\'fa-regular fa-money-bill-1\'></i>'">
+            </span>
+
 
             <!-- Badge nivel -->
             <span class="badge level"
@@ -271,7 +273,7 @@
 
                 <span th:text="${up.user.username}"></span> -
                 <!--<span th:text="${up.points} + 'p'"></span> -->
-                <span th:text="${pointsSpent[up.user.id]} + 'p cheltuite'"></span>
+                <span th:utext="${pointsSpent[up.user.id]} + ' <i class=&quot;fa-regular fa-money-bill-1&quot;></i> cheltuite'"></span>
             </li>
         </ul>
     </div>
