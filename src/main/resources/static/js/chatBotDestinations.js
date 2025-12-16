@@ -63,6 +63,10 @@ chatInput.addEventListener('keypress', async function(e) {
 
             const data = await response.json();
             tempDiv.textContent = data.reply;
+            if (data.bonusReceived === true) {
+                showPointsAnimation(5);
+                updateNavbarPoints(data.points);
+            }
         } catch (err) {
             tempDiv.textContent = 'Îmi pare rău, a apărut o eroare.';
             console.error(err);

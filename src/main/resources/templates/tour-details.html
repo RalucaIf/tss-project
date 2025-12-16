@@ -80,7 +80,7 @@
             <div class="pricing-card" style="width: 100%; max-width: 350px;">
               <div class="price-header">
                 <span class="price-label">From</span>
-                <span th:utext="${calatorie.pricePoints} +' <i class=&quot;fa-regular fa-money-bill-1&quot;></i>' ></i>'" class="price-amount">€3,450</span>
+                <span th:utext="${calatorie.pricePoints} + ' <i class=&quot;fa-regular fa-money-bill-1&quot;></i>'" class="price-amount">€3,450</span>
               </div>
                 <p th:if="${param.success != null and param.success[0] == c.id.toString()}"
                    class="text-success">

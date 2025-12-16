@@ -143,11 +143,13 @@
                          class="avatar-frame">
 
                     <!-- Badge puncte (doar User) -->
-                    <span sec:authorize="hasRole('User') and !hasRole('Guide')"
-                          class="badge points"
-                          th:utext="${navbarPoints} + ' <i class=\'fa-regular fa-money-bill-1\'></i>'">
+                    <span
+                            id="navbar-points"
+                            sec:authorize="hasRole('User') and !hasRole('Guide')"
+                            class="badge points"
+                            th:utext="${navbarPoints} + ' <i class=\'fa-regular fa-money-bill-1\'></i>'">
+</span>
 
-                    </span>
 
                     <!-- Badge nivel -->
 
@@ -529,6 +531,8 @@ container.appendChild(clone);
 <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/main.js}"></script>
 <script th:src="@{/js/dropdown.js}"></script>
+<script th:src="@{/js/showCoin.js}"></script>
+
 
 </body>
 </html>

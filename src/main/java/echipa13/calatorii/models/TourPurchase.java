@@ -28,4 +28,5 @@ public class TourPurchase {
 
     private LocalDateTime purchasedAt = LocalDateTime.now();
 
+
 }

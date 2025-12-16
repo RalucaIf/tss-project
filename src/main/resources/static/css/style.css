@@ -8905,4 +8905,41 @@ body.dark-background .btn-theme i {
 }
 
 
+.coin-popup {
+    position: absolute;
+    color: gold;
+    font-weight: bold;
+    font-size: 1.2rem;
+    pointer-events: none;
+    animation: floatUp 1s ease-out forwards;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px) scale(1.2);
+    }
+}
+.coin-popup-navbar {
+    position: absolute;
+    color: gold;
+    font-weight: bold;
+    font-size: 0.9rem;
+    animation: floatUp 1s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-20px) scale(1.2); }
+}
+
+
 

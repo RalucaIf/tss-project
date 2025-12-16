@@ -76,7 +76,7 @@ public class GlobalControllerAdvice {
         if (user == null) user = userRepository.findByUsername(name);
         if (user == null) return 0;
 
-        return userPointsRepository.findByUserId(user.getId())
+        return userPointsRepository.findByUser_Id(user.getId())
                 .map(p -> p.getPoints())
                 .orElse(0);
     }
@@ -112,7 +112,7 @@ public class GlobalControllerAdvice {
         if (user == null) user = userRepository.findByUsername(name);
         if (user == null) return 1;
 
-        return userPointsRepository.findByUserId(user.getId())
+        return userPointsRepository.findByUser_Id(user.getId())
                 .map(p -> p.getLevel())
                 .orElse(1); // nivel default dacă nu există intrare
     }
@@ -128,7 +128,7 @@ public class GlobalControllerAdvice {
         if (user == null) user = userRepository.findByUsername(name);
         if (user == null) return "level-1";
 
-        int level = userPointsRepository.findByUserId(user.getId())
+        int level = userPointsRepository.findByUser_Id(user.getId())
                 .map(p -> p.getLevel())
                 .orElse(1);
 
@@ -150,7 +150,7 @@ public class GlobalControllerAdvice {
         if (user == null) return null;
 
         // verificăm nivel și rol
-        int level = userPointsRepository.findByUserId(user.getId())
+        int level = userPointsRepository.findByUser_Id(user.getId())
                 .map(p -> p.getLevel())
                 .orElse(0);
 

@@ -26,5 +26,9 @@ public class UserPoints {
 
     private Integer level = 1;
 
+    @Column(name = "chat_bonus_received", nullable = false)
+    private boolean chatBonusReceived = false;
+
+
     private LocalDateTime createdAt = LocalDateTime.now();;
 }
