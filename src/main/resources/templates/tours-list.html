@@ -1,279 +1,279 @@
-<!--<!DOCTYPE html>-->
-<!--<html xmlns:th="http://www.thymeleaf.org"-->
-<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
-<!--      layout:decorate="~{layout}">-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 
-<!--<div layout:fragment="content">-->
-<!--    &lt;!&ndash; Page Title &ndash;&gt;-->
-<!--    <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">-->
-<!--        <div class="container position-relative">-->
-<!--            <h1>Welcome to ITravel</h1>-->
-<!--            <p>Create memorable moments with us.</p>-->
+<div layout:fragment="content">
+    <!-- Page Title -->
+    <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
+        <div class="container position-relative">
+            <h1>Welcome to ITravel</h1>
+            <p>Create memorable moments with us.</p>
 
-<!--        </div>-->
-<!--    </div>&lt;!&ndash; End Page Title &ndash;&gt;-->
-
-
-
-<!--    &lt;!&ndash; Travel Tours Section &ndash;&gt;-->
-<!--    <section id="travel-tours" class="travel-tours section">-->
-
-<!--        <div class="container">-->
-
-<!--            &lt;!&ndash; Hero Introduction &ndash;&gt;-->
-<!--            <div class="row">-->
-<!--                <div class="col-lg-8 mx-auto text-center mb-5">-->
-<!--                    <h2 class="hero-title">Prepare Your Next Adventure</h2>-->
-<!--                    <p class="hero-description">Curated travel experiences that transform journeys into unforgettable stories. Filter by your preferences and find the perfect escape.</p>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            &lt;!&ndash; Search & Filters &ndash;&gt;-->
-<!--            <div class="row justify-content-center mb-5">-->
-<!--                <div class="col-lg-10">-->
-<!--                    <form class="search-container" th:action="@{/Itravel/search}" method="get">-->
-<!--                        <div class="search-bar">-->
-
-<!--                            <input type="search"-->
-<!--                                   class="form-control"-->
-<!--                                   name="query"-->
-<!--                                   th:value="${query}"-->
-<!--                                   placeholder="Where would you like to go?">-->
-
-<!--                            <button type="submit" class="search-btn">-->
-<!--                                <i class="bi bi-search"></i>-->
-<!--                            </button>-->
-
-<!--                        </div>-->
-
-<!--                        &lt;!&ndash; Filter Pills pentru Tururi &ndash;&gt;-->
-<!--                        <div class="filter-pills">-->
-<!--                            <button class="filter-pill active" data-filter="*">Toate Tururile</button>-->
-<!--                            <button class="filter-pill" data-filter=".cultural">Cultural</button>-->
-<!--                            <button class="filter-pill" data-filter=".Adventure">Aventură</button>-->
-<!--                            <button class="filter-pill" data-filter=".relax">Relax</button>-->
-<!--                            <button class="filter-pill" data-filter=".gastronomic">Gastronomic</button>-->
-<!--                            <button class="filter-pill" data-filter=".family">Family</button>-->
-<!--                        </div>-->
-
-
-<!--                    </form>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            <section id="tour-packages" class="tour-packages section">-->
-<!--                <div class="container">-->
-<!--                    <div class="row justify-content-center">-->
-<!--                        <div class="col-lg-8 text-center">-->
-<!--                            <h2>Descoperă Pachetele Noastre de Tururi</h2>-->
-<!--                            <p class="mb-5">-->
-<!--                                Alege turul perfect și trăiește experiențe memorabile alături de ghizii noștri profesioniști.-->
-<!--                            </p>-->
-<!--                        </div>-->
-<!--                    </div>-->
+        </div>
+    </div><!-- End Page Title -->
 
 
 
-<!--                    <div class="row gy-4" id="tour-container">-->
-<!--                        <div class="col-lg-4 col-md-6 mb-4 tour-card"-->
-<!--                             th:each="c : ${calatorii}"-->
-<!--                             th:classappend="${c.category != null} ? ' ' + ${c.category} : ''">-->
-<!--                            <div class="tour-item">-->
-<!--                                <div class="tour-image position-relative">-->
-<!--                                    <img th:src="@{/uploads/{img}(img=${c.image})}" th:alt="${c.title}" class="img-fluid"-->
-<!--                                         style="width: 100%; height: 250px; object-fit: cover;" loading="lazy">-->
-<!--                                    <span class="tour-badge position-absolute top-0 start-0 m-2 px-2 py-1 text-white fw-bold rounded"-->
-<!--                                          th:text="${c.status != null ? c.status : 'PUBLISHED'}"-->
-<!--                                          style="background-color: var(&#45;&#45;accent-color); font-size: 0.85rem;">-->
-<!--                    Disponibil-->
-<!--                </span>-->
-<!--                                </div>-->
-<!--                                <div class="tour-details">-->
-<!--                                    <h4 th:text="${c.title}">Titlu Tur</h4>-->
-<!--                                    <p th:text="${#strings.abbreviate(c.summary, 100)}">Descriere scurtă</p>-->
-<!--                                    <div class="tour-highlights d-flex justify-content-between mb-2" style="color: var(&#45;&#45;accent-color);">-->
-<!--                                        <span><i class="bi bi-clock"></i> <span th:text="${c.duration} + ' zile'">X Zile</span></span>-->
-<!--                                        <span><i class="bi bi-people"></i> <span th:text="${c.maxGuests} + ' persoane'">X persoane</span></span>-->
-<!--                                        <span><i class="bi bi-star-fill"></i> 4.8</span>-->
-<!--                                    </div>-->
-<!--                                    <div class="tour-pricing mb-3" style="color: var(&#45;&#45;accent-color);">-->
-<!--                                        <span class="fw-bold" th:text="${c.pricePoints > 0 ?  c.pricePoints : 'Preț la cerere'}">$0</span>-->
-<!--                                        <span class="per">per person</span>-->
-<!--                                    </div>-->
-<!--                                    <a th:href="@{/tours/{id}(id=${c.id})}" class="explore-btn" style="color: var(&#45;&#45;contrast-color); border-color: var(&#45;&#45;contrast-color);">-->
-<!--                                        <span>Explorează</span>-->
-<!--                                        <i class="bi bi-arrow-right"></i>-->
-<!--                                    </a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
+    <!-- Travel Tours Section -->
+    <section id="travel-tours" class="travel-tours section">
 
-<!--                </div>-->
-<!--            </section>-->
+        <div class="container">
 
-<!--            <div class="pagination-wrapper my-8">-->
-<!--                <ul class="pagination flex justify-center items-center gap-2">-->
-<!--                    &lt;!&ndash; Prev &ndash;&gt;-->
-<!--                    <li>-->
-<!--                        <a class="page-link px-4 py-2 rounded-lg bg-[var(&#45;&#45;accent-color)] text-[var(&#45;&#45;contrast-color)] font-semibold shadow-md transition-all duration-200 hover:scale-105 hover:shadow-xl"-->
-<!--                           th:href="@{|/Tours?page=${page > 0 ? page - 1 : 0}|}">-->
-<!--                            &laquo; Anterior-->
-<!--                        </a>-->
-<!--                    </li>-->
+            <!-- Hero Introduction -->
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center mb-5">
+                    <h2 class="hero-title">Prepare Your Next Adventure</h2>
+                    <p class="hero-description">Curated travel experiences that transform journeys into unforgettable stories. Filter by your preferences and find the perfect escape.</p>
+                </div>
+            </div>
 
-<!--                    &lt;!&ndash; Page numbers &ndash;&gt;-->
-<!--                    <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">-->
-<!--                        <a class="page-link px-4 py-2 rounded-lg text-[var(&#45;&#45;contrast-color)] font-semibold transition-all duration-200-->
-<!--                  hover:scale-110 hover:shadow-lg"-->
-<!--                           th:href="@{'/Tours?page=' + ${i}}"-->
-<!--                           th:text="${i + 1}"-->
-<!--                           th:classappend="${i == page} ? ' bg-[var(&#45;&#45;accent-color)] shadow-xl' : ' bg-white border border-[var(&#45;&#45;accent-color)]'">-->
-<!--                            1-->
-<!--                        </a>-->
-<!--                    </li>-->
+            <!-- Search & Filters -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-10">
+                    <form class="search-container" th:action="@{/Itravel/search}" method="get">
+                        <div class="search-bar">
 
-<!--                    &lt;!&ndash; Next &ndash;&gt;-->
-<!--                    <li>-->
-<!--                        <a class="page-link px-4 py-2 rounded-lg bg-[var(&#45;&#45;accent-color)] text-[var(&#45;&#45;contrast-color)] font-semibold shadow-md transition-all duration-200 hover:scale-105 hover:shadow-xl"-->
-<!--                           th:href="@{|/Tours?page=${page < totalPages - 1 ? page + 1 : totalPages - 1}|}">-->
-<!--                            Următor &raquo;-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </div>-->
+                            <input type="search"
+                                   class="form-control"
+                                   name="query"
+                                   th:value="${query}"
+                                   placeholder="Where would you like to go?">
+
+                            <button type="submit" class="search-btn">
+                                <i class="bi bi-search"></i>
+                            </button>
+
+                        </div>
+
+                        <!-- Filter Pills pentru Tururi -->
+                        <div class="filter-pills">
+                            <button class="filter-pill active" data-filter="*">Toate Tururile</button>
+                            <button class="filter-pill" data-filter=".cultural">Cultural</button>
+                            <button class="filter-pill" data-filter=".Adventure">Aventură</button>
+                            <button class="filter-pill" data-filter=".relax">Relax</button>
+                            <button class="filter-pill" data-filter=".gastronomic">Gastronomic</button>
+                            <button class="filter-pill" data-filter=".family">Family</button>
+                        </div>
 
 
-<!--            &lt;!&ndash; Featured Hero Tour &ndash;&gt;-->
-<!--            <div class="row mb-5">-->
-<!--                <div class="col-12">-->
-<!--                    <div class="featured-hero-tour">-->
-<!--                        <div class="featured-image">-->
-<!--                            <img src="assets/img/travel/showcase-8.webp" alt="Featured Destination" class="img-fluid">-->
-<!--                        </div>-->
-<!--                        <div class="featured-content">-->
-<!--                            <div class="featured-badge">Editor's Choice</div>-->
-<!--                            <h3>Mystical Bhutan Journey</h3>-->
-<!--                            <p>Discover the last Shangri-La with pristine monasteries, dramatic mountain vistas, and ancient traditions preserved in time.</p>-->
-<!--                            <div class="featured-meta">-->
-<!--                                <span class="duration">12 Days</span>-->
-<!--                                <span class="group-size">Max 8 People</span>-->
-<!--                                <span class="rating">-->
-<!--                    <i class="bi bi-star-fill"></i>-->
-<!--                    <i class="bi bi-star-fill"></i>-->
-<!--                    <i class="bi bi-star-fill"></i>-->
-<!--                    <i class="bi bi-star-fill"></i>-->
-<!--                    <i class="bi bi-star-fill"></i>-->
-<!--                    4.9-->
-<!--                  </span>-->
-<!--                            </div>-->
-<!--                            <div class="featured-price">-->
-<!--                                <span class="from">From</span>-->
-<!--                                <span class="amount">$2,499</span>-->
-<!--                            </div>-->
-<!--                            <div class="featured-actions">-->
-<!--                                <a href="#" class="btn btn-primary">Explore This Journey</a>-->
-<!--                                <a href="#" class="btn btn-text">View Itinerary</a>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+                    </form>
+                </div>
+            </div>
+
+            <section id="tour-packages" class="tour-packages section">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8 text-center">
+                            <h2>Descoperă Pachetele Noastre de Tururi</h2>
+                            <p class="mb-5">
+                                Alege turul perfect și trăiește experiențe memorabile alături de ghizii noștri profesioniști.
+                            </p>
+                        </div>
+                    </div>
 
 
-<!--            &lt;!&ndash; Quick Categories &ndash;&gt;-->
-<!--            <div class="row mb-5">-->
-<!--                <div class="col-12">-->
-<!--                    <h3 class="section-subtitle">Explore by Interest</h3>-->
-<!--                    <div class="categories-grid">-->
-<!--                        <div class="category-item">-->
-<!--                            <div class="category-visual">-->
-<!--                                <img src="assets/img/travel/misc-3.webp" alt="Mountain Adventures" class="img-fluid">-->
-<!--                            </div>-->
-<!--                            <h5>Mountain Adventures</h5>-->
-<!--                            <span class="tour-count">24 tours</span>-->
-<!--                        </div>-->
-<!--                        <div class="category-item">-->
-<!--                            <div class="category-visual">-->
-<!--                                <img src="assets/img/travel/misc-7.webp" alt="Cultural Heritage" class="img-fluid">-->
-<!--                            </div>-->
-<!--                            <h5>Cultural Heritage</h5>-->
-<!--                            <span class="tour-count">18 tours</span>-->
-<!--                        </div>-->
-<!--                        <div class="category-item">-->
-<!--                            <div class="category-visual">-->
-<!--                                <img src="assets/img/travel/misc-11.webp" alt="Coastal Escapes" class="img-fluid">-->
-<!--                            </div>-->
-<!--                            <h5>Coastal Escapes</h5>-->
-<!--                            <span class="tour-count">32 tours</span>-->
-<!--                        </div>-->
-<!--                        <div class="category-item">-->
-<!--                            <div class="category-visual">-->
-<!--                                <img src="assets/img/travel/misc-15.webp" alt="Wildlife Safari" class="img-fluid">-->
-<!--                            </div>-->
-<!--                            <h5>Wildlife Safari</h5>-->
-<!--                            <span class="tour-count">16 tours</span>-->
-<!--                        </div>-->
-<!--                        <div class="category-item">-->
-<!--                            <div class="category-visual">-->
-<!--                                <img src="assets/img/travel/misc-2.webp" alt="Urban Explorer" class="img-fluid">-->
-<!--                            </div>-->
-<!--                            <h5>Urban Explorer</h5>-->
-<!--                            <span class="tour-count">28 tours</span>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            &lt;!&ndash; Exclusive Offers &ndash;&gt;-->
-<!--            <div class="row mb-5">-->
-<!--                <div class="col-12">-->
-<!--                    <h3 class="section-subtitle">Limited-Time Offers</h3>-->
-<!--                    <div class="offers-container">-->
-<!--                        <div class="offer-card">-->
-<!--                            <div class="offer-image">-->
-<!--                                <img src="assets/img/travel/showcase-12.webp" alt="Early Bird Special" class="img-fluid">-->
-<!--                            </div>-->
-<!--                            <div class="offer-content">-->
-<!--                                <div class="offer-tag">Early Bird</div>-->
-<!--                                <h4>Save 25% on Summer Departures</h4>-->
-<!--                                <p>Book your 2024 European adventure before March 31st and enjoy significant savings on our most popular routes.</p>-->
-<!--                                <div class="offer-validity">Valid until March 31, 2024</div>-->
-<!--                                <a href="#" class="btn btn-accent">Claim Offer</a>-->
-<!--                            </div>-->
-<!--                        </div>-->
 
-<!--                        <div class="offer-card">-->
-<!--                            <div class="offer-image">-->
-<!--                                <img src="assets/img/travel/showcase-6.webp" alt="Last Minute Deal" class="img-fluid">-->
-<!--                            </div>-->
-<!--                            <div class="offer-content">-->
-<!--                                <div class="offer-tag">Last Minute</div>-->
-<!--                                <h4>African Safari - 30% Off</h4>-->
-<!--                                <p>Join our next departure to Tanzania and Kenya with luxury accommodations and expert guides.</p>-->
-<!--                                <div class="offer-validity">Departure: February 20th</div>-->
-<!--                                <a href="#" class="btn btn-accent">Book Now</a>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+                    <div class="row gy-4" id="tour-container">
+                        <div class="col-lg-4 col-md-6 mb-4 tour-card"
+                             th:each="c : ${calatorii}"
+                             th:classappend="${c.category != null} ? ' ' + ${c.category} : ''">
+                            <div class="tour-item">
+                                <div class="tour-image position-relative">
+                                    <img th:src="@{/uploads/{img}(img=${c.image})}" th:alt="${c.title}" class="img-fluid"
+                                         style="width: 100%; height: 250px; object-fit: cover;" loading="lazy">
+                                    <span class="tour-badge position-absolute top-0 start-0 m-2 px-2 py-1 text-white fw-bold rounded"
+                                          th:text="${c.status != null ? c.status : 'PUBLISHED'}"
+                                          style="background-color: var(--accent-color); font-size: 0.85rem;">
+                    Disponibil
+                </span>
+                                </div>
+                                <div class="tour-details">
+                                    <h4 th:text="${c.title}">Titlu Tur</h4>
+                                    <p th:text="${#strings.abbreviate(c.summary, 100)}">Descriere scurtă</p>
+                                    <div class="tour-highlights d-flex justify-content-between mb-2" style="color: var(--accent-color);">
+                                        <span><i class="bi bi-clock"></i> <span th:text="${c.duration} + ' zile'">X Zile</span></span>
+                                        <span><i class="bi bi-people"></i> <span th:text="${c.maxGuests} + ' persoane'">X persoane</span></span>
+                                        <span><i class="bi bi-star-fill"></i> 4.8</span>
+                                    </div>
+                                    <div class="tour-pricing mb-3" style="color: var(--accent-color);">
+                                        <span class="fw-bold" th:text="${c.pricePoints > 0 ?  c.pricePoints : 'Preț la cerere'}">$0</span>
+                                        <span class="per">per person</span>
+                                    </div>
+                                    <a th:href="@{/tours/{id}(id=${c.id})}" class="explore-btn" style="color: var(--contrast-color); border-color: var(--contrast-color);">
+                                        <span>Explorează</span>
+                                        <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-<!--            &lt;!&ndash; Expert Consultation CTA &ndash;&gt;-->
-<!--            <div class="row">-->
-<!--                <div class="col-lg-8 mx-auto">-->
-<!--                    <div class="consultation-cta">-->
-<!--                        <h3>Can't Find What You're Looking For?</h3>-->
-<!--                        <p>Our travel designers craft bespoke journeys tailored to your unique preferences, schedule, and dreams.</p>-->
-<!--                        <div class="cta-actions">-->
-<!--                            <a href="#" class="btn btn-primary">Speak with an Expert</a>-->
-<!--                            <a href="#" class="btn btn-text">Browse Custom Tours</a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+                </div>
+            </section>
 
-<!--        </div>-->
+            <div class="pagination-wrapper my-8">
+                <ul class="pagination flex justify-center items-center gap-2">
+                    <!-- Prev -->
+                    <li>
+                        <a class="page-link px-4 py-2 rounded-lg bg-[var(--accent-color)] text-[var(--contrast-color)] font-semibold shadow-md transition-all duration-200 hover:scale-105 hover:shadow-xl"
+                           th:href="@{|/Tours?page=${page > 0 ? page - 1 : 0}|}">
+                            &laquo; Anterior
+                        </a>
+                    </li>
 
-<!--    </section>&lt;!&ndash; /Travel Tours Section &ndash;&gt;-->
+                    <!-- Page numbers -->
+                    <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                        <a class="page-link px-4 py-2 rounded-lg text-[var(--contrast-color)] font-semibold transition-all duration-200
+                  hover:scale-110 hover:shadow-lg"
+                           th:href="@{'/Tours?page=' + ${i}}"
+                           th:text="${i + 1}"
+                           th:classappend="${i == page} ? ' bg-[var(--accent-color)] shadow-xl' : ' bg-white border border-[var(--accent-color)]'">
+                            1
+                        </a>
+                    </li>
 
-<!--</div>-->
+                    <!-- Next -->
+                    <li>
+                        <a class="page-link px-4 py-2 rounded-lg bg-[var(--accent-color)] text-[var(--contrast-color)] font-semibold shadow-md transition-all duration-200 hover:scale-105 hover:shadow-xl"
+                           th:href="@{|/Tours?page=${page < totalPages - 1 ? page + 1 : totalPages - 1}|}">
+                            Următor &raquo;
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+
+            <!-- Featured Hero Tour -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="featured-hero-tour">
+                        <div class="featured-image">
+                            <img src="assets/img/travel/showcase-8.webp" alt="Featured Destination" class="img-fluid">
+                        </div>
+                        <div class="featured-content">
+                            <div class="featured-badge">Editor's Choice</div>
+                            <h3>Mystical Bhutan Journey</h3>
+                            <p>Discover the last Shangri-La with pristine monasteries, dramatic mountain vistas, and ancient traditions preserved in time.</p>
+                            <div class="featured-meta">
+                                <span class="duration">12 Days</span>
+                                <span class="group-size">Max 8 People</span>
+                                <span class="rating">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    4.9
+                  </span>
+                            </div>
+                            <div class="featured-price">
+                                <span class="from">From</span>
+                                <span class="amount">$2,499</span>
+                            </div>
+                            <div class="featured-actions">
+                                <a href="#" class="btn btn-primary">Explore This Journey</a>
+                                <a href="#" class="btn btn-text">View Itinerary</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Quick Categories -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h3 class="section-subtitle">Explore by Interest</h3>
+                    <div class="categories-grid">
+                        <div class="category-item">
+                            <div class="category-visual">
+                                <img src="assets/img/travel/misc-3.webp" alt="Mountain Adventures" class="img-fluid">
+                            </div>
+                            <h5>Mountain Adventures</h5>
+                            <span class="tour-count">24 tours</span>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-visual">
+                                <img src="assets/img/travel/misc-7.webp" alt="Cultural Heritage" class="img-fluid">
+                            </div>
+                            <h5>Cultural Heritage</h5>
+                            <span class="tour-count">18 tours</span>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-visual">
+                                <img src="assets/img/travel/misc-11.webp" alt="Coastal Escapes" class="img-fluid">
+                            </div>
+                            <h5>Coastal Escapes</h5>
+                            <span class="tour-count">32 tours</span>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-visual">
+                                <img src="assets/img/travel/misc-15.webp" alt="Wildlife Safari" class="img-fluid">
+                            </div>
+                            <h5>Wildlife Safari</h5>
+                            <span class="tour-count">16 tours</span>
+                        </div>
+                        <div class="category-item">
+                            <div class="category-visual">
+                                <img src="assets/img/travel/misc-2.webp" alt="Urban Explorer" class="img-fluid">
+                            </div>
+                            <h5>Urban Explorer</h5>
+                            <span class="tour-count">28 tours</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Exclusive Offers -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h3 class="section-subtitle">Limited-Time Offers</h3>
+                    <div class="offers-container">
+                        <div class="offer-card">
+                            <div class="offer-image">
+                                <img src="assets/img/travel/showcase-12.webp" alt="Early Bird Special" class="img-fluid">
+                            </div>
+                            <div class="offer-content">
+                                <div class="offer-tag">Early Bird</div>
+                                <h4>Save 25% on Summer Departures</h4>
+                                <p>Book your 2024 European adventure before March 31st and enjoy significant savings on our most popular routes.</p>
+                                <div class="offer-validity">Valid until March 31, 2024</div>
+                                <a href="#" class="btn btn-accent">Claim Offer</a>
+                            </div>
+                        </div>
+
+                        <div class="offer-card">
+                            <div class="offer-image">
+                                <img src="assets/img/travel/showcase-6.webp" alt="Last Minute Deal" class="img-fluid">
+                            </div>
+                            <div class="offer-content">
+                                <div class="offer-tag">Last Minute</div>
+                                <h4>African Safari - 30% Off</h4>
+                                <p>Join our next departure to Tanzania and Kenya with luxury accommodations and expert guides.</p>
+                                <div class="offer-validity">Departure: February 20th</div>
+                                <a href="#" class="btn btn-accent">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expert Consultation CTA -->
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="consultation-cta">
+                        <h3>Can't Find What You're Looking For?</h3>
+                        <p>Our travel designers craft bespoke journeys tailored to your unique preferences, schedule, and dreams.</p>
+                        <div class="cta-actions">
+                            <a href="#" class="btn btn-primary">Speak with an Expert</a>
+                            <a href="#" class="btn btn-text">Browse Custom Tours</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </section><!-- /Travel Tours Section -->
+
+</div>

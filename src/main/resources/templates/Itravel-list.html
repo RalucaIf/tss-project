@@ -20,66 +20,65 @@
 
     <main class="flex-shrink-0">
 
-        <!-- Featured Destinations Section -->
-        <section id="featured-destinations" class="featured-destinations section">
-            <div class="container section-title">
-                <h2>Destinații Recomandate</h2>
-                <div><span>Vezi</span> <span class="description-title">Destinațiile Noastre Recomandate</span></div>
-            </div>
-
-            <div class="container">
-                <div class="row gy-4">
-                    <div class="col-lg-4 col-md-6"
-                         th:each="c, iterStat : ${calatorii}"
-                         th:if="${iterStat.index} < 6">
-                        <div class="destination-card">
-                            <div class="image-wrapper">
-                                <img th:src="@{/uploads/{img}(img=${c.image})}" alt="Destinație" class="img-fluid">
-                                <div class="overlay">
-                                    <div class="destination-tag popular">Popular</div>
-                                </div>
-                            </div>
-                            <div class="content">
-                                <h4 th:text="${c.title}">Titlu</h4>
-                                <p th:text="${#strings.abbreviate(c.pricePoints, 100)}">Descriere</p>
-                                <div class="card-footer">
-                                    <a th:href="@{/tours/{id}(id=${c.id})}" class="btn-tour">Exploreaza <i class="bi bi-arrow-right"></i></a>
-                                    <!-- Mesaje BUY -->
-                                    <p th:if="${param.success != null and param.success[0] == c.id.toString()}"
-                                       class="text-success">
-                                        Excursie cumpărată 🎉
-                                    </p>
-
-                                    <p th:if="${param.error != null and param.error[0] == c.id.toString()}"
-                                       class="text-danger">
-                                        Nu ai destule puncte 😭
-                                    </p>
-                                    <form sec:authorize="hasRole('User') and !hasRole('Guide')"
-                                          th:action="@{/tours/buy/{id}(id=${c.id})}" method="post">
-                                        <button type="submit" class="btn btn-login w-100"
-                                                th:disabled="${boughtTourIds.contains(c.id)}">
-                                            <span th:if="${boughtTourIds.contains(c.id)}">
-                                                Cumparat!
-                                            </span>
-                                            <span th:unless="${boughtTourIds.contains(c.id)}">
-                                                Buy
-                                            </span>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
         <!-- Why Us Section -->
         <section id="why-us" class="why-us section">
 
             <div class="container">
 
+                <!-- Featured Destinations Section -->
+                <section id="featured-destinations" class="featured-destinations section">
+                    <div class="container section-title">
+                        <h2>Destinații Recomandate</h2>
+                        <div><span>Vezi</span> <span class="description-title">Destinațiile Noastre Recomandate</span></div>
+                    </div>
+
+                    <div class="container">
+                        <div class="row gy-4">
+                            <div class="col-lg-4 col-md-6"
+                                 th:each="c, iterStat : ${calatorii}"
+                                 th:if="${iterStat.index} < 6">
+                                <div class="destination-card">
+                                    <div class="image-wrapper">
+                                        <img th:src="@{/uploads/{img}(img=${c.image})}" alt="Destinație" class="img-fluid">
+                                        <div class="overlay">
+                                            <div class="destination-tag popular">Popular</div>
+                                        </div>
+                                    </div>
+                                    <div class="content">
+                                        <h4 th:text="${c.title}">Titlu</h4>
+                                        <p th:text="${#strings.abbreviate(c.pricePoints, 100)}">Descriere</p>
+                                        <div class="card-footer">
+                                            <a th:href="@{/tours/{id}(id=${c.id})}" class="btn-tour">Exploreaza <i class="bi bi-arrow-right"></i></a>
+                                            <!-- Mesaje BUY -->
+                                            <p th:if="${param.success != null and param.success[0] == c.id.toString()}"
+                                               class="text-success">
+                                                Excursie cumpărată 🎉
+                                            </p>
+
+                                            <p th:if="${param.error != null and param.error[0] == c.id.toString()}"
+                                               class="text-danger">
+                                                Nu ai destule puncte 😭
+                                            </p>
+                                            <form sec:authorize="hasRole('User') and !hasRole('Guide')"
+                                                  th:action="@{/tours/buy/{id}(id=${c.id})}" method="post">
+                                                <button type="submit" class="btn btn-login w-100"
+                                                        th:disabled="${boughtTourIds.contains(c.id)}">
+                                            <span th:if="${boughtTourIds.contains(c.id)}">
+                                                Cumparat!
+                                            </span>
+                                                    <span th:unless="${boughtTourIds.contains(c.id)}">
+                                                Buy
+                                            </span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
                 <!-- Main Content Grid -->
                 <div class="content-grid">
                     <div class="row g-4 align-items-stretch">
@@ -226,8 +225,9 @@
                         <h3>Nu te poți hotărî unde să mergi?</h3>
                         <p>Experții noștri în călătorii te pot ajuta să găsești destinația perfectă, în funcție de preferințele, bugetul și stilul tău de călătorie.</p>
                         <div class="cta-buttons">
-                           <a th:href="@{/destinations}" class="btn btn-primary">Vezi Toate Destinațiile</a>
-<!--                            <a th:href="@{/Destinations}" class="btn btn-outline">Contact</a>-->
+                            <a th:href="@{/destinations}" class="btn-primary">Explorează Tururile</a>
+
+                            <!-- Buton Contactează Expertul -->
                         </div>
 
                         <!-- Buton pentru deschiderea chatului -->
