@@ -74,40 +74,53 @@
 
                 <li class="dropdown"><a href="#"><span>More Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul>
-                        <li><a href="destination-details.html">Destination Details</a></li>
-                        <li><a th:href="@{/Tour_details}">Tour Details</a></li>
-                        <li><a href="booking.html">Booking</a></li>
-                        <li><a href="testimonials">Testimonials</a></li>
-                        <li><a href="faq.html">Frequently Asked Questions</a></li>
-                        <li><a href="blog-details.html">Blog Details</a></li>
+<!--                        <li><a href="destination-details.html">Destination Details</a></li>-->
+<!--                        <li><a th:href="@{/Tour_details}">Tour Details</a></li>-->
+<!--                        <li><a href="booking.html">Booking</a></li>-->
+<!--                        <li><a href="testimonials">Testimonials</a></li>-->
+<!--                        <li><a href="faq.html">Frequently Asked Questions</a></li>-->
+<!--                        <li><a href="blog-details.html">Blog Details</a></li>-->
                         <li><a th:href="@{/Terms}">Terms</a></li>
                         <li><a th:href="@{/Privacy}">Privacy</a></li>
 
                     </ul>
                 </li>
-                <li sec:authorize="hasRole('Admin')"><a th:href="@{/destinations/new}" >Add Destination</a></li>
-                <li sec:authorize="isAuthenticated()" class="dropdown">
-                    <a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+
+                <li sec:authorize="hasAnyRole('Admin','Guide')" class="dropdown">
+                    <a href="#">
+                        <span>Create</span>
+                        <i class="bi bi-chevron-down toggle-dropdown"></i>
+                    </a>
+
                     <ul class="custom-dropdown">
+                        <li sec:authorize="hasRole('Admin')">
+                            <a th:href="@{/destinations/new}">Add Destination</a>
+                        </li>
+
+                        <li sec:authorize="hasRole('Guide')">
+                            <a th:href="@{/Itravel/new}">Create</a>
+                        </li>
+
+                        <!--
                         <li><a href="#">Dropdown 1</a></li>
 
-                        <!-- doar ghid -->
+                        <!– doar ghid –>
                         <li sec:authorize="hasRole('Guide')" class="dropdown">
                             <a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                             <ul class="custom-dropdown">
-                                <li><a th:href="@{/Itravel/new}">Create</a></li>
                                 <li><a href="#">Deep Dropdown 2</a></li>
                             </ul>
                         </li>
 
                         <li><a href="#">Dropdown 2</a></li>
                         <li><a href="#">Dropdown 3</a></li>
+                        -->
                     </ul>
                 </li>
 
 
 
-                <li><a th:href="@{/Contact}" >Contact</a></li>
+                <!--                <li><a th:href="@{/Contact}" >Contact</a></li>-->
                 <!--<li sec:authorize="isAnonymous()">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
                 </li>-->
