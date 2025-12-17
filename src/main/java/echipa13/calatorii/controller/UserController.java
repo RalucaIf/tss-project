@@ -30,7 +30,7 @@ public class UserController {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        UserPoints userPoints = pointsRepository.findByUserId(id)
+        UserPoints userPoints = pointsRepository.findByUser_Id(id)
                 .orElse(new UserPoints()); // fallback 0
 
         UserProfileDto dto = new UserProfileDto();

@@ -85,42 +85,22 @@
 
                     </ul>
                 </li>
-
                 <li sec:authorize="hasAnyRole('Admin','Guide')" class="dropdown">
-                    <a href="#">
-                        <span>Create</span>
-                        <i class="bi bi-chevron-down toggle-dropdown"></i>
-                    </a>
-
+                    <a href="#"><span>Actions</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul class="custom-dropdown">
+                        <!-- Link doar pentru Admin -->
                         <li sec:authorize="hasRole('Admin')">
-                            <a th:href="@{/destinations/new}">Add Destination</a>
+                            <a th:href="@{/destinations/new}">Create Destination</a>
                         </li>
 
+                        <!-- Link doar pentru Guide -->
                         <li sec:authorize="hasRole('Guide')">
-                            <a th:href="@{/Itravel/new}">Create</a>
+                            <a th:href="@{/Itravel/new}">Create Tour</a>
                         </li>
-
-                        <!--
-                        <li><a href="#">Dropdown 1</a></li>
-
-                        <!– doar ghid –>
-                        <li sec:authorize="hasRole('Guide')" class="dropdown">
-                            <a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                            <ul class="custom-dropdown">
-                                <li><a href="#">Deep Dropdown 2</a></li>
-                            </ul>
-                        </li>
-
-                        <li><a href="#">Dropdown 2</a></li>
-                        <li><a href="#">Dropdown 3</a></li>
-                        -->
                     </ul>
                 </li>
 
-
-
-                <!--                <li><a th:href="@{/Contact}" >Contact</a></li>-->
+<!--                <li><a th:href="@{/Contact}" >Contact</a></li>-->
                 <!--<li sec:authorize="isAnonymous()">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
                 </li>-->
@@ -163,9 +143,13 @@
                          class="avatar-frame">
 
                     <!-- Badge puncte (doar User) -->
-                    <span sec:authorize="hasRole('User') and !hasRole('Guide')"
-                          class="badge points"
-                          th:text="${navbarPoints} + 'p'"></span>
+                    <span
+                            id="navbar-points"
+                            sec:authorize="hasRole('User') and !hasRole('Guide')"
+                            class="badge points"
+                            th:utext="${navbarPoints} + ' <i class=\'fa-regular fa-money-bill-1\'></i>'">
+</span>
+
 
                     <!-- Badge nivel -->
 
@@ -511,32 +495,32 @@ container.appendChild(clone);
 }
 </script>
 
-<script>
-    const filterButtons = document.querySelectorAll('.filter-pill');
-    const tours = document.querySelectorAll('#tour-container .tour-card');
+<!--<script>-->
+<!--    const filterButtons = document.querySelectorAll('.filter-pill');-->
+<!--    const tours = document.querySelectorAll('#tour-container .tour-card');-->
 
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.preventDefault();
-            filterButtons.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
+<!--    filterButtons.forEach(button => {-->
+<!--        button.addEventListener('click', function(event) {-->
+<!--            event.preventDefault();-->
+<!--            filterButtons.forEach(b => b.classList.remove('active'));-->
+<!--            this.classList.add('active');-->
 
-            const filter = this.getAttribute('data-filter');
+<!--            const filter = this.getAttribute('data-filter');-->
 
-            tours.forEach(tour => {
-                if (filter === '*') {
-                    tour.classList.remove('hidden');
-                } else {
-                    if (tour.classList.contains(filter)) {
-                        tour.classList.remove('hidden');
-                    } else {
-                        tour.classList.add('hidden');
-                    }
-                }
-            });
-        });
-    });
-</script>
+<!--            tours.forEach(tour => {-->
+<!--                if (filter === '*') {-->
+<!--                    tour.classList.remove('hidden');-->
+<!--                } else {-->
+<!--                    if (tour.classList.contains(filter)) {-->
+<!--                        tour.classList.remove('hidden');-->
+<!--                    } else {-->
+<!--                        tour.classList.add('hidden');-->
+<!--                    }-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
 
 
 <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
@@ -547,6 +531,8 @@ container.appendChild(clone);
 <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/main.js}"></script>
 <script th:src="@{/js/dropdown.js}"></script>
+<script th:src="@{/js/showCoin.js}"></script>
+
 
 </body>
 </html>

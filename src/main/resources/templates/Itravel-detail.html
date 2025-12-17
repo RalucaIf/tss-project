@@ -60,7 +60,7 @@
                                 <h4 th:text="${tour.title}">Titlu Tur</h4>
                                 <p th:text="${tour.summary != null ? tour.summary : 'Fără descriere'}">Descriere Tur</p>
                                 <div class="tour-meta">
-                                    <span class="tour-price" th:text="${tour.pricePoints != null ? tour.pricePoints + ' p' : '0 p'}">0 p</span>
+                                    <span class="tour-price" th:utext="${tour.pricePoints != null ? tour.pricePoints + ' <i class=&quot;fa-regular fa-money-bill-1&quot;></i>' : '0 p'}">0 p</span>
                                 </div>
                                 <a th:href="@{/tours/{id}(id=${tour.id})}" class="btn-tour">Vezi Detalii <i class="bi bi-arrow-right"></i></a>
                             </div>

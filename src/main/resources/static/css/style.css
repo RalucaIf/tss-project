@@ -1841,7 +1841,7 @@ section,
 
 .featured-tours .destination-card .destination-overlay .card-details .action-row .explore-btn:hover {
     background-color: color-mix(in srgb, var(--accent-color), black 20%);
-    transform: translateY(-2px);
+    /*transform: translateY(-2px);*/
     color: var(--contrast-color);
     box-shadow: 0 6px 15px color-mix(in srgb, var(--accent-color), transparent 50%);
 }
@@ -8824,12 +8824,11 @@ body.dark-background .btn-theme i {
     box-shadow: 0 6px 12px rgba(0,0,0,0.25);
 }
 
-.list_tours .destination-card {
+.destination-card {
     background: var(--surface-color);
     border-radius: 12px;
     border: 1px solid rgba(0,0,0,0.1);
     padding: 20px;
-    transition: all 0.3s ease;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -8837,7 +8836,7 @@ body.dark-background .btn-theme i {
     min-height: 400px; /* mai înalt, să încapă butoanele */
 }
 
-.list_tours .destination-card .image-wrapper img {
+ .destination-card .image-wrapper img {
     width: 100%;
     height: 220px; /* mai mare decât înainte */
     object-fit: cover;
@@ -8845,17 +8844,16 @@ body.dark-background .btn-theme i {
     margin-bottom: 15px;
 }
 
-.list_tours .destination-card .content h4 {
+ .destination-card .content h4 {
     font-size: 1.25rem; /* puțin mai mare */
     margin-bottom: 10px;
 }
 
-.list_tours .destination-card .content p {
+ .destination-card .content p {
     flex-grow: 1; /* ocupa spațiul disponibil */
     margin-bottom: 15px;
 }
-
-.list_tours .destination-card .card-footer {
+ .destination-card .card-footer {
     display: flex;
     justify-content: space-between;
     gap: 10px;
@@ -8867,21 +8865,81 @@ body.dark-background .btn-theme i {
     color: #fff;
     font-weight: bold;
 }
-.tour-card {
-    transition: all 0.5s ease-in-out;
-    opacity: 1;
-    transform: scale(1);
-}
 
-.tour-card.hidden {
-    opacity: 0;
-    transform: scale(0.95);
-    pointer-events: none; /* să nu mai poți da click pe ele cât sunt ascunse */
-}
 .isotope-item {
     transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
+
+.destination-card .overlay .destination-tag.popular {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(135deg, #4ecdc4, #70e2d9);
+    color: white;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 10;
+}
+.btn-accent {
+    background-color: var(--accent-color); /* roșu accent */
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-accent:hover {
+    background-color: #e04345; /* roșu puțin mai închis la hover */
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+
+.coin-popup {
+    position: absolute;
+    color: gold;
+    font-weight: bold;
+    font-size: 1.2rem;
+    pointer-events: none;
+    animation: floatUp 1s ease-out forwards;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px) scale(1.2);
+    }
+}
+.coin-popup-navbar {
+    position: absolute;
+    color: gold;
+    font-weight: bold;
+    font-size: 0.9rem;
+    animation: floatUp 1s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-20px) scale(1.2); }
+}
 
 
 

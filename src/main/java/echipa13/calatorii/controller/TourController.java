@@ -112,7 +112,7 @@ public class TourController {
         }
 
         TourDto tour = tourService.findTourById(id);
-        UserPoints userPoints = userPointsRepository.findByUserId(user.getId()).orElse(null);
+        UserPoints userPoints = userPointsRepository.findByUser_Id(user.getId()).orElse(null);
 
         int tourCost = tour.getPricePoints();
         int myPoints = userPoints.getPoints();

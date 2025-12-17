@@ -80,7 +80,7 @@
             <div class="pricing-card" style="width: 100%; max-width: 350px;">
               <div class="price-header">
                 <span class="price-label">From</span>
-                <span th:text="${calatorie.pricePoints}" class="price-amount">€3,450</span>
+                <span th:utext="${calatorie.pricePoints} + ' <i class=&quot;fa-regular fa-money-bill-1&quot;></i>'" class="price-amount">€3,450</span>
               </div>
                 <p th:if="${param.success != null and param.success[0] == c.id.toString()}"
                    class="text-success">
@@ -168,259 +168,259 @@
     </div>
 
 
-    <!-- Inclusions Overview -->
-      <div class="inclusions-overview">
-        <div class="row">
-          <div class="col-lg-6">
-            <div class="included-section">
-              <h3>Your Journey Includes</h3>
-              <div class="inclusion-list">
-                <div class="inclusion-item">
-                  <i class="bi bi-check-circle-fill"></i>
-                  <span>9 nights boutique hotel accommodation</span>
-                </div>
-                <div class="inclusion-item">
-                  <i class="bi bi-check-circle-fill"></i>
-                  <span>Daily breakfast and 4 specialty dinners</span>
-                </div>
-                <div class="inclusion-item">
-                  <i class="bi bi-check-circle-fill"></i>
-                  <span>Private transfers and high-speed rail</span>
-                </div>
-                <div class="inclusion-item">
-                  <i class="bi bi-check-circle-fill"></i>
-                  <span>Expert local guides and art historians</span>
-                </div>
-                <div class="inclusion-item">
-                  <i class="bi bi-check-circle-fill"></i>
-                  <span>Skip-the-line museum entries</span>
-                </div>
-                <div class="inclusion-item">
-                  <i class="bi bi-check-circle-fill"></i>
-                  <span>Curated cultural experiences</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="not-included-section">
-              <h3>Additional Considerations</h3>
-              <div class="exclusion-list">
-                <div class="exclusion-item">
-                  <i class="bi bi-x-circle"></i>
-                  <span>International flights to/from Italy</span>
-                </div>
-                <div class="exclusion-item">
-                  <i class="bi bi-x-circle"></i>
-                  <span>Travel insurance (recommended)</span>
-                </div>
-                <div class="exclusion-item">
-                  <i class="bi bi-x-circle"></i>
-                  <span>Lunches and personal dining choices</span>
-                </div>
-                <div class="exclusion-item">
-                  <i class="bi bi-x-circle"></i>
-                  <span>Personal shopping and souvenirs</span>
-                </div>
-                <div class="exclusion-item">
-                  <i class="bi bi-x-circle"></i>
-                  <span>Optional activities and upgrades</span>
-                </div>
-                <div class="exclusion-item">
-                  <i class="bi bi-x-circle"></i>
-                  <span>Gratuities for guides and drivers</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+<!--    &lt;!&ndash; Inclusions Overview &ndash;&gt;-->
+<!--      <div class="inclusions-overview">-->
+<!--        <div class="row">-->
+<!--          <div class="col-lg-6">-->
+<!--            <div class="included-section">-->
+<!--              <h3>Your Journey Includes</h3>-->
+<!--              <div class="inclusion-list">-->
+<!--                <div class="inclusion-item">-->
+<!--                  <i class="bi bi-check-circle-fill"></i>-->
+<!--                  <span>9 nights boutique hotel accommodation</span>-->
+<!--                </div>-->
+<!--                <div class="inclusion-item">-->
+<!--                  <i class="bi bi-check-circle-fill"></i>-->
+<!--                  <span>Daily breakfast and 4 specialty dinners</span>-->
+<!--                </div>-->
+<!--                <div class="inclusion-item">-->
+<!--                  <i class="bi bi-check-circle-fill"></i>-->
+<!--                  <span>Private transfers and high-speed rail</span>-->
+<!--                </div>-->
+<!--                <div class="inclusion-item">-->
+<!--                  <i class="bi bi-check-circle-fill"></i>-->
+<!--                  <span>Expert local guides and art historians</span>-->
+<!--                </div>-->
+<!--                <div class="inclusion-item">-->
+<!--                  <i class="bi bi-check-circle-fill"></i>-->
+<!--                  <span>Skip-the-line museum entries</span>-->
+<!--                </div>-->
+<!--                <div class="inclusion-item">-->
+<!--                  <i class="bi bi-check-circle-fill"></i>-->
+<!--                  <span>Curated cultural experiences</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="col-lg-6">-->
+<!--            <div class="not-included-section">-->
+<!--              <h3>Additional Considerations</h3>-->
+<!--              <div class="exclusion-list">-->
+<!--                <div class="exclusion-item">-->
+<!--                  <i class="bi bi-x-circle"></i>-->
+<!--                  <span>International flights to/from Italy</span>-->
+<!--                </div>-->
+<!--                <div class="exclusion-item">-->
+<!--                  <i class="bi bi-x-circle"></i>-->
+<!--                  <span>Travel insurance (recommended)</span>-->
+<!--                </div>-->
+<!--                <div class="exclusion-item">-->
+<!--                  <i class="bi bi-x-circle"></i>-->
+<!--                  <span>Lunches and personal dining choices</span>-->
+<!--                </div>-->
+<!--                <div class="exclusion-item">-->
+<!--                  <i class="bi bi-x-circle"></i>-->
+<!--                  <span>Personal shopping and souvenirs</span>-->
+<!--                </div>-->
+<!--                <div class="exclusion-item">-->
+<!--                  <i class="bi bi-x-circle"></i>-->
+<!--                  <span>Optional activities and upgrades</span>-->
+<!--                </div>-->
+<!--                <div class="exclusion-item">-->
+<!--                  <i class="bi bi-x-circle"></i>-->
+<!--                  <span>Gratuities for guides and drivers</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <!-- Booking Section -->
+<!--      &lt;!&ndash; Booking Section &ndash;&gt;-->
 
-      <div class="booking-section" id="booking">
-        <div class="row">
-          <div class="col-lg-8">
-            <div class="departure-dates">
-              <h3>2024 Departure Dates</h3>
-              <div class="dates-grid">
+<!--      <div class="booking-section" id="booking">-->
+<!--        <div class="row">-->
+<!--          <div class="col-lg-8">-->
+<!--            <div class="departure-dates">-->
+<!--              <h3>2024 Departure Dates</h3>-->
+<!--              <div class="dates-grid">-->
 
-                <div class="date-option">
-                  <div class="date-info">
-                    <span class="month">April</span>
-                    <span class="dates">15 - 24</span>
-                  </div>
-                  <div class="date-details">
-                    <span class="availability available">Available</span>
-                  </div>
-                </div>
+<!--                <div class="date-option">-->
+<!--                  <div class="date-info">-->
+<!--                    <span class="month">April</span>-->
+<!--                    <span class="dates">15 - 24</span>-->
+<!--                  </div>-->
+<!--                  <div class="date-details">-->
+<!--                    <span class="availability available">Available</span>-->
+<!--                  </div>-->
+<!--                </div>-->
 
-                <div class="date-option">
-                  <div class="date-info">
-                    <span class="month">May</span>
-                    <span class="dates">20 - 29</span>
-                  </div>
-                  <div class="date-details">
-                    <span class="availability limited">4 spots left</span>
-                  </div>
-                </div>
+<!--                <div class="date-option">-->
+<!--                  <div class="date-info">-->
+<!--                    <span class="month">May</span>-->
+<!--                    <span class="dates">20 - 29</span>-->
+<!--                  </div>-->
+<!--                  <div class="date-details">-->
+<!--                    <span class="availability limited">4 spots left</span>-->
+<!--                  </div>-->
+<!--                </div>-->
 
-                <div class="date-option">
-                  <div class="date-info">
-                    <span class="month">June</span>
-                    <span class="dates">10 - 19</span>
-                  </div>
-                  <div class="date-details">
-                    <span class="availability available">Available</span>
-                  </div>
-                </div>
+<!--                <div class="date-option">-->
+<!--                  <div class="date-info">-->
+<!--                    <span class="month">June</span>-->
+<!--                    <span class="dates">10 - 19</span>-->
+<!--                  </div>-->
+<!--                  <div class="date-details">-->
+<!--                    <span class="availability available">Available</span>-->
+<!--                  </div>-->
+<!--                </div>-->
 
-                <div class="date-option">
-                  <div class="date-info">
-                    <span class="month">September</span>
-                    <span class="dates">5 - 14</span>
-                  </div>
-                  <div class="date-details">
-                    <span class="availability available">Available</span>
-                  </div>
-                </div>
+<!--                <div class="date-option">-->
+<!--                  <div class="date-info">-->
+<!--                    <span class="month">September</span>-->
+<!--                    <span class="dates">5 - 14</span>-->
+<!--                  </div>-->
+<!--                  <div class="date-details">-->
+<!--                    <span class="availability available">Available</span>-->
+<!--                  </div>-->
+<!--                </div>-->
 
-                <div class="date-option">
-                  <div class="date-info">
-                    <span class="month">October</span>
-                    <span class="dates">15 - 24</span>
-                  </div>
-                  <div class="date-details">
-                    <span class="availability limited">2 spots left</span>
-                  </div>
-                </div>
+<!--                <div class="date-option">-->
+<!--                  <div class="date-info">-->
+<!--                    <span class="month">October</span>-->
+<!--                    <span class="dates">15 - 24</span>-->
+<!--                  </div>-->
+<!--                  <div class="date-details">-->
+<!--                    <span class="availability limited">2 spots left</span>-->
+<!--                  </div>-->
+<!--                </div>-->
 
-              </div>
-            </div>
-          </div>
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
 
-          <div class="col-lg-4">
-            <div class="booking-form-card">
-              <h3>Secure Your Place</h3>
+<!--          <div class="col-lg-4">-->
+<!--            <div class="booking-form-card">-->
+<!--              <h3>Secure Your Place</h3>-->
 
-              <!--<form action="forms/tour-booking.php" method="post" class="php-email-form">
+<!--              &lt;!&ndash;<form action="forms/tour-booking.php" method="post" class="php-email-form">-->
 
-                <div class="form-group">
-                  <label for="preferred-date">Preferred Departure</label>
-                  <select name="departure_date" id="preferred-date" class="form-control" required="">
-                    <option value="">Select departure date</option>
-                    <option value="April 15-24">April 15-24, 2024</option>
-                    <option value="May 20-29">May 20-29, 2024</option>
-                    <option value="June 10-19">June 10-19, 2024</option>
-                    <option value="September 5-14">September 5-14, 2024</option>
-                    <option value="October 15-24">October 15-24, 2024</option>
-                  </select>
-                </div>
+<!--                <div class="form-group">-->
+<!--                  <label for="preferred-date">Preferred Departure</label>-->
+<!--                  <select name="departure_date" id="preferred-date" class="form-control" required="">-->
+<!--                    <option value="">Select departure date</option>-->
+<!--                    <option value="April 15-24">April 15-24, 2024</option>-->
+<!--                    <option value="May 20-29">May 20-29, 2024</option>-->
+<!--                    <option value="June 10-19">June 10-19, 2024</option>-->
+<!--                    <option value="September 5-14">September 5-14, 2024</option>-->
+<!--                    <option value="October 15-24">October 15-24, 2024</option>-->
+<!--                  </select>-->
+<!--                </div>-->
 
-                <div class="form-group">
-                  <label for="guest-count">Number of Travelers</label>
-                  <select name="travelers" id="guest-count" class="form-control" required="">
-                    <option value="">Select travelers</option>
-                    <option value="1">1 Person</option>
-                    <option value="2">2 People</option>
-                    <option value="3">3 People</option>
-                    <option value="4">4 People</option>
-                  </select>
-                </div>
+<!--                <div class="form-group">-->
+<!--                  <label for="guest-count">Number of Travelers</label>-->
+<!--                  <select name="travelers" id="guest-count" class="form-control" required="">-->
+<!--                    <option value="">Select travelers</option>-->
+<!--                    <option value="1">1 Person</option>-->
+<!--                    <option value="2">2 People</option>-->
+<!--                    <option value="3">3 People</option>-->
+<!--                    <option value="4">4 People</option>-->
+<!--                  </select>-->
+<!--                </div>-->
 
-                <div class="form-group">
-                  <label for="contact-name">Your Name</label>
-                  <input type="text" name="name" id="contact-name" class="form-control" required="">
-                </div>
+<!--                <div class="form-group">-->
+<!--                  <label for="contact-name">Your Name</label>-->
+<!--                  <input type="text" name="name" id="contact-name" class="form-control" required="">-->
+<!--                </div>-->
 
-                <div class="form-group">
-                  <label for="contact-email">Email Address</label>
-                  <input type="email" name="email" id="contact-email" class="form-control" required="">
-                </div>
+<!--                <div class="form-group">-->
+<!--                  <label for="contact-email">Email Address</label>-->
+<!--                  <input type="email" name="email" id="contact-email" class="form-control" required="">-->
+<!--                </div>-->
 
-                <div class="form-group">
-                  <label for="contact-phone">Phone Number</label>
-                  <input type="tel" name="phone" id="contact-phone" class="form-control">
-                </div>
+<!--                <div class="form-group">-->
+<!--                  <label for="contact-phone">Phone Number</label>-->
+<!--                  <input type="tel" name="phone" id="contact-phone" class="form-control">-->
+<!--                </div>-->
 
-                <div class="form-group">
-                  <label for="special-notes">Special Requests</label>
-                  <textarea name="message" id="special-notes" rows="3" class="form-control" placeholder="Dietary requirements, celebrations, accessibility needs..."></textarea>
-                </div>
+<!--                <div class="form-group">-->
+<!--                  <label for="special-notes">Special Requests</label>-->
+<!--                  <textarea name="message" id="special-notes" rows="3" class="form-control" placeholder="Dietary requirements, celebrations, accessibility needs..."></textarea>-->
+<!--                </div>-->
 
-                <div class="loading">Loading</div>
-                <div class="error-message"></div>
-                <div class="sent-message">Your booking request has been submitted successfully!</div>
+<!--                <div class="loading">Loading</div>-->
+<!--                <div class="error-message"></div>-->
+<!--                <div class="sent-message">Your booking request has been submitted successfully!</div>-->
 
-                <button type="submit" class="btn-submit">Submit Booking Request</button>
-              </form>-->
+<!--                <button type="submit" class="btn-submit">Submit Booking Request</button>-->
+<!--              </form>&ndash;&gt;-->
 
-              <div class="booking-assurance">
-                <div class="assurance-item">
-                  <i class="bi bi-shield-check"></i>
-                  <span>Secure booking process</span>
-                </div>
-                <div class="assurance-item">
-                  <i class="bi bi-telephone"></i>
-                  <span>Expert travel consultants</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+<!--              <div class="booking-assurance">-->
+<!--                <div class="assurance-item">-->
+<!--                  <i class="bi bi-shield-check"></i>-->
+<!--                  <span>Secure booking process</span>-->
+<!--                </div>-->
+<!--                <div class="assurance-item">-->
+<!--                  <i class="bi bi-telephone"></i>-->
+<!--                  <span>Expert travel consultants</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <!-- Visual Gallery -->
-      <div class="visual-gallery">
-        <h2>Moments to Remember</h2>
-        <div class="gallery-grid">
-          <div class="gallery-piece large">
-            <a href="assets/img/travel/destination-4.webp" class="glightbox">
-              <img src="assets/img/travel/destination-4.webp" alt="Italian Countryside" class="img-fluid" loading="lazy">
-            </a>
-          </div>
-          <div class="gallery-piece">
-            <a href="assets/img/travel/destination-5.webp" class="glightbox">
-              <img src="assets/img/travel/destination-5.webp" alt="Historic Architecture" class="img-fluid" loading="lazy">
-            </a>
-          </div>
-          <div class="gallery-piece">
-            <a href="assets/img/travel/destination-6.webp" class="glightbox">
-              <img src="assets/img/travel/destination-6.webp" alt="Coastal Views" class="img-fluid" loading="lazy">
-            </a>
-          </div>
-          <div class="gallery-piece">
-            <a href="assets/img/travel/tour-8.webp" class="glightbox">
-              <img src="assets/img/travel/tour-8.webp" alt="Cultural Experience" class="img-fluid" loading="lazy">
-            </a>
-          </div>
-          <div class="gallery-piece">
-            <a href="assets/img/travel/tour-9.webp" class="glightbox">
-              <img src="assets/img/travel/tour-9.webp" alt="Local Cuisine" class="img-fluid" loading="lazy">
-            </a>
-          </div>
-          <div class="gallery-piece medium">
-            <a href="assets/img/travel/tour-10.webp" class="glightbox">
-              <img src="assets/img/travel/tour-10.webp" alt="Scenic Landscapes" class="img-fluid" loading="lazy">
-            </a>
-          </div>
-        </div>
-      </div>
+<!--      &lt;!&ndash; Visual Gallery &ndash;&gt;-->
+<!--      <div class="visual-gallery">-->
+<!--        <h2>Moments to Remember</h2>-->
+<!--        <div class="gallery-grid">-->
+<!--          <div class="gallery-piece large">-->
+<!--            <a href="assets/img/travel/destination-4.webp" class="glightbox">-->
+<!--              <img src="assets/img/travel/destination-4.webp" alt="Italian Countryside" class="img-fluid" loading="lazy">-->
+<!--            </a>-->
+<!--          </div>-->
+<!--          <div class="gallery-piece">-->
+<!--            <a href="assets/img/travel/destination-5.webp" class="glightbox">-->
+<!--              <img src="assets/img/travel/destination-5.webp" alt="Historic Architecture" class="img-fluid" loading="lazy">-->
+<!--            </a>-->
+<!--          </div>-->
+<!--          <div class="gallery-piece">-->
+<!--            <a href="assets/img/travel/destination-6.webp" class="glightbox">-->
+<!--              <img src="assets/img/travel/destination-6.webp" alt="Coastal Views" class="img-fluid" loading="lazy">-->
+<!--            </a>-->
+<!--          </div>-->
+<!--          <div class="gallery-piece">-->
+<!--            <a href="assets/img/travel/tour-8.webp" class="glightbox">-->
+<!--              <img src="assets/img/travel/tour-8.webp" alt="Cultural Experience" class="img-fluid" loading="lazy">-->
+<!--            </a>-->
+<!--          </div>-->
+<!--          <div class="gallery-piece">-->
+<!--            <a href="assets/img/travel/tour-9.webp" class="glightbox">-->
+<!--              <img src="assets/img/travel/tour-9.webp" alt="Local Cuisine" class="img-fluid" loading="lazy">-->
+<!--            </a>-->
+<!--          </div>-->
+<!--          <div class="gallery-piece medium">-->
+<!--            <a href="assets/img/travel/tour-10.webp" class="glightbox">-->
+<!--              <img src="assets/img/travel/tour-10.webp" alt="Scenic Landscapes" class="img-fluid" loading="lazy">-->
+<!--            </a>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <!-- Final Call to Action -->
-      <div class="final-call">
-        <div class="call-content">
-          <h2>Your Italian Odyssey Awaits</h2>
-          <p>Embark on a journey that transcends ordinary travel. Let us craft memories that will last a lifetime.</p>
-          <div class="call-actions">
-            <a href="#booking" class="btn-primary-cta">Begin Your Journey</a>
-            <a href="tel:+1-855-742-8639" class="btn-contact">
-              <i class="bi bi-telephone"></i>
-              Call +1 (855) 742-8639
-            </a>
-          </div>
-        </div>
-      </div>
+<!--      &lt;!&ndash; Final Call to Action &ndash;&gt;-->
+<!--      <div class="final-call">-->
+<!--        <div class="call-content">-->
+<!--          <h2>Your Italian Odyssey Awaits</h2>-->
+<!--          <p>Embark on a journey that transcends ordinary travel. Let us craft memories that will last a lifetime.</p>-->
+<!--          <div class="call-actions">-->
+<!--            <a href="#booking" class="btn-primary-cta">Begin Your Journey</a>-->
+<!--            <a href="tel:+1-855-742-8639" class="btn-contact">-->
+<!--              <i class="bi bi-telephone"></i>-->
+<!--              Call +1 (855) 742-8639-->
+<!--            </a>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
   </section><!-- /Travel Tour Details Section -->
 

@@ -52,7 +52,7 @@
                       <div class="info-item ">
                         <i class="bi bi-geo-alt"></i>
                         <span class="tour-type" th:text="${calatorii[0].tours.size()} + ' Tururi'">10 Tururi</span>
-                        <span class="tours-count tour-type" th:text="${calatorii[0].minPrice > 0 ? 'From ' + calatorii[0].minPrice + ' p' : 'No tours available'}">0 points</span>
+                        <span class="tours-count tour-type" th:utext="${calatorii[0].minPrice > 0 ? 'From ' + calatorii[0].minPrice +' <i class=&quot;fa-regular fa-money-bill-1&quot;></i>' : 'No tours available'}">0 points</span>
                       </div>
                     </div>
                     <a th:href="@{/Itravel/{id}(id=${calatorii[0].id})}" class="explore-btn">
@@ -106,7 +106,7 @@
         <!-- Prev -->
         <li>
           <a class="page-link px-4 py-2 rounded-lg bg-[var(--accent-color)] text-[var(--contrast-color)] font-semibold shadow-md transition-all duration-200 hover:scale-105 hover:shadow-xl"
-             th:href="@{|/Destinations?page=${page > 0 ? page - 1 : 0}|}">
+             th:href="@{|/destinations?page=${page > 0 ? page - 1 : 0}|}">
             &laquo; Anterior
           </a>
         </li>
@@ -115,7 +115,7 @@
         <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
           <a class="page-link px-4 py-2 rounded-lg font-semibold transition-all duration-200
                     hover:scale-110 hover:shadow-lg"
-             th:href="@{'/Destinations?page=' + ${i}}"
+             th:href="@{'/destinations?page=' + ${i}}"
              th:text="${i + 1}"
              th:classappend="${i == page} ? ' bg-[var(--accent-color)] text-[var(--contrast-color)] shadow-xl' : ' bg-white text-[var(--accent-color)] border border-[var(--accent-color)]'">
           </a>
@@ -124,7 +124,7 @@
         <!-- Next -->
         <li>
           <a class="page-link px-4 py-2 rounded-lg bg-[var(--accent-color)] text-[var(--contrast-color)] font-semibold shadow-md transition-all duration-200 hover:scale-105 hover:shadow-xl"
-             th:href="@{|/Destinations?page=${page < totalPages - 1 ? page + 1 : totalPages - 1}|}">
+             th:href="@{|/destinations?page=${page < totalPages - 1 ? page + 1 : totalPages - 1}|}">
             Următor &raquo;
           </a>
         </li>
