@@ -71,7 +71,7 @@ public class DestinationsController {
 
             // 📸 doar dacă există imagine nouă
             if (imageFile != null && !imageFile.isEmpty()) {
-                String uploadDir = new File("src/main/resources/static/uploads").getAbsolutePath();
+                String uploadDir = new File("uploads/destinations").getAbsolutePath();
                 File folder = new File(uploadDir);
                 if (!folder.exists()) folder.mkdirs();
 
@@ -79,7 +79,7 @@ public class DestinationsController {
                 File file = new File(folder, filename);
                 imageFile.transferTo(file);
 
-                destination.setImage(filename);
+                destination.setImage("destinations/" + filename);
             }
             // 🔥 dacă NU e imagine → nu atingi destination.image
 
