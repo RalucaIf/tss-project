@@ -8,7 +8,9 @@ A Java-based web application designed to help users organize trips, manage trave
 
 - Media Uploads: Integrated image upload system for capturing travel moments.
 
-- Admin Features: Specialized panel for content management and real-time updates without rebuilding.
+- Leaderboard: Track rankings based on user activity.
+
+- Rewards & Points: Earn points for planning trips and interacting with the platform.
 
 - Chatbot Integration: AI-assisted travel queries.
 
