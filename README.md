@@ -20,3 +20,5 @@ A Java-based web application designed to help users organize trips, manage trave
 - Frontend: HTML5, CSS3, JavaScript
 
 - Build Tool: Maven
+
+- Database: PostgreSQL
