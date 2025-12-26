@@ -17,7 +17,7 @@ A Java-based web application designed to help users organize trips, manage trave
 # Tech Stack
 - Backend: Java, Spring Boot (Maven)
 
-- Frontend: HTML5, CSS3, JavaScript
+- Frontend: HTML5, CSS3, JavaScript, React
 
 - Build Tool: Maven
 
