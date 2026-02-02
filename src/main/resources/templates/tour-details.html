@@ -7,8 +7,8 @@
   <!-- Page Title -->
   <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/showcase-7.webp}');|">
     <div class="container position-relative">
-      <h1>Welcome to ITravel</h1>
-      <p>Create memorable moments with us.</p>
+      <h1>Bine ai Venit la ITravel</h1>
+      <p>Creează momente memorabile cu noi.</p>
 
     </div>
   </div><!-- End Page Title -->
@@ -26,8 +26,8 @@
                th:alt="${calatorie.title}" class="hero-image">
           <div class="hero-overlay">
             <div class="hero-content">
-              <span class="tour-type" th:text="'Category: ' + ${calatorie.category}">Category: Cultural Explorer</span>
-              <h1 th:text="${calatorie.title}">Mediterranean Coast Discovery</h1>
+              <span class="tour-type" th:text="'Category: ' + ${calatorie.category}">Categorie: Explorare Culturală</span>
+              <h1 th:text="${calatorie.title}">Descoperirea Coastei Mediteraneene</h1>
               <p class="hero-subtitle tour-type" th:text="${calatorie.subtitle}"></p>
 
               <div class="hero-stats d-flex justify-content-between align-items-center">
@@ -36,11 +36,11 @@
                 <div class="stat-left d-flex gap-3">
                 <span class="stat-item tour-type">
                   <i class="bi bi-clock"></i>
-                  <span th:text="${calatorie.duration} + ' Days'">10 Days</span>
+                  <span th:text="${calatorie.duration} + ' Days'">10 Zile</span>
                 </span>
                   <span class="stat-item tour-type">
                   <i class="bi bi-people"></i>
-                  <span th:text="'Max ' + ${calatorie.maxGuests} + ' Guests'">Max 16 Guests</span>
+                  <span th:text="'Max ' + ${calatorie.maxGuests} + ' Guests'">Maxim 16 invitați</span>
                 </span>
                 </div>
 
@@ -63,7 +63,7 @@
           <!-- Left content -->
           <div class="col-lg-8">
             <div class="essence-content">
-              <h2 th:text="${calatorie.title}">The Essence of Italy</h2>
+              <h2 th:text="${calatorie.title}">Frumoasa Italia</h2>
               <p th:text="${calatorie.description}">Sed ut perspiciatis unde omnis iste natus...</p>
 
               <div class="highlights-compact">
@@ -96,15 +96,15 @@
                     <button type="submit" class="btn btn-login w-100" data-bs-toggle="modal" data-bs-target="#buyModal"
                             th:disabled="${boughtTourIds.contains(calatorie.id)}">
                                             <span th:if="${boughtTourIds.contains(calatorie.id)}">
-                                                Cumparat!
+                                                Cumpărat!
                                             </span>
                         <span th:unless="${boughtTourIds.contains(calatorie.id)}">
-                                                Buy
+                                                Cumpără
                                             </span>
                     </button>
                 </form>
               <div class="booking-notes">
-                <span><i class="bi bi-shield-check"></i>Free cancellation up to 48h</span>
+                <span><i class="bi bi-shield-check"></i>Anulare gratuită până la 48 ore</span>
               </div>
             </div>
           </div>
@@ -117,16 +117,16 @@
               <div class="modal-content">
                   <form th:action="@{/tours/add-to-itinerary/{id}(id=${calatorie.id})}" method="post">
                       <div class="modal-header">
-                          <h5 class="modal-title" id="buyModalLabel">Add to itinerary</h5>
+                          <h5 class="modal-title" id="buyModalLabel">Adaugă la Itinerariu</h5>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
                           <input type="hidden" name="tourId" th:value="${calatorie.id}" />
 
                           <div class="mb-3">
-                              <label class="form-label">Select itinerary</label>
+                              <label class="form-label">Selectează un Itinerariu</label>
                               <select class="form-select" name="tripId" required>
-                                  <option disabled selected value="">Choose itinerary</option>
+                                  <option disabled selected value="">Alege un Itinerariu</option>
                                   <option th:each="t : ${trips}"
                                           th:value="${t.id}"
                                           th:text="${t.title}"></option>
@@ -134,8 +134,8 @@
                           </div>
                       </div>
                       <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                          <button type="submit" class="btn btn-primary">Add</button>
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anulează</button>
+                          <button type="submit" class="btn btn-primary">Adaugă</button>
                       </div>
                   </form>
               </div>
@@ -147,7 +147,7 @@
 
 
       <div class="journey-timeline" th:if="${calatorie.itinerariu != null}">
-      <h2>Your Journey Unfolds</h2>
+      <h2>Călătoria Ta</h2>
       <div class="timeline-wrapper">
         <div class="timeline-item" th:each="zi, ziStat : ${calatorie.itinerariu}">
           <div class="timeline-marker">
@@ -155,12 +155,12 @@
           </div>
           <div class="timeline-content">
             <div class="day-header">
-              <h3 th:text="${zi.titlu}">Day Title</h3>
-              <span class="location" th:text="${zi.locatie}">Location</span>
+              <h3 th:text="${zi.titlu}">Titlul Zilei</h3>
+              <span class="location" th:text="${zi.locatie}">Locație</span>
             </div>
-            <p th:text="${zi.descriere}">Day description goes here</p>
+            <p th:text="${zi.descriere}">Descrierea zilei</p>
             <div class="day-features">
-              <span class="feature-tag" th:each="feat : ${zi.features}" th:text="${feat}">Feature</span>
+              <span class="feature-tag" th:each="feat : ${zi.features}" th:text="${feat}">Detalii</span>
             </div>
           </div>
         </div>

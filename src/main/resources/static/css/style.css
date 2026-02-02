@@ -8941,5 +8941,29 @@ body.dark-background .btn-theme i {
     100% { opacity: 0; transform: translateY(-20px) scale(1.2); }
 }
 
+/* === FIX: păstrează highlight-ul (portocaliu) pentru linkul activ și când body are .scrolled === */
+
+/* Dacă ai variabilă de accent în proiect, folosește-o (TravelTime de obicei are --accent-color) */
+:root {
+    --nav-active-color: var(--accent-color, #e66450); /* fallback dacă nu există --accent-color */
+}
+
+/* Stare normală */
+#navmenu a.active,
+#navmenu a.active:focus,
+#navmenu a.active:hover {
+    color: var(--nav-active-color) !important;
+    opacity: 1 !important;
+}
+
+/* Stare la scroll (aici se strica la tine) */
+body.scrolled #navmenu a.active,
+body.scrolled #navmenu a.active:focus,
+body.scrolled #navmenu a.active:hover {
+    color: var(--nav-active-color) !important;
+    opacity: 1 !important;
+}
+
+
 
 

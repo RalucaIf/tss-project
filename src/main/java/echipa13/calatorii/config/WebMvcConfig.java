@@ -13,6 +13,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         String uploadsUri = Paths.get("uploads").toAbsolutePath().toUri().toString();
         String imagineUri = Paths.get("imagine").toAbsolutePath().toUri().toString();
+        String uploadsPath = Paths.get(System.getProperty("user.dir"), "uploads")
+                .toUri()
+                .toString(); // ex: file:/C:/.../calatorii/uploads/
+
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations(uploadsPath);
 
         // Pozele din Jurnal (filesystem) + fallback pe classpath (unde erau imaginile vechi)
         registry.addResourceHandler("/uploads/**")

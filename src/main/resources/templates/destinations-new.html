@@ -19,13 +19,13 @@
         </div>
     </div><!-- End Page Title -->
 
-    <section  class="py-5">
+    <section class="py-5">
 
         <form role="form"
-               th:action="${destination.id} != null ? '/destinations/edit/' + ${destination.id} : '/destinations/new'"
-               th:object="${destination}"
-               method="post"
-               enctype="multipart/form-data"
+              th:action="${destination.id} != null ? '/destinations/edit/' + ${destination.id} : '/destinations/new'"
+              th:object="${destination}"
+              method="post"
+              enctype="multipart/form-data"
               class="card shadow-sm p-4 mx-auto"
               style="max-width: 800px; border-radius: 16px;">
 
@@ -33,24 +33,26 @@
                 ✨ Add Destination
             </h3>
 
-        <div class="form-group mb-3">
-            <label for="inputName">Name</label>
-            <input type="text" class="form-control" id="inputName" th:field="*{name}" placeholder="Destination Name">
-        </div>
+            <div class="form-group mb-3">
+                <label for="inputName">Name</label>
+                <input type="text" class="form-control" id="inputName" th:field="*{name}" placeholder="Destination Name">
+            </div>
 
-        <div class="form-group mb-3">
-            <label for="inputDescription">Description</label>
-            <textarea class="form-control" id="inputDescription" th:field="*{description}" rows="4" placeholder="Description"></textarea>
-        </div>
+            <div class="form-group mb-3">
+                <label for="inputDescription">Description</label>
+                <textarea class="form-control" id="inputDescription" th:field="*{description}" rows="4" placeholder="Description"></textarea>
+            </div>
 
-        <div class="form-group mb-3">
-            <label for="inputContinent">Continent</label>
-            <select class="form-control" id="inputContinent" th:field="*{continent}">
-                <option th:each="c : ${T(echipa13.calatorii.models.Continent).values()}"
-                        th:value="${c}"
-                        th:text="${c}">Continent</option>
-            </select>
-        </div>
+            <div class="form-group mb-3">
+                <label for="inputContinent">Continent</label>
+                <select class="form-control" id="inputContinent" th:field="*{continent}">
+                    <option th:each="c : ${T(echipa13.calatorii.models.Continent).values()}"
+                            th:value="${c}"
+                            th:text="${c}">Continent</option>
+                </select>
+            </div>
+
+            <!-- Upload imagine + preview local -->
             <div class="form-group mb-3">
                 <label for="imageFile" class="form-label fw-semibold">Image</label>
                 <input type="file"
@@ -58,23 +60,51 @@
                        id="imageFile"
                        name="imageFile"
                        accept="image/*">
-                <small class="text-muted">
-                    Lasă gol pentru a păstra imaginea existentă
-                </small>
+                <small class="text-muted">Lasă gol pentru a păstra imaginea existentă</small>
+
+                <!-- Preview local pentru fișierul selectat acum -->
+                <img id="dest-preview"
+                     style="display:none; max-width:220px; border-radius:12px; margin-top:10px;">
             </div>
 
+            <!-- Imaginea existentă (din DB) -->
+            <img id="existing-img"
+                 th:if="${destination.image != null}"
+                 th:src="@{/uploads/destinations/{img}(img=${destination.image})}"
+                 style="max-width: 100%; border-radius: 12px; margin-top:10px;">
 
+            <div class="d-grid mt-3">
+                <button type="submit" class="btn btn-login w-100">Save Destination</button>
+            </div>
+        </form>
 
-            <img th:if="${destination.image != null}"
-                 th:src="@{/uploads/{img}(img=${destination.image})}"
-                 style="max-width: 100%; border-radius: 12px;">
+        <script>
+            (function(){
+                var input = document.getElementById('imageFile');
+                var preview = document.getElementById('dest-preview');
+                var existing = document.getElementById('existing-img');
+                if(!input || !preview) return;
 
+                input.addEventListener('change', function(e){
+                    var f = (e.target.files && e.target.files[0]) ? e.target.files[0] : null;
 
-            <div class="d-grid">
-            <button type="submit" class="btn btn-login w-100">Save Destination</button>
-        </div>
-    </form>
+                    // dacă userul a “anulat” selecția
+                    if(!f || !f.type || !f.type.startsWith('image/')){
+                        preview.style.display = 'none';
+                        preview.src = '';
+                        if(existing) existing.style.display = '';
+                        return;
+                    }
 
+                    // arată preview
+                    preview.style.display = 'block';
+                    preview.src = URL.createObjectURL(f);
+
+                    // ascunde poza veche ca să nu fie confuzie
+                    if(existing) existing.style.display = 'none';
+                });
+            })();
+        </script>
 
     </section>
 </div>
