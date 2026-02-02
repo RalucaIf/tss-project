@@ -36,11 +36,11 @@
                 <div class="stat-left d-flex gap-3">
                 <span class="stat-item tour-type">
                   <i class="bi bi-clock"></i>
-                  <span th:text="${calatorie.duration} + ' Days'">10 Zile</span>
+                  <span th:text="${calatorie.duration} + ' Zile'">10 Zile</span>
                 </span>
                   <span class="stat-item tour-type">
                   <i class="bi bi-people"></i>
-                  <span th:text="'Max ' + ${calatorie.maxGuests} + ' Guests'">Maxim 16 invitați</span>
+                  <span th:text="'Max ' + ${calatorie.maxGuests} + ' Persoane'">Maxim 16 invitați</span>
                 </span>
                 </div>
 
@@ -79,7 +79,7 @@
           <div class="col-lg-4 d-flex justify-content-lg-end mt-4 mt-lg-0">
             <div class="pricing-card" style="width: 100%; max-width: 350px;">
               <div class="price-header">
-                <span class="price-label">From</span>
+                <span class="price-label">De La</span>
                 <span th:utext="${calatorie.pricePoints} + ' <i class=&quot;fa-regular fa-money-bill-1&quot;></i>'" class="price-amount">€3,450</span>
               </div>
                 <p th:if="${param.success != null and param.success[0] == c.id.toString()}"
@@ -93,15 +93,14 @@
                 </p>
                 <form
                       th:action="@{/tours/buy/{id}(id=${calatorie.id})}" method="post">
-                    <button type="submit" class="btn btn-login w-100" data-bs-toggle="modal" data-bs-target="#buyModal"
-                            th:disabled="${boughtTourIds.contains(calatorie.id)}">
-                                            <span th:if="${boughtTourIds.contains(calatorie.id)}">
-                                                Cumpărat!
-                                            </span>
-                        <span th:unless="${boughtTourIds.contains(calatorie.id)}">
-                                                Cumpără
-                                            </span>
+                    <button type="button"
+                            class="btn btn-login w-100"
+                            data-bs-toggle="modal"
+                            data-bs-target="#buyModal">
+                        <span th:if="${boughtTourIds.contains(calatorie.id)}">Adaugă în itinerariu</span>
+                        <span th:unless="${boughtTourIds.contains(calatorie.id)}">Cumpără și adaugă în itinerariu</span>
                     </button>
+
                 </form>
               <div class="booking-notes">
                 <span><i class="bi bi-shield-check"></i>Anulare gratuită până la 48 ore</span>
@@ -115,7 +114,9 @@
       <div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
           <div class="modal-dialog">
               <div class="modal-content">
-                  <form th:action="@{/tours/add-to-itinerary/{id}(id=${calatorie.id})}" method="post">
+                  <form th:action="@{/tours/buy-and-add/{id}(id=${calatorie.id})}" method="post">
+                      <input th:if="${_csrf != null}" type="hidden"
+                             th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                       <div class="modal-header">
                           <h5 class="modal-title" id="buyModalLabel">Adaugă la Itinerariu</h5>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

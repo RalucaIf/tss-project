@@ -52,7 +52,7 @@
                       <div class="info-item ">
                         <i class="bi bi-geo-alt"></i>
                         <span class="tour-type" th:text="${calatorii[0].tours.size()} + ' Tururi'">10 Tururi</span>
-                        <span class="tours-count tour-type" th:utext="${calatorii[0].minPrice > 0 ? 'From ' + calatorii[0].minPrice +' <i class=&quot;fa-regular fa-money-bill-1&quot;></i>' : 'No tours available'}">0 points</span>
+                        <span class="tours-count tour-type" th:utext="${calatorii[0].minPrice > 0 ? 'De La ' + calatorii[0].minPrice +' <i class=&quot;fa-regular fa-money-bill-1&quot;></i>' : 'No tours available'}">0 points</span>
                       </div>
                     </div>
                     <a th:href="@{/Itravel/{id}(id=${calatorii[0].id})}" class="explore-btn">
@@ -84,7 +84,7 @@
                     <p class="destination-excerpt tour-type" th:text="${#strings.abbreviate(c.description, 50)}">Descriere excursie</p>
                     <div class="destination-info">
                       <span class="tours-count tour-type" th:text="${c.tours.size()} + ' Tururi'">10 Tururi</span>
-                      <span class="tours-count tour-type" th:text="${c.minPrice > 0 ? 'From ' + c.minPrice + ' p' : 'No tours available'}">0 points</span>
+                      <span class="tours-count tour-type" th:text="${c.minPrice > 0 ? 'De La ' + c.minPrice + ' p' : 'No tours available'}">0 points</span>
                     </div>
 
                     <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">

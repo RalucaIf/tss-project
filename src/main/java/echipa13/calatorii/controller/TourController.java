@@ -166,6 +166,68 @@ public class TourController {
         return "redirect:/trips/" + tripId;
 
     }
+
+    @PostMapping("/tours/buy-and-add/{id}")
+    public String buyAndAddToItinerary(@PathVariable Long id,
+                                       @RequestParam Long tripId,
+                                       Authentication authentication) {
+
+        String login = authentication.getName();
+
+        // Identificare user (poate fi email sau username)
+        UserEntity user = userRepository.findByEmail(login);
+        if (user == null) user = userRepository.findByUsername(login);
+        if (user == null) return "redirect:/login";
+
+        Trip trip = tripRepository.findById(tripId).orElse(null);
+        if (trip == null) return "redirect:/tours/" + id + "?error=tripNotFound";
+
+        // Securitate: itinerariul trebuie să fie al userului
+        if (trip.getUser() == null || !trip.getUser().getId().equals(user.getId())) {
+            return "redirect:/tours/" + id + "?error=notOwner";
+        }
+
+        Tour tourEntity = tourService.findEntityById(id);
+
+        // Dacă e deja folosit într-un trip al userului, nu mai permite
+        boolean alreadyUsed = tripRepository.existsByUserAndExcursii_Id(user, id);
+        if (alreadyUsed) {
+            return "redirect:/tours/" + id + "?error=alreadyInTrip";
+        }
+
+        // ✅ Cumpărare doar dacă NU e deja cumpărat
+        boolean alreadyBought = tourPurchaseRepository.existsByBuyerAndTour(user, tourEntity);
+        if (!alreadyBought) {
+            UserPoints userPoints = userPointsRepository.findByUser_Id(user.getId()).orElse(null);
+            if (userPoints == null) {
+                return "redirect:/tours/" + id + "?error=noPoints";
+            }
+
+            int tourCost = tourEntity.getPricePoints();
+            int myPoints = userPoints.getPoints();
+
+            if (myPoints < tourCost) {
+                return "redirect:/tours/" + id + "?error=notEnoughPoints";
+            }
+
+            userPoints.setPoints(myPoints - tourCost);
+            userPointsRepository.save(userPoints);
+
+            TourPurchase tp = new TourPurchase();
+            tp.setBuyer(user);
+            tp.setTour(tourEntity);
+            tp.setPointsPaid(tourCost);
+            tourPurchaseRepository.save(tp);
+        }
+
+        // ✅ Adăugare în itinerariu
+        tourEntity.setTrip(trip);
+        trip.getExcursii().add(tourEntity);
+        tripRepository.save(trip);
+
+        return "redirect:/trips/" + tripId;
+    }
+
 }
 
 
