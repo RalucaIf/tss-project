@@ -7,7 +7,7 @@
 <div layout:fragment="content">
     <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/walpaper-image.jpg}');|">
         <div class="container position-relative">
-            <h1>Detalii Destinație</h1>
+            <h1>Acasă</h1>
             <p>Creează momente memorabile în călătoria ta și descoperă locuri de neuitat.</p>
             <nav class="breadcrumbs">
                 <ol>
@@ -64,10 +64,10 @@
                                                 <button type="submit" class="btn btn-login w-100"
                                                         th:disabled="${boughtTourIds.contains(c.id)}">
                                             <span th:if="${boughtTourIds.contains(c.id)}">
-                                                Cumparat!
+                                                Cumpărat!
                                             </span>
                                                     <span th:unless="${boughtTourIds.contains(c.id)}">
-                                                Buy
+                                                Cumpără
                                             </span>
                                                 </button>
                                             </form>
@@ -122,7 +122,7 @@
                                             <i class="bi bi-award-fill"></i>
                                             <div class="badge-text">
                                                 <strong>Premiat</strong>
-                                                <span>Cea Mai Bună Agenție de Turism 2024</span>
+                                                <span>Cea Mai Bună Aplicație de Turism 2026</span>
                                             </div>
                                         </div>
                                     </div>
@@ -224,26 +224,29 @@
                     <div class="col-lg-8 text-center">
                         <h3>Nu te poți hotărî unde să mergi?</h3>
                         <p>Experții noștri în călătorii te pot ajuta să găsești destinația perfectă, în funcție de preferințele, bugetul și stilul tău de călătorie.</p>
-                        <div class="cta-buttons">
-                            <a th:href="@{/destinations}" class="btn-primary">Explorează Tururile</a>
+                        <div class="cta-buttons cta-buttons--home">
+                            <a th:href="@{/destinations}" class="btn-primary btn-premium">
+                                Explorează tururile
+                                <i class="bi bi-compass"></i>
+                            </a>
 
-                            <!-- Buton Contactează Expertul -->
+                            <!-- BUTON CHAT: păstrăm ID-ul (JS rămâne OK) -->
+                            <a href="#" id="open-chat" class="btn-premium btn-premium--outline">
+                                Vorbește cu un expert
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
                         </div>
 
-                        <!-- Buton pentru deschiderea chatului -->
-                        <a href="#" id="open-chat" class="btn-explore">
-                            <span>Vorbeste cu un expert</span>
-                            <i class="bi bi-arrow-right"></i> </a>
                         <div id="chat-box" class="chat-text" style="display: none;">
                             <div id="chat-header">
-                                Chat cu expertii nostrii
+                                Chat cu experții noștri
                                 <span id="close-chat" style="cursor:pointer;">✖</span>
                             </div>
                             <div id="chat-messages"></div>
                             <input type="text" id="chat-input" placeholder="Scrie mesajul..." />
-                            <!-- ascuns: numele userului -->
                             <span id="chat-username" style="display:none;" sec:authentication="name"></span>
                         </div>
+
 
 
 

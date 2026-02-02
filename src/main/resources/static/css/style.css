@@ -2502,7 +2502,10 @@ section,
     font-weight: 500;
     padding: 10px 20px;
     border-radius: 40px;
-    transition: all 0.3s ease;
+
+    /* ✅ nu mai animăm "all" (care include transform la activare/dezactivare) */
+    transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+
     white-space: nowrap;
 }
 
@@ -2513,11 +2516,17 @@ section,
     }
 }
 
-.travel-destinations .filter-tabs .destination-filters li:hover,
-.travel-destinations .filter-tabs .destination-filters li.filter-active {
+.travel-destinations .filter-tabs .destination-filters li:hover {
     color: var(--contrast-color);
     background: var(--accent-color);
     transform: translateY(-1px);
+}
+
+/* ✅ Active: fără transform (elimină al doilea efect când "Toate" se dezactivează) */
+.travel-destinations .filter-tabs .destination-filters li.filter-active {
+    color: var(--contrast-color);
+    background: var(--accent-color);
+    transform: none;
 }
 
 .travel-destinations .destination-grid .destination-overlay {
@@ -8866,9 +8875,32 @@ body.dark-background .btn-theme i {
     font-weight: bold;
 }
 
-.isotope-item {
-    transition: transform 0.5s ease, opacity 0.5s ease;
-}
+/* Tranziție pentru filtrare Isotope */
+/*.isotope-item {*/
+/*    transition: transform 350ms ease, opacity 350ms ease;*/
+/*    will-change: transform, opacity;*/
+/*}*/
+
+
+/*!* Efect de apariție (doar vizual, fără să concureze cu Isotope) *!*/
+/*@keyframes destinationFadeIn {*/
+/*    from {*/
+/*        opacity: 0;*/
+/*        filter: blur(2px);*/
+/*        transform: translateY(6px);*/
+/*    }*/
+/*    to {*/
+/*        opacity: 1;*/
+/*        filter: blur(0);*/
+/*        transform: translateY(0);*/
+/*    }*/
+/*}*/
+
+/*!* Se aplică doar când punem clasa din JS *!*/
+/*.isotope-item.isotope-animate-in {*/
+/*    animation: destinationFadeIn 280ms ease-out both;*/
+/*}*/
+
 
 
 .destination-card .overlay .destination-tag.popular {
@@ -8963,6 +8995,106 @@ body.scrolled #navmenu a.active:hover {
     color: var(--nav-active-color) !important;
     opacity: 1 !important;
 }
+
+/* === Home CTA premium (ambele identice, side-by-side, shift spre dreapta) === */
+.cta-buttons--home {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+
+    justify-content: center;
+    padding-left: 70px; /* ajustează 40–120px după gust */
+}
+
+/* Stil comun premium */
+.btn-premium {
+    padding: 9px 18px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-radius: 999px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    white-space: nowrap;
+    text-decoration: none;
+
+    background-color: var(--accent-color);
+    color: var(--contrast-color);
+
+    /* ✅ chenar puțin mai subțire */
+    border: 1.5px solid var(--accent-color);
+
+    transition: transform .25s ease, box-shadow .25s ease, background-color .25s ease, filter .25s ease, color .25s ease;
+}
+
+/* Dacă ai lăsat clasa btn-premium--outline în HTML, o neutralizăm */
+.btn-premium--outline {
+    background-color: var(--accent-color);
+    color: var(--contrast-color);
+    border-color: var(--accent-color);
+}
+
+/* Hover/focus: premium lift + text alb */
+.btn-premium:hover,
+.btn-premium:focus {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--default-color), transparent 70%);
+    filter: brightness(0.95);
+    outline: none;
+
+    /* ✅ rămâne alb */
+    color: #fff;
+}
+
+.btn-premium i {
+    transition: transform .2s ease, color .2s ease;
+}
+
+/* Icon: se mișcă + rămâne alb */
+.btn-premium:hover i,
+.btn-premium:focus i {
+    transform: translateX(3px);
+    color: #fff;
+}
+
+
+/* Mobile: nu mai shiftăm spre dreapta */
+@media (max-width: 576px) {
+    .cta-buttons--home {
+        padding-left: 0;
+        justify-content: center;
+    }
+}
+
+/* Spațiu mic între conținut și footer (ca să nu fie lipit) */
+#footer {
+    margin-top: 18px; /* ajustează 12–28px după gust */
+}
+
+/* Evită “a doua tranziție” când se dezactivează butonul vechi (ex: Toate) */
+.travel-destinations .filter-tabs .destination-filters li.no-filter-transition {
+    transition: none !important;
+}
+
+/* === Destinations: efect de apariție la filtrare (fără conflict cu Isotope) === */
+@keyframes destCardFadeIn {
+    from { opacity: 0; filter: blur(2px); }
+    to   { opacity: 1; filter: blur(0); }
+}
+
+/*.destination-item.dest-animate-in {*/
+/*    animation: destCardFadeIn 320ms ease-out both;*/
+/*}*/
+
+
+
+
 
 
 
