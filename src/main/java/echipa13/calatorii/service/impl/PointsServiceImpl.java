@@ -28,16 +28,24 @@ public class PointsServiceImpl implements echipa13.calatorii.service.PointsServi
         UserPoints userPoints;
         if (opt.isPresent()) {
             userPoints = opt.get();
-            // actualizează punctele existente și nivelul
             userPoints.setPoints(pointsDto.getPoints());
             userPoints.setLevel(pointsDto.getLevel());
+
+            // 🔥 FIX
+            userPoints.setXpoints(
+                    pointsDto.getXPoints() != null ? pointsDto.getXPoints() : 0
+            );
+
         } else {
-            // dacă nu există, creăm un entry nou
             userPoints = new UserPoints();
             userPoints.setUser(pointsDto.getUser());
             userPoints.setPoints(pointsDto.getPoints());
             userPoints.setLevel(pointsDto.getLevel());
+            userPoints.setXpoints(
+                    pointsDto.getXPoints() != null ? pointsDto.getXPoints() : 0
+            );
         }
+
 
         userPointsRepository.save(userPoints);
     }

@@ -1,23 +1,9 @@
 <!DOCTYPE html>
-<html lang="ro"
-      xmlns:th="http://www.thymeleaf.org"
+<html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}">
 
-<head>
-  <meta charset="UTF-8">
-  <title>Destinații</title>
-</head>
-
-<body>
-
-<div layout:fragment="content"
-     th:with="
-        pageSafe=${page != null ? page : 0},
-        totalPagesSafe=${totalPages != null ? totalPages : 1}
-     ">
-
+<div layout:fragment="content">
   <!-- Titlul paginii -->
   <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
     <div class="container position-relative">
@@ -26,18 +12,6 @@
     </div>
   </div><!-- Sfârșit Titlu Pagina -->
 
-  <!-- Toast/Alert premium pentru favorite -->
-  <div class="container mt-3" th:if="${param.fav != null}">
-    <div class="premium-alert-mini"
-         th:classappend="${param.fav[0] == 'added'} ? ' is-ok' : ' is-warn'">
-      <i class="bi"
-         th:classappend="${param.fav[0] == 'added'} ? ' bi-heart-fill' : ' bi-heartbreak'"></i>
-      <span th:text="${param.fav[0] == 'added'} ? 'Adăugat la favorite.' : 'Scos din favorite.'">
-        Actualizare favorite.
-      </span>
-    </div>
-  </div>
-
   <!-- Secțiunea Destinații de Călătorie -->
   <section id="travel-destinations" class="travel-destinations section">
     <div class="container">
@@ -45,28 +19,12 @@
         <div class="col-lg-8 text-center">
           <h2>Descoperă Destinații de Călătorie Incredibile</h2>
           <p class="mb-5">
-            Alege destinația perfectă pentru următoarea ta aventură și transformă fiecare călătorie într-o experiență memorabilă.
-            Descoperă locuri unice, cultură autentică și momente de neuitat.
+            Alege destinația perfectă pentru următoarea ta aventură și transformă fiecare călătorie într-o experiență memorabilă. Descoperă locuri unice, cultură autentică și momente de neuitat.
           </p>
         </div>
       </div>
 
-      <!-- Dacă nu există destinații -->
-      <div class="row" th:if="${calatorii == null or #lists.isEmpty(calatorii)}">
-        <div class="col-12">
-          <div class="alert alert-info">
-            Momentan nu există destinații de afișat.
-          </div>
-        </div>
-      </div>
-
-      <!-- Dacă există destinații -->
-      <div class="destinations-isotope"
-           th:if="${calatorii != null and !#lists.isEmpty(calatorii)}"
-           data-default-filter="*"
-           data-layout="fitRows"
-           data-sort="original-order">
-
+      <div class="destinations-isotope" data-default-filter="*" data-layout="fitRows" data-sort="original-order">
         <div class="filter-tabs">
           <ul class="destination-filters">
             <li data-filter="*" class="filter-active">Toate</li>
@@ -78,170 +36,55 @@
         </div>
 
         <div class="row gy-4 isotope-container destination-grid">
-
           <!-- Card mare pentru excursia recomandată -->
-          <!-- IMPORTANT: setăm c = calatorii[0] ca să NU fie null când folosim c.id -->
-          <div class="col-lg-12 destination-item isotope-item filter-featured"
-               th:if="${calatorii.size() > 0}"
-               th:with="c=${calatorii[0]}">
-
+          <div class="col-lg-12 destination-item isotope-item filter-featured" th:if="${calatorii.size() > 0}">
             <div class="destination-large">
               <div class="destination-overlay">
-
-                <img th:src="@{/uploads/{img}(img=${c.image})}"
-                     th:alt="${c.name}"
-                     class="img-fluid"
-                     loading="lazy">
-
+                <img th:src="@{/uploads/{img}(img=${calatorii[0].image})}" th:alt="${calatorii[0].name}" class="img-fluid" loading="lazy">
                 <div class="overlay-content">
-
-                  <!-- FAVORITE BUTTON (card mare) -->
-                  <div class="favorite-spot">
-
-                    <!-- LOGAT -->
-                    <form sec:authorize="isAuthenticated()"
-                          th:action="@{/favorites/destinations/{id}/toggle(id=${c.id})}"
-                          method="post"
-                          class="favorite-form">
-
-                      <input th:if="${_csrf != null}" type="hidden"
-                             th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-                      <!-- Redirect safe către pagina curentă -->
-                      <input type="hidden" name="redirect"
-                             th:value="@{/destinations(page=${pageSafe})}"/>
-
-                      <button type="submit"
-                              class="favorite-btn"
-                              th:classappend="${favoriteDestinationIds != null and #lists.contains(favoriteDestinationIds, c.id)} ? ' is-active' : ''"
-                              th:attr="aria-label=${(favoriteDestinationIds != null and #lists.contains(favoriteDestinationIds, c.id)) ? 'Șterge din favorite' : 'Adaugă la favorite'}">
-                        <i class="bi"
-                           th:classappend="${favoriteDestinationIds != null and #lists.contains(favoriteDestinationIds, c.id)} ? ' bi-heart-fill' : ' bi-heart'"></i>
-                      </button>
-                    </form>
-
-                    <!-- NELOGAT -->
-                    <a sec:authorize="isAnonymous()"
-                       th:href="@{/login}"
-                       class="favorite-btn"
-                       aria-label="Autentifică-te pentru favorite">
-                      <i class="bi bi-heart"></i>
-                    </a>
-                  </div>
-
                   <div class="badge-wrapper">
                     <span class="destination-tag featured">Recomandat</span>
                   </div>
-
                   <div class="content-wrapper">
-                    <h3 class="tour-type" th:text="${c.name}">Titlu Excursie</h3>
-
-                    <p class="destination-excerpt tour-type"
-                       th:text="${c.description != null ? #strings.abbreviate(c.description, 100) : ''}">
-                      Descriere excursie
-                    </p>
-
+                    <h3 class="tour-type" th:text="${calatorii[0].name}">Titlu Excursie</h3>
+                    <p class="destination-excerpt tour-type" th:text="${#strings.abbreviate(calatorii[0].description, 100)}">Descriere excursie</p>
                     <div class="destination-info">
-                      <div class="info-item">
+                      <div class="info-item ">
                         <i class="bi bi-geo-alt"></i>
-                        <span class="tour-type"
-                              th:text="${c.tours != null ? (c.tours.size() + ' Tururi') : '0 Tururi'}">10 Tururi</span>
-
-                        <span class="tours-count tour-type"
-                              th:utext="${c.minPrice != null and c.minPrice > 0
-                              ? 'De La ' + c.minPrice +' <i class=&quot;fa-regular fa-money-bill-1&quot;></i>'
-                              : 'No tours available'}">
-                          0 points
-                        </span>
+                        <span class="tour-type" th:text="${calatorii[0].tours.size()} + ' Tururi'">10 Tururi</span>
+                        <span class="tours-count tour-type" th:utext="${calatorii[0].minPrice > 0 ? 'De La ' + calatorii[0].minPrice +' <i class=&quot;fa-regular fa-money-bill-1&quot;></i>' : 'No tours available'}">0 points</span>
                       </div>
                     </div>
-
-                    <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">
+                    <a th:href="@{/Itravel/{id}(id=${calatorii[0].id})}" class="explore-btn">
                       <span>Explorează</span>
                       <i class="bi bi-arrow-right"></i>
                     </a>
                   </div>
-
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Loop pentru următoarele 12 carduri mici -->
+          <!-- Loop pentru următoarele 12 excursii mici -->
           <div class="col-lg-4 col-md-6 destination-item isotope-item"
                th:each="c, iterStat : ${calatorii}"
                th:if="${iterStat.index > 0 and iterStat.index <= 12}"
-               th:classappend="${
-                 c != null and c.continent != null
-                   ? ((c.continent.name().toLowerCase() == 'americas') ? ' filter-america' : ' filter-' + c.continent.name().toLowerCase())
-                   : ''
-               }">
+               th:classappend="(${c.continent.name().toLowerCase()} == 'americas') ? ' filter-america' : ' filter-' + ${c.continent.name().toLowerCase()}">
 
-            <div class="destination-small">
+
+          <div class="destination-small">
               <div class="destination-overlay">
-
-                <img th:src="@{/uploads/{img}(img=${c.image})}"
-                     th:alt="${c.name}"
-                     class="img-fluid"
-                     loading="lazy">
-
+                <img th:src="@{/uploads/{img}(img=${c.image})}" th:alt="${c.name}" class="img-fluid" loading="lazy">
                 <div class="overlay-content">
-
-                  <!-- FAVORITE BUTTON (card mic) -->
-                  <div class="favorite-spot">
-
-                    <!-- LOGAT -->
-                    <form sec:authorize="isAuthenticated()"
-                          th:action="@{/favorites/destinations/{id}/toggle(id=${c.id})}"
-                          method="post"
-                          class="favorite-form">
-
-                      <input th:if="${_csrf != null}" type="hidden"
-                             th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-                      <input type="hidden" name="redirect"
-                             th:value="@{/destinations(page=${pageSafe})}"/>
-
-                      <button type="submit"
-                              class="favorite-btn"
-                              th:classappend="${favoriteDestinationIds != null and #lists.contains(favoriteDestinationIds, c.id)} ? ' is-active' : ''"
-                              th:attr="aria-label=${(favoriteDestinationIds != null and #lists.contains(favoriteDestinationIds, c.id)) ? 'Șterge din favorite' : 'Adaugă la favorite'}">
-                        <i class="bi"
-                           th:classappend="${favoriteDestinationIds != null and #lists.contains(favoriteDestinationIds, c.id)} ? ' bi-heart-fill' : ' bi-heart'"></i>
-                      </button>
-                    </form>
-
-                    <!-- NELOGAT -->
-                    <a sec:authorize="isAnonymous()"
-                       th:href="@{/login}"
-                       class="favorite-btn"
-                       aria-label="Autentifică-te pentru favorite">
-                      <i class="bi bi-heart"></i>
-                    </a>
-
-                  </div>
-
-
                   <div class="badge-wrapper">
                     <span class="destination-tag popular">Popular</span>
                   </div>
-
                   <div class="content-wrapper">
                     <h4 class="tour-type" th:text="${c.name}">Titlu Excursie</h4>
-
-                    <p class="destination-excerpt tour-type"
-                       th:text="${c.description != null ? #strings.abbreviate(c.description, 50) : ''}">
-                      Descriere excursie
-                    </p>
-
+                    <p class="destination-excerpt tour-type" th:text="${#strings.abbreviate(c.description, 50)}">Descriere excursie</p>
                     <div class="destination-info">
-                      <span class="tours-count tour-type"
-                            th:text="${c.tours != null ? (c.tours.size() + ' Tururi') : '0 Tururi'}">10 Tururi</span>
-
-                      <span class="tours-count tour-type"
-                            th:text="${c.minPrice != null and c.minPrice > 0 ? 'De La ' + c.minPrice + ' p' : 'No tours available'}">
-                        0 points
-                      </span>
+                      <span class="tours-count tour-type" th:text="${c.tours.size()} + ' Tururi'">10 Tururi</span>
+                      <span class="tours-count tour-type" th:text="${c.minPrice > 0 ? 'De La ' + c.minPrice + ' p' : 'No tours available'}">0 points</span>
                     </div>
 
                     <a th:href="@{/Itravel/{id}(id=${c.id})}" class="explore-btn">
@@ -249,44 +92,39 @@
                       <i class="bi bi-arrow-right"></i>
                     </a>
                   </div>
-
                 </div>
               </div>
             </div>
 
           </div>
-          <!-- end cards -->
-
         </div>
       </div>
     </div>
-
-    <!-- Pagination -->
-    <div class="pagination-wrapper my-8"
-         th:if="${totalPagesSafe > 1}">
+    <div class="pagination-wrapper my-8">
       <ul class="pagination flex justify-center items-center gap-2">
 
         <!-- Prev -->
         <li>
           <a class="page-link px-4 py-2 rounded-lg bg-[var(--accent-color)] text-[var(--contrast-color)] font-semibold shadow-md transition-all duration-200 hover:scale-105 hover:shadow-xl"
-             th:href="@{|/destinations?page=${pageSafe > 0 ? pageSafe - 1 : 0}|}">
+             th:href="@{|/destinations?page=${page > 0 ? page - 1 : 0}|}">
             &laquo; Anterior
           </a>
         </li>
 
         <!-- Page numbers -->
-        <li th:each="i : ${#numbers.sequence(0, totalPagesSafe - 1)}">
-          <a class="page-link px-4 py-2 rounded-lg font-semibold transition-all duration-200 hover:scale-110 hover:shadow-lg"
+        <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+          <a class="page-link px-4 py-2 rounded-lg font-semibold transition-all duration-200
+                    hover:scale-110 hover:shadow-lg"
              th:href="@{'/destinations?page=' + ${i}}"
              th:text="${i + 1}"
-             th:classappend="${i == pageSafe} ? ' bg-[var(--accent-color)] text-[var(--contrast-color)] shadow-xl' : ' bg-white text-[var(--accent-color)] border border-[var(--accent-color)]'">
+             th:classappend="${i == page} ? ' bg-[var(--accent-color)] text-[var(--contrast-color)] shadow-xl' : ' bg-white text-[var(--accent-color)] border border-[var(--accent-color)]'">
           </a>
         </li>
 
         <!-- Next -->
         <li>
           <a class="page-link px-4 py-2 rounded-lg bg-[var(--accent-color)] text-[var(--contrast-color)] font-semibold shadow-md transition-all duration-200 hover:scale-105 hover:shadow-xl"
-             th:href="@{|/destinations?page=${pageSafe < totalPagesSafe - 1 ? pageSafe + 1 : totalPagesSafe - 1}|}">
+             th:href="@{|/destinations?page=${page < totalPages - 1 ? page + 1 : totalPages - 1}|}">
             Următor &raquo;
           </a>
         </li>
@@ -296,74 +134,5 @@
 
   </section><!-- Sfârșit Secțiune Destinații -->
 
-  <!-- Styles strict necesare pentru butonul de favorite + alert mini -->
-  <style>
-    .favorite-spot{
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      z-index: 6;
-      pointer-events: auto;
-    }
-    .favorite-form{ margin: 0; }
-
-    .favorite-btn{
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      border: 1px solid rgba(255,255,255,.55);
-      background: rgba(0,0,0,.30);
-      color: #fff;
-      box-shadow: 0 10px 26px rgba(0,0,0,.22);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      transition: transform .12s ease, background .12s ease, box-shadow .12s ease;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    .favorite-btn:hover{
-      transform: translateY(-1px);
-      background: rgba(0,0,0,.42);
-      box-shadow: 0 14px 30px rgba(0,0,0,.28);
-      color: #fff;
-      text-decoration: none;
-    }
-    .favorite-btn i{ font-size: 18px; }
-
-    .favorite-btn.is-active{
-      background: rgba(220, 53, 69, .35);
-      border-color: rgba(255,255,255,.65);
-    }
-
-    /* Alert mini premium (pentru ?fav=added/removed) */
-    .premium-alert-mini{
-      display: inline-flex;
-      align-items: center;
-      gap: .55rem;
-      padding: .55rem .8rem;
-      border-radius: 14px;
-      border: 1px solid rgba(0,0,0,.06);
-      background: rgba(255,255,255,.75);
-      box-shadow: 0 10px 26px rgba(15,23,42,.08);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      color: #0f172a;
-      font-weight: 600;
-    }
-    .premium-alert-mini i{ font-size: 18px; }
-    .premium-alert-mini.is-ok{
-      border-color: rgba(25,135,84,.25);
-      background: linear-gradient(135deg, rgba(25,135,84,.14), rgba(255,255,255,.78));
-    }
-    .premium-alert-mini.is-warn{
-      border-color: rgba(220,53,69,.22);
-      background: linear-gradient(135deg, rgba(220,53,69,.14), rgba(255,255,255,.78));
-    }
-  </style>
-
 </div>
-
-</body>
 </html>

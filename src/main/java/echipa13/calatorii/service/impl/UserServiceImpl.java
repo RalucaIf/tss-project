@@ -9,8 +9,6 @@ import echipa13.calatorii.repository.UserPointsRepository;
 import echipa13.calatorii.repository.UserRepository;
 import echipa13.calatorii.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -73,34 +71,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserPoints> findAllUserPoints(){
         return userRepository.findAllUserPoints();
-    }
-
-    @Override
-    public Long getCurrentUserId(Authentication auth) {
-        if (auth == null || !auth.isAuthenticated()) {
-            throw new IllegalStateException("User not authenticated");
-        }
-
-        String principalName;
-        Object principal = auth.getPrincipal();
-
-        if (principal instanceof UserDetails ud) {
-            principalName = ud.getUsername(); // de obicei username
-        } else {
-            principalName = auth.getName();   // fallback
-        }
-
-        // 🔒 În unele proiecte login-ul e cu username, în altele cu email.
-        // Încercăm întâi username, apoi email.
-        UserEntity user = userRepository.findByUsername(principalName);
-        if (user == null) {
-            user = userRepository.findByEmail(principalName);
-        }
-
-        if (user == null) {
-            throw new IllegalStateException("User not found for: " + principalName);
-        }
-
-        return user.getId();
     }
 }
