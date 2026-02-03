@@ -6,3 +6,5 @@ import echipa13.calatorii.Dto.RegistrationDto;
 public interface PointsService {
     void savePoints(PointsDto pointsDto);
 }
+
+

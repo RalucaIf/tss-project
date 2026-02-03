@@ -42,17 +42,19 @@ public class ProfileController {
             return "redirect:/profile?error=noAvatarSelected";
         }
 
-        String principal = auth.getName();
-        UserEntity user = userRepository.findByEmail(principal);
+        UserEntity user = userRepository.findByEmail(auth.getName());
         if (user == null) {
-            user = userRepository.findByUsername(principal); // fallback
+            user = userRepository.findByUsername(auth.getName());
         }
         if (user == null) {
             return "redirect:/Itravel?error=userNotFound";
         }
 
+        // ✅ Salvează doar seed-ul
         user.setAvatar(avatar);
-        userRepository.saveAndFlush(user); // asigură persistența înainte de redirect
-        return "redirect:/Itravel?success=avatarUpdated";
+        userRepository.saveAndFlush(user);
+
+        return "redirect:/profile?success=avatarUpdated"; // redirect către profil
     }
+
 }

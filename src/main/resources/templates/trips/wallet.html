@@ -1,26 +1,30 @@
-<!-- ===================================================================== -->
-<!-- File: src/main/resources/templates/trips/wallet.html                   -->
-<!-- ===================================================================== -->
+<!-- ====================================================================== -->
+<!-- File: src/main/resources/templates/trips/wallet.html                    -->
+<!-- ====================================================================== -->
 <!DOCTYPE html>
 <html lang="ro"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout}">
 
 <head>
     <title>Portofel itinerariu</title>
 </head>
 
+<body>
+
 <div layout:fragment="content">
 
-    <!-- HERO -->
-    <div class="page-title dark-background"
-         th:style="|background-image: url('@{/walpaper/misc-5.webp}');|">
+    <!-- HERO / PAGE HEADER (stil similar cu restul aplicației) -->
+    <section class="page-title dark-background">
         <div class="container position-relative">
-            <h1>Portofel itinerariu</h1>
-            <p>
-                Gestionează bugetul și cheltuielile pentru
-                <strong th:text="${trip != null ? trip.title : 'itinerariu'}">itinerariu</strong>.
+            <h1>Portofelul itinerariului</h1>
+            <p class="mb-0">
+                Controlează bugetul, notează cheltuieli și urmărește progresul.
+                <span th:if="${trip != null}">
+          • <strong th:text="${trip.title}">Itinerariu</strong>
+        </span>
             </p>
 
             <nav class="breadcrumbs">
@@ -31,450 +35,920 @@
                 </ol>
             </nav>
         </div>
-    </div>
-
-    <section class="container py-5">
-
-        <!-- Header + back -->
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
-            <div>
-                <h2 class="mb-1">Portofel</h2>
-                <p class="text-muted mb-0">
-                    Itinerariu:
-                    <strong th:text="${trip != null ? trip.title : '—'}">—</strong>
-                </p>
-            </div>
-
-            <a class="btn btn-sm btn-accent-ghost"
-               th:if="${trip != null}"
-               th:href="@{/trips/{id}(id=${trip.id})}">
-                <i class="bi bi-arrow-left"></i> Înapoi la itinerariu
-            </a>
-        </div>
-
-        <!-- Mesaje -->
-        <div th:if="${param.msg != null and param.msg[0] == 'budgetSaved'}" class="alert alert-success">
-            Bugetul a fost salvat.
-        </div>
-        <div th:if="${param.error != null and param.error[0] == 'budget'}" class="alert alert-danger">
-            Nu s-a putut salva bugetul. Verifică suma.
-        </div>
-
-        <div th:if="${param.msg != null and param.msg[0] == 'txAdded'}" class="alert alert-success">
-            Cheltuiala a fost adăugată.
-        </div>
-        <div th:if="${param.error != null and param.error[0] == 'tx'}" class="alert alert-danger">
-            Nu s-a putut adăuga cheltuiala. Verifică suma și titlul.
-        </div>
-
-        <div th:if="${param.msg != null and param.msg[0] == 'txDeleted'}" class="alert alert-success">
-            Cheltuiala a fost ștearsă.
-        </div>
-        <div th:if="${param.error != null and param.error[0] == 'txDelete'}" class="alert alert-danger">
-            Nu s-a putut șterge cheltuiala.
-        </div>
-
-        <!-- KPI -->
-        <div class="row g-4 mb-4">
-            <div class="col-lg-4">
-                <div class="premium-panel">
-                    <div class="premium-panel__head">
-                        <div class="premium-panel__title">
-                            <span class="premium-panel__icon"><i class="bi bi-wallet2"></i></span>
-                            <div>
-                                <h5 class="m-0">Buget</h5>
-                                <small class="text-muted">Total</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="premium-panel__body">
-                        <div class="fs-4 fw-bold">
-                            <span th:text="${wallet != null and wallet.budgetTotal != null ? wallet.budgetTotal : '—'}">—</span>
-                            <span th:text="${wallet != null ? wallet.currency : 'RON'}">RON</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <div class="premium-panel">
-                    <div class="premium-panel__head">
-                        <div class="premium-panel__title">
-                            <span class="premium-panel__icon"><i class="bi bi-cash-coin"></i></span>
-                            <div>
-                                <h5 class="m-0">Cheltuit</h5>
-                                <small class="text-muted">Total</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="premium-panel__body">
-                        <div class="fs-4 fw-bold">
-                            <span th:text="${summary != null ? summary.totalSpent : 0}">0</span>
-                            <span th:text="${wallet != null ? wallet.currency : 'RON'}">RON</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <div class="premium-panel">
-                    <div class="premium-panel__head">
-                        <div class="premium-panel__title">
-                            <span class="premium-panel__icon"><i class="bi bi-piggy-bank"></i></span>
-                            <div>
-                                <h5 class="m-0">Rămas</h5>
-                                <small class="text-muted">Din buget</small>
-                            </div>
-                        </div>
-
-                        <!-- ✅ FĂRĂ T(...): comparație pe name() -->
-                        <span class="count-pill"
-                              th:if="${summary != null and summary.status != null}"
-                              th:text="${summary.status.name() == 'NESETAT' ? 'Buget nesetat'
-                                      : (summary.status.name() == 'OK' ? 'OK'
-                                      : (summary.status.name() == 'ATENTIE' ? 'Atenție'
-                                      : 'Depășit'))}">
-                            OK
-                        </span>
-                    </div>
-
-                    <div class="premium-panel__body">
-                        <div class="fs-4 fw-bold">
-                            <span th:text="${summary != null and summary.remaining != null ? summary.remaining : '—'}">—</span>
-                            <span th:text="${wallet != null ? wallet.currency : 'RON'}">RON</span>
-                        </div>
-
-                        <div class="mt-3">
-                            <div class="d-flex justify-content-between small text-muted mb-1">
-                                <span>Progres</span>
-                                <span th:text="${summary != null and summary.percent != null ? summary.percent + '%' : '—'}">—</span>
-                            </div>
-                            <div class="progress" style="height: 10px;">
-                                <!-- ✅ FĂRĂ T(...): classappend după name() -->
-                                <div class="progress-bar"
-                                     role="progressbar"
-                                     th:style="'width:' + ${summary != null and summary.percent != null ? (summary.percent > 100 ? 100 : summary.percent) : 0} + '%'"
-                                     th:classappend="${summary != null and summary.status != null and summary.status.name() == 'DEPASIT' ? ' bg-danger'
-                                                     : (summary != null and summary.status != null and summary.status.name() == 'ATENTIE' ? ' bg-warning'
-                                                     : ' bg-success')}">
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- FORMULARE -->
-        <div class="row g-4 mb-4">
-
-            <!-- Buget -->
-            <div class="col-lg-6">
-                <div class="premium-panel">
-                    <div class="premium-panel__head">
-                        <div class="premium-panel__title">
-                            <span class="premium-panel__icon"><i class="bi bi-wallet2"></i></span>
-                            <div>
-                                <h5 class="m-0">Buget</h5>
-                                <small class="text-muted">Setează bugetul pentru acest itinerariu</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="premium-panel__body">
-                        <p class="mb-3">
-                            <strong>Buget curent:</strong>
-                            <span th:text="${wallet != null and wallet.budgetTotal != null ? wallet.budgetTotal : '—'}">—</span>
-                            <span th:text="${wallet != null ? wallet.currency : 'RON'}">RON</span>
-                        </p>
-
-                        <form th:if="${trip != null}"
-                              th:action="@{/trips/{id}/wallet/budget(id=${trip.id})}"
-                              method="post"
-                              class="row g-2">
-                            <input th:if="${_csrf != null}" type="hidden"
-                                   th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-                            <div class="col-7">
-                                <label class="form-label">Buget total</label>
-                                <input type="number"
-                                       name="budgetTotal"
-                                       step="0.01"
-                                       min="0"
-                                       class="form-control"
-                                       th:value="${wallet != null ? wallet.budgetTotal : null}"
-                                       placeholder="0.00"
-                                       required>
-                            </div>
-
-                            <div class="col-5">
-                                <label class="form-label">Monedă</label>
-                                <select name="currency" class="form-select">
-                                    <option value="RON" th:selected="${wallet == null or wallet.currency == 'RON'}">RON</option>
-                                    <option value="EUR" th:selected="${wallet != null and wallet.currency == 'EUR'}">EUR</option>
-                                </select>
-                            </div>
-
-                            <div class="col-12 d-flex justify-content-end mt-2">
-                                <button type="submit" class="btn btn-sm btn-accent">
-                                    <i class="bi bi-check2"></i> Salvează bugetul
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Adaugă cheltuială -->
-            <div class="col-lg-6">
-                <div class="premium-panel">
-                    <div class="premium-panel__head">
-                        <div class="premium-panel__title">
-                            <span class="premium-panel__icon"><i class="bi bi-receipt"></i></span>
-                            <div>
-                                <h5 class="m-0">Adaugă cheltuială</h5>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="premium-panel__body">
-                        <form th:if="${trip != null}"
-                              th:action="@{/trips/{id}/wallet/tx/add(id=${trip.id})}"
-                              method="post"
-                              class="row g-2">
-                            <input th:if="${_csrf != null}" type="hidden"
-                                   th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-                            <div class="col-6">
-                                <label class="form-label">Sumă</label>
-                                <input type="number" name="amount" step="0.01" min="0.01"
-                                       class="form-control" placeholder="0.00" required>
-                            </div>
-
-                            <div class="col-6">
-                                <label class="form-label">Categorie</label>
-                                <!-- Fără T(...): robustețe maximă -->
-                                <select name="category" class="form-select" required>
-                                    <option value="FOOD">Mâncare</option>
-                                    <option value="TRANSPORT">Transport</option>
-                                    <option value="LODGING">Cazare</option>
-                                    <option value="ACTIVITIES">Activități</option>
-                                    <option value="SOUVENIRS">Suveniruri</option>
-                                    <option value="OTHER">Altele</option>
-                                </select>
-                            </div>
-
-                            <div class="col-12">
-                                <label class="form-label">Titlu</label>
-                                <input type="text" name="title" class="form-control"
-                                       placeholder="Ex: Cină, Uber, Bilet avion" maxlength="120" required>
-                            </div>
-
-                            <div class="col-7">
-                                <label class="form-label">Data</label>
-                                <input type="date" name="spentAt" class="form-control">
-                            </div>
-
-                            <div class="col-5">
-                                <label class="form-label">Zi (opțional)</label>
-                                <input type="number" name="dayIndex" min="1" class="form-control" placeholder="1">
-                            </div>
-
-                            <div class="col-12">
-                                <label class="form-label">Notiță (opțional)</label>
-                                <textarea name="note" class="form-control" rows="2" maxlength="1000"
-                                          placeholder="Detalii..."></textarea>
-                            </div>
-
-                            <div class="col-12 d-flex justify-content-end mt-2">
-                                <button type="submit" class="btn btn-sm btn-accent">
-                                    <i class="bi bi-plus-lg"></i> Adaugă
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Avertizare/Info -->
-        <div class="row g-4 mb-4" th:if="${alert != null}">
-            <div class="col-12">
-                <div class="premium-panel">
-                    <div class="premium-panel__head">
-                        <div class="premium-panel__title">
-                            <span class="premium-panel__icon"><i class="bi bi-info-circle"></i></span>
-                            <div>
-                                <h5 class="m-0" th:text="${alert.title}">Informație</h5>
-                                <small class="text-muted">Recomandări rapide pentru buget</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="premium-panel__body">
-                        <div class="alert mb-0"
-                             th:classappend="' alert-' + ${alert.bootstrapClass}">
-                            <span th:text="${alert.message}">Mesaj</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Statistici -->
-        <div class="row g-4 mb-4" th:if="${insights != null}">
-            <div class="col-12">
-                <div class="premium-panel">
-                    <div class="premium-panel__head">
-                        <div class="premium-panel__title">
-                            <span class="premium-panel__icon"><i class="bi bi-graph-up"></i></span>
-                            <div>
-                                <h5 class="m-0">Statistici</h5>
-                                <small class="text-muted">Sumar pe categorii și pe zile</small>
-                            </div>
-                        </div>
-
-                        <span class="count-pill"
-                              th:text="${insights.activeDays} + ' zile active'">0 zile active</span>
-                    </div>
-
-                    <div class="premium-panel__body">
-                        <div class="row g-3">
-
-                            <div class="col-lg-4">
-                                <div class="p-3 rounded-4 border"
-                                     style="border-color: rgba(0,0,0,.06); background: rgba(255,255,255,.65);">
-                                    <div class="text-muted small mb-1">Media cheltuielilor / zi activă</div>
-                                    <div class="fs-5 fw-bold">
-                                        <span th:text="${insights.avgPerActiveDay}">0</span>
-                                        <span th:text="${wallet != null ? wallet.currency : 'RON'}">RON</span>
-                                    </div>
-                                    <div class="text-muted small mt-1">
-                                        Zi activă = zi în care ai înregistrat cel puțin o cheltuială.
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-8">
-                                <div class="p-3 rounded-4 border"
-                                     style="border-color: rgba(0,0,0,.06); background: rgba(255,255,255,.65);">
-                                    <div class="d-flex align-items-center justify-content-between mb-2">
-                                        <div class="fw-bold">Top categorii</div>
-                                        <small class="text-muted">din totalul cheltuit</small>
-                                    </div>
-
-                                    <div th:if="${insights.topCategories == null or #lists.isEmpty(insights.topCategories)}"
-                                         class="text-muted">
-                                        Nu există suficiente date încă. Adaugă cheltuieli ca să vezi raportarea pe categorii.
-                                    </div>
-
-                                    <div th:if="${insights.topCategories != null and !#lists.isEmpty(insights.topCategories)}"
-                                         class="d-flex flex-column gap-2">
-
-                                        <div th:each="ct : ${insights.topCategories}">
-                                            <div class="d-flex justify-content-between small mb-1">
-                                                <span class="fw-bold" th:text="${ct.category.labelRo}">Mâncare</span>
-                                                <span>
-                                                    <span th:text="${ct.amount}">0</span>
-                                                    <span th:text="${wallet != null ? wallet.currency : 'RON'}">RON</span>
-                                                    <span class="text-muted"
-                                                          th:text="' • ' + ${ct.percentOfSpent} + '%'"> • 0%</span>
-                                                </span>
-                                            </div>
-
-                                            <div class="progress" style="height: 8px;">
-                                                <div class="progress-bar"
-                                                     role="progressbar"
-                                                     th:style="'width:' + ${ct.percentOfSpent != null ? ct.percentOfSpent : 0} + '%'">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <!-- Lista tranzacții -->
-        <div class="row g-4 mt-1">
-            <div class="col-12">
-                <div class="premium-panel">
-                    <div class="premium-panel__head">
-                        <div class="premium-panel__title">
-                            <span class="premium-panel__icon"><i class="bi bi-list-check"></i></span>
-                            <div>
-                                <h5 class="m-0">Cheltuieli</h5>
-                                <small class="text-muted">Ultimele tranzacții</small>
-                            </div>
-                        </div>
-
-                        <span class="count-pill"
-                              th:text="${transactions != null ? #lists.size(transactions) : 0}">
-                            0
-                        </span>
-                    </div>
-
-                    <div class="premium-panel__body">
-                        <div th:if="${transactions == null or #lists.isEmpty(transactions)}" class="empty-state">
-                            <div class="empty-state__icon"><i class="bi bi-receipt"></i></div>
-                            <div>
-                                <div class="fw-bold">Nu ai cheltuieli încă</div>
-                                <div class="text-muted small">Adaugă prima cheltuială folosind formularul de mai sus.</div>
-                            </div>
-                        </div>
-
-                        <div th:if="${transactions != null and !#lists.isEmpty(transactions)}" class="tour-list">
-                            <div class="tour-row" th:each="tx : ${transactions}">
-                                <div class="tour-row__icon"><i class="bi bi-cash-coin"></i></div>
-
-                                <div class="tour-row__content">
-                                    <div class="tour-row__title" th:text="${tx.title}">Titlu</div>
-                                    <div class="tour-row__sub text-muted">
-                                        <span th:text="${tx.category != null ? tx.category.labelRo : '—'}">Categorie</span>
-                                        <span class="dot">•</span>
-                                        <!-- fără #temporals: afișează safe -->
-                                        <span th:text="${tx.spentAt != null ? tx.spentAt : '—'}">—</span>
-                                        <span class="dot" th:if="${tx.dayIndex != null}">•</span>
-                                        <span th:if="${tx.dayIndex != null}" th:text="'Ziua ' + ${tx.dayIndex}">Ziua 1</span>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="count-pill"
-                                          th:text="${tx.amount} + ' ' + ${(wallet != null ? wallet.currency : 'RON')}">
-                                        0 RON
-                                    </span>
-
-                                    <form th:if="${trip != null}"
-                                          th:action="@{/trips/{id}/wallet/tx/{txId}/delete(id=${trip.id}, txId=${tx.id})}"
-                                          method="post"
-                                          onsubmit="return confirm('Ștergi această cheltuială?');"
-                                          style="margin:0;">
-                                        <input th:if="${_csrf != null}" type="hidden"
-                                               th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                                        <button type="submit" class="btn btn-sm btn-accent-danger-outline">
-                                            Șterge
-                                        </button>
-                                    </form>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </section>
 
+    <main class="section">
+        <div class="container">
+
+            <!-- Mesaje rapide (opțional) -->
+            <div class="alert alert-success" th:if="${param.msg != null and param.msg[0] == 'budgetSaved'}">
+                Bugetul a fost salvat.
+            </div>
+            <div class="alert alert-success" th:if="${param.msg != null and param.msg[0] == 'txAdded'}">
+                Cheltuiala a fost adăugată.
+            </div>
+            <div class="alert alert-success" th:if="${param.msg != null and param.msg[0] == 'txDeleted'}">
+                Cheltuiala a fost ștearsă.
+            </div>
+
+            <div class="alert alert-danger" th:if="${param.error != null}">
+                A apărut o problemă. Încearcă din nou.
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="row g-4 mb-4">
+
+                <div class="col-md-4">
+                    <div class="premium-panel">
+                        <div class="premium-panel__head">
+                            <div class="premium-panel__title">
+                                <span class="premium-panel__icon"><i class="bi bi-wallet2"></i></span>
+                                <div>
+                                    <h5 class="m-0">Buget</h5>
+                                    <small class="text-muted">Total alocat</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="premium-panel__body">
+                            <div class="d-flex align-items-baseline gap-2">
+                <span class="h3 m-0"
+                      th:text="${wallet != null and wallet.budgetTotal != null ? wallet.budgetTotal : 0}">
+                  0
+                </span>
+                                <span class="text-muted"
+                                      th:text="${wallet != null and wallet.currency != null ? wallet.currency : 'RON'}">
+                  RON
+                </span>
+                            </div>
+                            <div class="text-muted small mt-2">
+                                <span th:text="${smart != null ? smart.riskLabelRo : '—'}">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="premium-panel">
+                        <div class="premium-panel__head">
+                            <div class="premium-panel__title">
+                                <span class="premium-panel__icon"><i class="bi bi-receipt"></i></span>
+                                <div>
+                                    <h5 class="m-0">Cheltuit</h5>
+                                    <small class="text-muted">Total cheltuieli</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="premium-panel__body">
+                            <div class="d-flex align-items-baseline gap-2">
+                <span class="h3 m-0"
+                      th:text="${summary != null and summary.totalSpent != null ? summary.totalSpent : 0}">
+                  0
+                </span>
+                                <span class="text-muted"
+                                      th:text="${wallet != null and wallet.currency != null ? wallet.currency : 'RON'}">
+                  RON
+                </span>
+                            </div>
+                            <div class="text-muted small mt-2">
+                                <span th:text="${insights != null ? ('Zile active: ' + insights.activeDays) : ''}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="premium-panel">
+                        <div class="premium-panel__head">
+                            <div class="premium-panel__title">
+                                <span class="premium-panel__icon"><i class="bi bi-piggy-bank"></i></span>
+                                <div>
+                                    <h5 class="m-0">Rămas</h5>
+                                    <small class="text-muted">Buget disponibil</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="premium-panel__body">
+                            <div class="d-flex align-items-baseline gap-2">
+                <span class="h3 m-0"
+                      th:text="${summary != null and summary.remaining != null ? summary.remaining : 0}">
+                  0
+                </span>
+                                <span class="text-muted"
+                                      th:text="${wallet != null and wallet.currency != null ? wallet.currency : 'RON'}">
+                  RON
+                </span>
+                            </div>
+                            <div class="text-muted small mt-2" th:if="${summary != null and summary.percent != null}">
+                                Progres: <strong th:text="${summary.percent + '%'}">0%</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Progress + Alert -->
+            <div class="premium-panel mb-4">
+                <div class="premium-panel__head">
+                    <div class="premium-panel__title">
+                        <span class="premium-panel__icon"><i class="bi bi-graph-up"></i></span>
+                        <div>
+                            <h5 class="m-0">Progres buget</h5>
+                            <small class="text-muted">Buget vs cheltuieli</small>
+                        </div>
+                    </div>
+
+                    <span class="count-pill"
+                          th:text="${smart != null ? smart.riskLabelRo : '—'}">—</span>
+                </div>
+
+                <div class="premium-panel__body">
+
+                    <div class="d-flex justify-content-between small text-muted mb-2">
+                        <span>Cheltuit</span>
+                        <span th:text="${summary != null and summary.percent != null ? summary.percent + '%' : '—'}">—</span>
+                    </div>
+
+                    <!-- Premium progress (la fel ca Smart Budget) -->
+                    <div class="premium-progress-wrap"
+                         th:classappend="${smart != null ? (smart.uiClass == 'budget-warn' ? ' is-warn' : (smart.uiClass == 'budget-danger' ? ' is-danger' : '')) : ''}">
+                        <div class="premium-progress">
+                            <div class="premium-progress__bar"
+                                 th:style="'width:' + ${summary != null and summary.percent != null ? (summary.percent > 100 ? 100 : summary.percent) : 0} + '%'">
+                                <span class="premium-progress__shine"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${alert != null}"
+                         class="premium-alert d-flex align-items-start gap-3 p-3 p-md-4 mb-4"
+                         th:classappend="' ' + ${alert.cssClass}"
+                         role="alert">
+
+                        <div class="premium-alert__icon">
+                            <i class="bi bi-info-circle-fill"></i>
+                        </div>
+
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-start justify-content-between gap-3">
+                                <div>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <h6 class="mb-0 fw-semibold" th:text="${alert.title}">Titlu</h6>
+                                    </div>
+
+                                    <div class="small text-muted premium-alert__msg" th:text="${alert.message}">
+                                        Mesaj...
+                                    </div>
+                                </div>
+
+                                <button type="button" class="btn-close opacity-75" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="text-muted small mt-2" th:if="${smart != null}">
+                        Praguri: Atenție <strong th:text="${smart.warningThresholdPercent}">75</strong>% •
+                        Critic <strong th:text="${smart.criticalThresholdPercent}">90</strong>% •
+                        Depășit <strong>100</strong>%
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Forms row: Buget + Adaugă cheltuială -->
+            <div class="row g-4">
+
+                <!-- Buget -->
+                <div class="col-lg-6">
+                    <div class="premium-panel">
+                        <div class="premium-panel__head">
+                            <div class="premium-panel__title">
+                                <span class="premium-panel__icon"><i class="bi bi-wallet2"></i></span>
+                                <div>
+                                    <h5 class="m-0">Setează buget</h5>
+                                    <small class="text-muted">Bugetul este per itinerariu</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="premium-panel__body">
+                            <p class="mb-3">
+                                <strong>Buget curent:</strong>
+                                <span th:text="${wallet != null and wallet.budgetTotal != null ? wallet.budgetTotal : '—'}">—</span>
+                                <span th:text="${wallet != null and wallet.currency != null ? wallet.currency : 'RON'}">RON</span>
+                            </p>
+
+                            <form th:action="@{/trips/{id}/wallet/budget(id=${trip.id})}" method="post" class="row g-2">
+                                <input th:if="${_csrf != null}" type="hidden"
+                                       th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                                <div class="col-7">
+                                    <label class="form-label">Buget total</label>
+                                    <input type="number"
+                                           name="budgetTotal"
+                                           step="0.01"
+                                           min="0"
+                                           class="form-control"
+                                           th:value="${wallet != null ? wallet.budgetTotal : null}"
+                                           placeholder="0.00"
+                                           required>
+                                </div>
+
+                                <div class="col-5">
+                                    <label class="form-label">Monedă</label>
+                                    <select name="currency" class="form-select">
+                                        <option value="RON" th:selected="${wallet != null and wallet.currency == 'RON'}">RON</option>
+                                        <option value="EUR" th:selected="${wallet != null and wallet.currency == 'EUR'}">EUR</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12 d-flex justify-content-end mt-2">
+                                    <button type="submit" class="btn btn-sm btn-accent">
+                                        <i class="bi bi-check2"></i> Salvează bugetul
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adaugă cheltuială -->
+                <div class="col-lg-6">
+                    <div class="premium-panel">
+                        <div class="premium-panel__head">
+                            <div class="premium-panel__title">
+                                <span class="premium-panel__icon"><i class="bi bi-plus-circle"></i></span>
+                                <div>
+                                    <h5 class="m-0">Adaugă cheltuială</h5>
+                                    <small class="text-muted">Salvare sigură (POST + redirect)</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="premium-panel__body">
+                            <form th:action="@{/trips/{id}/wallet/tx/add(id=${trip.id})}" method="post" class="row g-2">
+                                <input th:if="${_csrf != null}" type="hidden"
+                                       th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                                <div class="col-6">
+                                    <label class="form-label">Sumă</label>
+                                    <input type="number" name="amount" step="0.01" min="0.01"
+                                           class="form-control" placeholder="0.00" required>
+                                </div>
+
+                                <div class="col-6">
+                                    <label class="form-label">Categorie</label>
+                                    <select name="category" class="form-select" required>
+                                        <option th:each="c : ${T(echipa13.calatorii.models.WalletCategory).values()}"
+                                                th:value="${c}"
+                                                th:text="${c.labelRo != null ? c.labelRo : c}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Titlu</label>
+                                    <input type="text" name="title" class="form-control"
+                                           placeholder="Ex: Cină, Uber, Bilet avion" maxlength="120" required>
+                                </div>
+
+                                <div class="col-7">
+                                    <label class="form-label">Data</label>
+                                    <input type="date" name="spentAt" class="form-control">
+                                </div>
+
+                                <div class="col-5">
+                                    <label class="form-label">Zi (opțional)</label>
+                                    <input type="number" name="dayIndex" min="1" class="form-control" placeholder="1">
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Notiță (opțional)</label>
+                                    <textarea name="note" class="form-control" rows="2" maxlength="1000"
+                                              placeholder="Detalii..."></textarea>
+                                </div>
+
+                                <div class="col-12 d-flex justify-content-end mt-2">
+                                    <button type="submit" class="btn btn-sm btn-accent">
+                                        <i class="bi bi-plus-lg"></i> Adaugă
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Extensia A: Buget inteligent -->
+            <div class="premium-panel mt-4">
+                <div class="premium-panel__head">
+                    <div class="premium-panel__title">
+                        <span class="premium-panel__icon"><i class="bi bi-lightning-charge"></i></span>
+                        <div>
+                            <h5 class="m-0">Buget inteligent</h5>
+                            <small class="text-muted">Estimări pe baza cheltuielilor tale</small>
+                        </div>
+                    </div>
+
+                    <span class="count-pill" th:text="${smart != null ? smart.riskLabelRo : '—'}">—</span>
+                </div>
+
+                <div class="premium-panel__body">
+                    <p class="mb-3" th:text="${smart != null ? smart.recommendation : '—'}">—</p>
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-4 border"
+                                 style="border-color: rgba(0,0,0,.06); background: rgba(255,255,255,.65);">
+                                <div class="text-muted small">Ritmul curent</div>
+                                <div class="fw-bold">
+                                    <span th:text="${smart != null and smart.burnRatePerDay != null ? smart.burnRatePerDay : 0}">0</span>
+                                    <span th:text="${wallet != null and wallet.currency != null ? wallet.currency : 'RON'}">RON</span>/zi
+                                </div>
+                                <div class="text-muted small" th:if="${insights != null}">
+                                    Zile active: <span th:text="${insights.activeDays}">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-4 border"
+                                 style="border-color: rgba(0,0,0,.06); background: rgba(255,255,255,.65);">
+                                <div class="text-muted small">Buget recomandat / zi</div>
+                                <div class="fw-bold">
+                                    <span th:text="${smart != null and smart.dailyAllowance != null ? smart.dailyAllowance : '—'}">—</span>
+                                    <span th:text="${wallet != null and wallet.currency != null ? wallet.currency : 'RON'}">RON</span>/zi
+                                </div>
+                                <div class="text-muted small" th:if="${smart != null and smart.daysRemaining != null}">
+                                    Zile rămase: <span th:text="${smart.daysRemaining}">—</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="p-3 rounded-4 border"
+                                 style="border-color: rgba(0,0,0,.06); background: rgba(255,255,255,.65);">
+                                <div class="text-muted small">Estimare depășire</div>
+                                <div class="fw-bold">
+                                    <span th:text="${smart != null and smart.daysToExceed != null ? smart.daysToExceed : '—'}">—</span>
+                                    zile
+                                </div>
+                                <div class="text-muted small">la ritmul actual</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                            <span>Progres</span>
+                            <span th:text="${summary != null and summary.percent != null ? summary.percent + '%' : '—'}">—</span>
+                        </div>
+
+                        <!-- Premium progress -->
+                        <div class="premium-progress-wrap"
+                             th:classappend="${smart != null ? (smart.uiClass == 'budget-warn' ? ' is-warn' : (smart.uiClass == 'budget-danger' ? ' is-danger' : '')) : ''}">
+                            <div class="premium-progress">
+                                <div class="premium-progress__bar"
+                                     th:style="'width:' + ${summary != null and summary.percent != null ? (summary.percent > 100 ? 100 : summary.percent) : 0} + '%'">
+                                    <span class="premium-progress__shine"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-muted small mt-2" th:if="${smart != null}">
+                            Praguri: Atenție <strong th:text="${smart.warningThresholdPercent}">75</strong>% •
+                            Critic <strong th:text="${smart.criticalThresholdPercent}">90</strong>% •
+                            Depășit <strong>100</strong>%
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Statistici: Top categorii + GRAFICE -->
+            <div class="premium-panel mt-4">
+                <div class="premium-panel__head">
+                    <div class="premium-panel__title">
+                        <span class="premium-panel__icon"><i class="bi bi-bar-chart"></i></span>
+                        <div>
+                            <h5 class="m-0">Statistici</h5>
+                            <small class="text-muted">Distribuție pe categorii</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="premium-panel__body">
+
+                    <div th:if="${insights == null or insights.topCategories == null or #lists.isEmpty(insights.topCategories)}"
+                         class="text-muted">
+                        Nu există suficiente date pentru statistici.
+                    </div>
+
+                    <div th:if="${insights != null and insights.topCategories != null and !#lists.isEmpty(insights.topCategories)}">
+
+                        <!-- GRAFICE (pie + bar) -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-lg-6">
+                                <div class="chart-card">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div>
+                                            <div class="fw-semibold">Pie chart</div>
+                                            <div class="text-muted small">Ponderea cheltuielilor pe categorii</div>
+                                        </div>
+                                        <span class="chart-chip"><i class="bi bi-pie-chart me-1"></i>Distribuție</span>
+                                    </div>
+                                    <div class="chart-canvas-wrap">
+                                        <canvas id="walletPieChart" height="260"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="chart-card">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div>
+                                            <div class="fw-semibold">Bar chart</div>
+                                            <div class="text-muted small">Cheltuieli pe categorii</div>
+                                        </div>
+                                        <span class="chart-chip"><i class="bi bi-graph-up me-1"></i>Comparativ</span>
+                                    </div>
+                                    <div class="chart-canvas-wrap">
+                                        <canvas id="walletBarChart" height="260"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lista ta existentă (o păstrăm ca fallback + detalii) -->
+                        <!-- (ai comentat-o deja) -->
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Lista tranzacții -->
+            <div class="premium-panel mt-4">
+                <div class="premium-panel__head">
+                    <div class="premium-panel__title">
+                        <span class="premium-panel__icon"><i class="bi bi-list-ul"></i></span>
+                        <div>
+                            <h5 class="m-0">Tranzacții</h5>
+                            <small class="text-muted">Cheltuieli înregistrate</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="premium-panel__body">
+                    <div th:if="${transactions == null or #lists.isEmpty(transactions)}" class="text-muted">
+                        Nu ai cheltuieli încă.
+                    </div>
+
+                    <!-- ==================== FILTRARE + TABEL (adăugat sigur) ==================== -->
+                    <div th:if="${transactions != null and !#lists.isEmpty(transactions)}">
+
+                        <div class="d-flex flex-wrap gap-3 align-items-end justify-content-between mb-3">
+                            <div class="d-flex gap-2 align-items-end flex-wrap">
+                                <div>
+                                    <label class="form-label mb-1 small text-muted">Filtru categorie</label>
+                                    <select id="txCategoryFilter" class="form-select form-select-sm" style="min-width: 220px;">
+                                        <option value="ALL" selected>Toate categoriile</option>
+                                        <option th:each="c : ${T(echipa13.calatorii.models.WalletCategory).values()}"
+                                                th:value="${c}"
+                                                th:text="${c.labelRo != null ? c.labelRo : c}">
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="ms-0 ms-md-2">
+                                    <label class="form-label mb-1 small text-muted">Rezultate</label>
+                                    <div class="chart-chip" id="txVisibleCount">—</div>
+                                </div>
+                            </div>
+
+                            <div class="text-muted small">
+                                Alege o categorie pentru a filtra tranzacțiile.
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table align-middle" id="txTable">
+                                <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Titlu</th>
+                                    <th>Categorie</th>
+                                    <th class="text-end">Sumă</th>
+                                    <th class="text-end">Acțiuni</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="tx : ${transactions}"
+                                    th:attr="data-category=${tx.category}">
+                                    <td th:text="${tx.spentAt}">2026-01-01</td>
+                                    <td>
+                                        <div class="fw-semibold" th:text="${tx.title}">Titlu</div>
+                                        <div class="text-muted small" th:if="${tx.note != null and !#strings.isEmpty(tx.note)}"
+                                             th:text="${tx.note}">Notiță</div>
+                                        <div class="text-muted small" th:if="${tx.dayIndex != null}">
+                                            Ziua: <span th:text="${tx.dayIndex}">1</span>
+                                        </div>
+                                    </td>
+                                    <td th:text="${tx.category != null && tx.category.labelRo != null ? tx.category.labelRo : tx.category}">
+                                        —
+                                    </td>
+                                    <td class="text-end">
+                                        <strong th:text="${tx.amount}">0</strong>
+                                        <span th:text="${wallet != null && wallet.currency != null ? wallet.currency : 'RON'}">RON</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <form th:action="@{/trips/{id}/wallet/tx/{txId}/delete(id=${trip.id}, txId=${tx.id})}"
+                                              method="post" class="d-inline">
+                                            <input th:if="${_csrf != null}" type="hidden"
+                                                   th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Sigur vrei să ștergi această cheltuială?');">
+                                                <i class="bi bi-trash"></i> Șterge
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <!-- ==================== /FILTRARE + TABEL ==================== -->
+
+                </div>
+            </div>
+
+            <!-- Back button -->
+            <div class="d-flex justify-content-end mt-4">
+                <a th:href="@{/trips/{id}(id=${trip.id})}" class="btn btn-sm btn-accent">
+                    <i class="bi bi-arrow-left"></i> Înapoi la itinerariu
+                </a>
+            </div>
+
+        </div>
+    </main>
+
 </div>
+
+<style>
+    /* --- PREMIUM ALERT --- */
+    .premium-alert{
+        border-radius: 16px;
+        border: 1px solid rgba(0,0,0,.06);
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .premium-alert__icon{
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        flex: 0 0 44px;
+        background: rgba(255,255,255,.55);
+        border: 1px solid rgba(255,255,255,.6);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+    }
+
+    .premium-alert__icon i{ font-size: 18px; }
+
+    .premium-alert__msg{ line-height: 1.35; }
+
+    .premium-alert::before{
+        content:"";
+        position:absolute;
+        inset:-80px auto auto -80px;
+        width: 180px;
+        height: 180px;
+        border-radius: 999px;
+        opacity: .35;
+        filter: blur(10px);
+    }
+
+    .premium-alert.alert-success{
+        background: linear-gradient(135deg, rgba(25,135,84,.12), rgba(25,135,84,.02));
+        border-color: rgba(25,135,84,.25);
+    }
+    .premium-alert.alert-success::before{ background: rgba(25,135,84,.45); }
+
+    .premium-alert.alert-warning{
+        background: linear-gradient(135deg, rgba(255,193,7,.18), rgba(255,193,7,.03));
+        border-color: rgba(255,193,7,.35);
+    }
+    .premium-alert.alert-warning::before{ background: rgba(255,193,7,.55); }
+
+    .premium-alert.alert-danger{
+        background: linear-gradient(135deg, rgba(220,53,69,.15), rgba(220,53,69,.03));
+        border-color: rgba(220,53,69,.35);
+    }
+    .premium-alert.alert-danger::before{ background: rgba(220,53,69,.55); }
+
+    .premium-alert.alert-secondary{
+        background: linear-gradient(135deg, rgba(108,117,125,.14), rgba(108,117,125,.03));
+        border-color: rgba(108,117,125,.30);
+    }
+    .premium-alert.alert-secondary::before{ background: rgba(108,117,125,.55); }
+
+    /* ===== Premium progress ===== */
+    .premium-progress-wrap {
+        --bar1: #22c55e;  /* ok */
+        --bar2: #16a34a;
+        --glow: rgba(34, 197, 94, .35);
+    }
+    .premium-progress-wrap.is-warn {
+        --bar1: #fbbf24;
+        --bar2: #f59e0b;
+        --glow: rgba(245, 158, 11, .35);
+    }
+    .premium-progress-wrap.is-danger {
+        --bar1: #fb7185;
+        --bar2: #ef4444;
+        --glow: rgba(239, 68, 68, .35);
+    }
+
+    .premium-progress {
+        height: 14px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.65));
+        box-shadow:
+                inset 0 1px 2px rgba(15, 23, 42, .15),
+                0 8px 18px rgba(15, 23, 42, .08);
+        overflow: hidden;
+        position: relative;
+    }
+
+    .premium-progress__bar {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--bar1), var(--bar2));
+        box-shadow:
+                0 8px 16px var(--glow),
+                inset 0 1px 0 rgba(255,255,255,.35);
+        position: relative;
+        transition: width .6s cubic-bezier(.2,.9,.2,1);
+    }
+
+    .premium-progress__shine {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+                115deg,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,.35) 35%,
+                rgba(255,255,255,0) 70%
+        );
+        transform: translateX(-60%);
+        animation: premiumShine 2.2s ease-in-out infinite;
+        opacity: .65;
+        pointer-events: none;
+    }
+
+    @keyframes premiumShine {
+        0%   { transform: translateX(-60%); }
+        55%  { transform: translateX(110%); }
+        100% { transform: translateX(110%); }
+    }
+
+    /* === Chart cards (premium) === */
+    .chart-card{
+        border-radius: 18px;
+        border: 1px solid rgba(0,0,0,.06);
+        background: rgba(255,255,255,.72);
+        box-shadow: 0 12px 30px rgba(15,23,42,.08);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding: 16px;
+        overflow: hidden;
+    }
+    .chart-canvas-wrap{
+        border-radius: 16px;
+        border: 1px solid rgba(15,23,42,.06);
+        background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.75));
+        padding: 12px;
+    }
+    .chart-chip{
+        font-size: .85rem;
+        font-weight: 700;
+        padding: .25rem .6rem;
+        border-radius: 999px;
+        color: #0f172a;
+        background: rgba(255,255,255,.85);
+        border: 1px solid rgba(15, 23, 42, .08);
+        box-shadow: 0 6px 14px rgba(15, 23, 42, .08);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        white-space: nowrap;
+    }
+</style>
+
+<!-- ===================== GRAFICE: date + Chart.js + inițializare ===================== -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Labels + values (din Thymeleaf)
+    const walletCurrency = /*[[${wallet != null && wallet.currency != null ? wallet.currency : 'RON'}]]*/ "RON";
+
+    const catLabels = /*[[${insights != null && insights.topCategories != null ?
+        insights.topCategories.![category != null && category.labelRo != null ? category.labelRo : (category != null ? category.toString() : 'OTHER')] : {}}]]*/ [];
+
+    const catValuesRaw = /*[[${insights != null && insights.topCategories != null ? insights.topCategories.![amount] : {}}]]*/ [];
+    const catValues = (catValuesRaw || []).map(v => {
+        const n = Number(String(v).replace(",", "."));
+        return isFinite(n) ? n : 0;
+    });
+
+    // ---------- Culori stabile: aceeași categorie => aceeași culoare ----------
+    const CATEGORY_PALETTE = [
+        "#22c55e", "#3b82f6", "#f59e0b", "#ef4444", "#a855f7",
+        "#06b6d4", "#f97316", "#14b8a6", "#eab308", "#6366f1",
+        "#ec4899", "#84cc16"
+    ];
+
+    function hashStringToIndex(str, mod) {
+        let h = 0;
+        for (let i = 0; i < str.length; i++) {
+            h = (h * 31 + str.charCodeAt(i)) >>> 0;
+        }
+        return h % mod;
+    }
+
+    function buildColorMap(labels) {
+        const map = new Map();
+        (labels || []).forEach((label) => {
+            const key = String(label ?? "");
+            const idx = hashStringToIndex(key, CATEGORY_PALETTE.length);
+            map.set(key, CATEGORY_PALETTE[idx]);
+        });
+        return map;
+    }
+
+    function hexToRgba(hex, alpha) {
+        const h = String(hex || "#000000").replace("#", "").trim();
+        const full = h.length === 3 ? h.split("").map(c => c + c).join("") : h;
+        const n = parseInt(full, 16);
+        const r = (n >> 16) & 255;
+        const g = (n >> 8) & 255;
+        const b = n & 255;
+        return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    // ---------- Init charts (apelat după ce există Chart) ----------
+    function initWalletCharts() {
+        if (!window.Chart) return;
+
+        // fără date => nu desenăm
+        if (!catLabels || catLabels.length === 0 || !catValues || catValues.length === 0) return;
+
+        const pieEl = document.getElementById("walletPieChart");
+        const barEl = document.getElementById("walletBarChart");
+        if (!pieEl || !barEl) return;
+
+        const colorMap = buildColorMap(catLabels);
+        const pieColors = catLabels.map(l => colorMap.get(String(l)));
+        const barFillColors = catLabels.map(l => hexToRgba(colorMap.get(String(l)), 0.35));
+        const barBorderColors = catLabels.map(l => colorMap.get(String(l)));
+
+        // Pie chart
+        new Chart(pieEl, {
+            type: "pie",
+            data: {
+                labels: catLabels,
+                datasets: [{
+                    data: catValues,
+                    backgroundColor: pieColors,
+                    borderColor: "#ffffff",
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: { boxWidth: 12, boxHeight: 12 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const v = ctx.parsed;
+                                const label = ctx.label || "";
+                                return `${label}: ${v} ${walletCurrency}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Bar chart (aceleași culori ca în pie)
+        new Chart(barEl, {
+            type: "bar",
+            data: {
+                labels: catLabels,
+                datasets: [{
+                    label: `Cheltuieli (${walletCurrency})`,
+                    data: catValues,
+                    backgroundColor: barFillColors,
+                    borderColor: barBorderColors,
+                    borderWidth: 2,
+                    borderRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const v = ctx.parsed.y;
+                                return `${v} ${walletCurrency}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { maxRotation: 0, autoSkip: true }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: "rgba(15,23,42,.08)" }
+                    }
+                }
+            }
+        });
+    }
+
+    // ---------- Loader safe: dacă Chart nu e în layout, îl încărcăm ----------
+    (function ensureChartJsAndInit(){
+        if (window.Chart) {
+            initWalletCharts();
+            return;
+        }
+        const s = document.createElement("script");
+        s.src = "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js";
+        s.onload = initWalletCharts;
+        s.onerror = function(){ console.warn("Chart.js nu s-a putut încărca."); };
+        document.head.appendChild(s);
+    })();
+    /*]]>*/
+</script>
+
+<!-- ===================== FILTRARE TRANZACȚII: JS safe (adăugat) ===================== -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const select = document.getElementById('txCategoryFilter');
+        const table = document.getElementById('txTable');
+        const countEl = document.getElementById('txVisibleCount');
+
+        // dacă nu există tranzacții (deci nu există UI), ieșim fără erori
+        if (!select || !table) return;
+
+        const tbody = table.querySelector('tbody');
+        if (!tbody) return;
+
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+
+        function updateCount(visible) {
+            if (!countEl) return;
+            countEl.textContent = visible + ' / ' + rows.length;
+        }
+
+        function applyFilter() {
+            const value = (select.value || 'ALL').toUpperCase();
+            let visible = 0;
+
+            rows.forEach(tr => {
+                const cat = (tr.getAttribute('data-category') || '').toUpperCase();
+                const show = (value === 'ALL') || (cat === value);
+
+                tr.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+
+            updateCount(visible);
+        }
+
+        select.addEventListener('change', applyFilter);
+
+        // inițial
+        applyFilter();
+    });
+</script>
+
+</body>
 </html>

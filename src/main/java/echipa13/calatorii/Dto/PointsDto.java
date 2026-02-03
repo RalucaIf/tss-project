@@ -8,4 +8,5 @@ public class PointsDto {
     private UserEntity user;  // cine primește punctele
     private Integer points;   // punctele actuale
     private Integer level;    // nivelul actual
+    private Integer xPoints;
 }
