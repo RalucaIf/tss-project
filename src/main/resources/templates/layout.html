@@ -559,6 +559,39 @@ container.appendChild(clone);
 <!--    });-->
 <!--</script>-->
 
+<script>
+async function saveDestination(form) {
+const formData = new FormData(form);
+
+const response = await fetch('/destinations/new', {
+method: 'POST',
+body: formData
+});
+
+const data = await response.json();
+
+if (data.success) {
+// 🔥 actualizare instant în DOM
+const list = document.getElementById('destination-list');
+const div = document.createElement('div');
+div.classList.add('destination-card');
+div.innerHTML = `
+<h3>${data.name}</h3>
+<p>${data.description}</p>
+<img src="/uploads/${data.image}" alt="${data.name}" />
+<p>${data.continent}</p>
+`;
+list.prepend(div);
+
+// poți adăuga și animație ca la bani
+div.classList.add('new-destination');
+setTimeout(() => div.classList.remove('new-destination'), 1000);
+} else {
+alert("Eroare: " + data.error);
+}
+}
+</script>
+
 
 <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
 
