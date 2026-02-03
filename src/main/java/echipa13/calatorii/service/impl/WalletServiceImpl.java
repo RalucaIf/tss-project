@@ -26,6 +26,10 @@ public class WalletServiceImpl implements WalletService {
 
     private static final Set<String> ALLOWED_CURRENCIES = Set.of("RON", "EUR");
 
+    // Extensia A: praguri dinamice
+    private static final int WARNING_THRESHOLD_PERCENT = 75;
+    private static final int CRITICAL_THRESHOLD_PERCENT = 90;
+
     private final TripRepository tripRepository;
     private final TripWalletRepository tripWalletRepository;
     private final UserRepository userRepository;
@@ -48,6 +52,13 @@ public class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     public TripWallet getOrCreateWalletOwnedByUser(Long tripId, String usernameOrEmail) {
+        Trip trip = getTripOwnedByUser(tripId, usernameOrEmail);
+
+        return tripWalletRepository.findByTrip_Id(tripId)
+                .orElseGet(() -> createWallet(trip));
+    }
+
+    private Trip getTripOwnedByUser(Long tripId, String usernameOrEmail) {
         UserEntity user = findUserByUsernameOrEmail(usernameOrEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Utilizator inexistent."));
 
@@ -57,9 +68,7 @@ public class WalletServiceImpl implements WalletService {
         if (trip.getUser() == null || !Objects.equals(trip.getUser().getId(), user.getId())) {
             throw new IllegalStateException("Nu ai acces la acest itinerariu.");
         }
-
-        return tripWalletRepository.findByTrip_Id(tripId)
-                .orElseGet(() -> createWallet(trip));
+        return trip;
     }
 
     private TripWallet createWallet(Trip trip) {
@@ -198,9 +207,11 @@ public class WalletServiceImpl implements WalletService {
                 .divide(budget, 0, RoundingMode.HALF_UP)
                 .intValue();
 
+        // Praguri dinamice (A)
+        // NOTĂ: nu forțăm enum nou; păstrăm Status existent: OK / ATENTIE / DEPASIT / NESETAT
         WalletSummary.Status status;
         if (percent >= 100) status = WalletSummary.Status.DEPASIT;
-        else if (percent >= 80) status = WalletSummary.Status.ATENTIE;
+        else if (percent >= WARNING_THRESHOLD_PERCENT) status = WalletSummary.Status.ATENTIE;
         else status = WalletSummary.Status.OK;
 
         return new WalletSummary(budget, totalSpent, remaining, percent, status);
@@ -243,5 +254,182 @@ public class WalletServiceImpl implements WalletService {
         }
 
         return new WalletInsights(activeDays, avgPerDay, totals);
+    }
+
+    // ------------------------------------------------------------------
+    // Extensia A: Buget inteligent (forecast + allowance + message)
+    // ------------------------------------------------------------------
+
+    @Override
+    @Transactional(readOnly = true)
+    public SmartBudgetAdvice computeSmartBudgetAdviceOwnedByUser(Long tripId, String usernameOrEmail) {
+        Trip trip = getTripOwnedByUser(tripId, usernameOrEmail);
+        TripWallet wallet = getOrCreateWalletOwnedByUser(tripId, usernameOrEmail);
+
+        WalletSummary summary = computeSummaryOwnedByUser(tripId, usernameOrEmail);
+        WalletInsights insights = computeInsightsOwnedByUser(tripId, usernameOrEmail);
+
+        BigDecimal budget = wallet.getBudgetTotal();
+        String currency = wallet.getCurrency() == null ? "RON" : wallet.getCurrency();
+
+        // burn-rate = avg/zi activă (deja core în proiect)
+        BigDecimal burnRatePerDay = insights != null && insights.getAvgPerActiveDay() != null
+                ? insights.getAvgPerActiveDay()
+                : BigDecimal.ZERO;
+
+        Integer daysRemaining = computeDaysRemainingSafe(trip);
+        BigDecimal dailyAllowance = null;
+
+        BigDecimal remaining = null;
+        Integer percentUsed = null;
+
+        if (summary != null) {
+            remaining = summary.getRemaining();
+            percentUsed = summary.getPercent();
+        }
+
+        if (budget != null && budget.compareTo(BigDecimal.ZERO) > 0 && daysRemaining != null && daysRemaining > 0) {
+            BigDecimal safeRemaining = remaining == null ? budget : remaining;
+            dailyAllowance = safeRemaining.divide(BigDecimal.valueOf(daysRemaining), 2, RoundingMode.HALF_UP);
+        }
+
+        Integer daysToExceed = null;
+        if (remaining != null && burnRatePerDay != null
+                && burnRatePerDay.compareTo(BigDecimal.ZERO) > 0) {
+
+            if (remaining.compareTo(BigDecimal.ZERO) <= 0) {
+                daysToExceed = 0;
+            } else {
+                daysToExceed = remaining
+                        .divide(burnRatePerDay, 0, RoundingMode.CEILING)
+                        .intValue();
+            }
+        }
+
+        RiskUi riskUi = buildRiskUi(budget, percentUsed, summary);
+
+        String recommendation = buildRecommendation(
+                budget,
+                currency,
+                percentUsed,
+                remaining,
+                burnRatePerDay,
+                daysRemaining,
+                dailyAllowance,
+                daysToExceed,
+                riskUi.riskLabelRo
+        );
+
+        return new SmartBudgetAdvice(
+                WARNING_THRESHOLD_PERCENT,
+                CRITICAL_THRESHOLD_PERCENT,
+                percentUsed,
+                riskUi.riskLabelRo,
+                riskUi.uiClass,
+                scale2(burnRatePerDay),
+                dailyAllowance == null ? null : scale2(dailyAllowance),
+                daysRemaining,
+                daysToExceed,
+                recommendation
+        );
+    }
+
+    private static final class RiskUi {
+        private final String riskLabelRo;
+        private final String uiClass;
+
+        private RiskUi(String riskLabelRo, String uiClass) {
+            this.riskLabelRo = riskLabelRo;
+            this.uiClass = uiClass;
+        }
+    }
+
+    private RiskUi buildRiskUi(BigDecimal budget, Integer percentUsed, WalletSummary summary) {
+        if (budget == null || budget.compareTo(BigDecimal.ZERO) <= 0 || percentUsed == null) {
+            return new RiskUi("Buget nesetat", "bg-secondary");
+        }
+
+        if (percentUsed >= 100) return new RiskUi("Depășit", "bg-danger");
+        if (percentUsed >= CRITICAL_THRESHOLD_PERCENT) return new RiskUi("Critic", "bg-danger");
+        if (percentUsed >= WARNING_THRESHOLD_PERCENT) return new RiskUi("Atenție", "bg-warning");
+        return new RiskUi("OK", "bg-success");
+    }
+
+    private String buildRecommendation(BigDecimal budget,
+                                       String currency,
+                                       Integer percentUsed,
+                                       BigDecimal remaining,
+                                       BigDecimal burnRatePerDay,
+                                       Integer daysRemaining,
+                                       BigDecimal dailyAllowance,
+                                       Integer daysToExceed,
+                                       String riskLabelRo) {
+
+        if (budget == null || budget.compareTo(BigDecimal.ZERO) <= 0) {
+            return "Setează un buget total ca să primești estimări inteligente (ritm/zi, recomandări și avertizări).";
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        if (percentUsed != null) {
+            sb.append("Status: ").append(riskLabelRo).append(" (").append(percentUsed).append("% din buget). ");
+        }
+
+        if (burnRatePerDay != null && burnRatePerDay.compareTo(BigDecimal.ZERO) > 0) {
+            sb.append("Ritmul curent: ~")
+                    .append(scale2(burnRatePerDay)).append(" ").append(currency).append("/zi. ");
+        } else {
+            sb.append("Nu există suficiente date pentru a estima ritmul curent. ");
+        }
+
+        if (daysToExceed != null) {
+            if (daysToExceed == 0 && remaining != null && remaining.compareTo(BigDecimal.ZERO) <= 0) {
+                sb.append("Bugetul este deja depășit. ");
+            } else if (daysToExceed > 0) {
+                sb.append("La acest ritm, vei depăși bugetul în ~").append(daysToExceed).append(" zile. ");
+            }
+        }
+
+        if (daysRemaining != null && daysRemaining > 0 && dailyAllowance != null) {
+            sb.append("Ca să rămâi în buget, încearcă să cheltuiești cel mult ~")
+                    .append(scale2(dailyAllowance)).append(" ").append(currency).append("/zi")
+                    .append(" (").append(daysRemaining).append(" zile rămase). ");
+        }
+
+        if ("Critic".equals(riskLabelRo)) {
+            sb.append("Ești foarte aproape de limită. Prioritizează cheltuielile esențiale.");
+        } else if ("Atenție".equals(riskLabelRo)) {
+            sb.append("E bine să fii atent la cheltuieli și să eviți achizițiile impulsive.");
+        } else if ("OK".equals(riskLabelRo)) {
+            sb.append("Te încadrezi bine în buget. Continuă în același ritm.");
+        } else if ("Depășit".equals(riskLabelRo)) {
+            sb.append("Ai depășit bugetul. Redu cheltuielile sau ajustează bugetul dacă este cazul.");
+        }
+
+        return sb.toString().trim();
+    }
+
+    private Integer computeDaysRemainingSafe(Trip trip) {
+        // Dacă Trip nu are start/end sau metoda nu există în proiect, te vei lovi la compilare.
+        // Presupunem că ai LocalDate getStartDate() și getEndDate().
+        try {
+            LocalDate start = trip.getStartDate();
+            LocalDate end = trip.getEndDate();
+            if (start == null || end == null || end.isBefore(start)) return null;
+
+            LocalDate today = LocalDate.now();
+            if (today.isAfter(end)) return 0;
+            if (today.isBefore(start)) {
+                return (int) (end.toEpochDay() - start.toEpochDay() + 1);
+            }
+            return (int) (end.toEpochDay() - today.toEpochDay() + 1);
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    private BigDecimal scale2(BigDecimal v) {
+        if (v == null) return null;
+        return v.setScale(2, RoundingMode.HALF_UP);
     }
 }

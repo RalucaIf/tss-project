@@ -1,7 +1,6 @@
 package echipa13.calatorii.Dto;
 
 import java.math.BigDecimal;
-import lombok.Data;
 
 public class WalletSummary {
 
@@ -30,9 +29,23 @@ public class WalletSummary {
         this.status = status;
     }
 
-    public BigDecimal getBudgetTotal() { return budgetTotal; }
-    public BigDecimal getTotalSpent() { return totalSpent; }
-    public BigDecimal getRemaining() { return remaining; }
-    public Integer getPercent() { return percent; }
-    public Status getStatus() { return status; }
+    public BigDecimal getBudgetTotal() {
+        return budgetTotal;
+    }
+
+    public BigDecimal getTotalSpent() {
+        return totalSpent;
+    }
+
+    public BigDecimal getRemaining() {
+        return remaining;
+    }
+
+    public Integer getPercent() {
+        return percent;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
 }

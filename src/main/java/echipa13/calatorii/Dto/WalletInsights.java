@@ -15,8 +15,15 @@ public class WalletInsights {
         this.topCategories = topCategories;
     }
 
-    public long getActiveDays() { return activeDays; }
-    public BigDecimal getAvgPerActiveDay() { return avgPerActiveDay; }
-    public List<WalletCategoryTotal> getTopCategories() { return topCategories; }
-}
+    public long getActiveDays() {
+        return activeDays;
+    }
 
+    public BigDecimal getAvgPerActiveDay() {
+        return avgPerActiveDay;
+    }
+
+    public List<WalletCategoryTotal> getTopCategories() {
+        return topCategories;
+    }
+}

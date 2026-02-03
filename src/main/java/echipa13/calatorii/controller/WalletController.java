@@ -28,6 +28,7 @@ public class WalletController {
 
     // ------------------------------------------------------------------
     // GET: Pagina portofelului (KPI + avertizări + insights + tranzacții)
+    // + Extensia A: Buget inteligent (smart)
     // ------------------------------------------------------------------
     @GetMapping("/trips/{id}/wallet")
     public String tripWallet(@PathVariable("id") Long tripId,
@@ -35,18 +36,42 @@ public class WalletController {
                              Model model) {
 
         try {
-            TripWallet wallet = walletService.getOrCreateWalletOwnedByUser(tripId, authentication.getName());
+            String login = authentication.getName();
 
-            WalletSummary summary = walletService.computeSummaryOwnedByUser(tripId, authentication.getName());
-            WalletInsights insights = walletService.computeInsightsOwnedByUser(tripId, authentication.getName());
+            TripWallet wallet = walletService.getOrCreateWalletOwnedByUser(tripId, login);
+            WalletSummary summary = walletService.computeSummaryOwnedByUser(tripId, login);
+            WalletInsights insights = walletService.computeInsightsOwnedByUser(tripId, login);
+
+            // Extensia A: Buget inteligent
+            WalletService.SmartBudgetAdvice smart = walletService.computeSmartBudgetAdviceOwnedByUser(tripId, login);
 
             model.addAttribute("trip", wallet.getTrip());
             model.addAttribute("wallet", wallet);
             model.addAttribute("summary", summary);
             model.addAttribute("alert", WalletAlert.fromSummary(summary));
             model.addAttribute("insights", insights);
+            model.addAttribute("smart", smart);
+
             model.addAttribute("transactions",
-                    walletService.listTransactionsOwnedByUser(tripId, authentication.getName()));
+                    walletService.listTransactionsOwnedByUser(tripId, login));
+            // după ce ai insights
+            if (insights != null && insights.getTopCategories() != null) {
+                var chartLabels = insights.getTopCategories().stream()
+                        .map(ct -> {
+                            var c = ct.getCategory();
+                            // labelRo dacă există, altfel enum name
+                            return (c != null && c.getLabelRo() != null) ? c.getLabelRo() : String.valueOf(c);
+                        })
+                        .toList();
+
+                var chartValues = insights.getTopCategories().stream()
+                        .map(ct -> ct.getAmount())
+                        .toList();
+
+                model.addAttribute("chartLabels", chartLabels);
+                model.addAttribute("chartValues", chartValues);
+            }
+
 
             return "trips/wallet";
         } catch (RuntimeException ex) {
