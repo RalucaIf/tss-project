@@ -63,7 +63,8 @@
         .leaderboard,
         .purchase-list,
         .destination-card,
-        .journal-card{
+        .journal-card,
+        .map-card{
             background: var(--surface-color);
             border-radius: 10px;
             border: 1px solid rgba(0,0,0,0.1);
@@ -78,7 +79,8 @@
         .leaderboard:hover,
         .purchase-list:hover,
         .destination-card:hover,
-        .journal-card:hover{
+        .journal-card:hover,
+        .map-card:hover{
             transform: translateY(-8px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             border-color: rgba(0,0,0,0.2);
@@ -101,7 +103,8 @@
         }
 
         /* Cardul Jurnal – să ocupe ambele coloane (sub Leaderboard + Excursiile mele) */
-        .journal-card{
+        .journal-card,
+        .map-card{
             grid-column: 1 / -1;      /* întinde cardul pe 2 coloane */
             position: relative;       /* pt .stretched-link */
             display: flex;
@@ -158,6 +161,25 @@
       "A B"
       "D C";
             }
+        }
+
+        /* Forțăm etichetele să fie vizibile */
+        .country-label {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            color: #333 !important; /* Un gri închis/negru */
+            font-weight: bold;
+            font-size: 11px;
+            pointer-events: none; /* Important: să poți da click pe țară "prin" text */
+        }
+
+        /* Scoate micul triunghi (săgeata) de la tooltip */
+        .leaflet-tooltip-top:before,
+        .leaflet-tooltip-bottom:before,
+        .leaflet-tooltip-left:before,
+        .leaflet-tooltip-right:before {
+            display: none !important;
         }
 
     </style>
@@ -293,6 +315,79 @@
             </li>
         </ul>
     </div>
+
+    <!-- HARTA INTERACTIVA -->
+
+    </div>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <div class="map-card">
+        <h4>Harta mea de călător</h4>
+        <p class="text-muted">Apasă pe o țară pentru a o marca.</p>
+        <div id="map" style="height: 500px; width: 100%; background: #f8f9fa;"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inițializăm harta
+            var map = L.map('map').setView([20, 0], 2);
+
+            // Încărcăm contururile țărilor
+            fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(data) {
+                    L.geoJSON(data, {
+                        style: function(feature) {
+                            return {
+                                fillColor: '#d1d1d1',
+                                weight: 1,
+                                opacity: 1,
+                                color: 'white',
+                                fillOpacity: 0.7
+                            };
+                        },
+                        onEachFeature: function(feature, layer) {
+                            // Hover effect
+                            layer.on('mouseover', function() {
+                                this.setStyle({ fillColor: '#adb5bd', fillOpacity: 1 });
+                            });
+                            layer.on('mouseout', function() {
+                                this.setStyle({ fillColor: '#d1d1d1', fillOpacity: 0.7 });
+                            });
+
+                            // CLICK pentru bifare
+                            layer.on('click', function() {
+                                this.setStyle({ fillColor: '#28a745', fillOpacity: 1 });
+                                alert("Ai selectat: " + feature.properties.ADMIN);
+                                // Aici vom pune fetch-ul către Java mâine
+                            });
+                                layer.bindTooltip(feature.properties.ADMIN,
+                                    {
+                                        permanent: true,
+                                        direction: "center",
+                                        className: "country-label",
+                                        opacity: 1,      // Forțează opacitate maximă
+                                        noHide: true
+                                    });
+
+                        }
+                    }).addTo(map);
+                })
+                .catch(function(error) {
+                    console.error('Eroare la încărcarea hărții:', error);
+                });
+
+            // Rezolvă bug-ul de afișare gri/parțială
+            setTimeout(function(){
+                map.invalidateSize();
+            }, 500);
+        });
+        /*]]>*/
+    </script>
     <!-- CARD: Jurnalul meu (sub Leaderboard + Excursiile mele) -->
 
 
