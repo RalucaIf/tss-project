@@ -413,7 +413,6 @@
         </div>
     </div>
 </div>
-
 <!-- Avatar Select Modal -->
 <div class="modal fade" id="avatarModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -435,9 +434,10 @@
                                    class="form-check-input"
                                    style="opacity:0; position:absolute; left:0; top:0; width:100%; height:100%; cursor:pointer;">
 
-                            <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=avatar' + ${i}}"
+                            <img th:src="@{'https://api.dicebear.com/9.x/personas/svg?seed=avatar' + ${i}}"
                                  class="rounded-circle border avatar-option"
-                                 width="90" height="90">
+                                 width="90" height="90"
+                                 onclick="document.getElementById('avatarValue').value='avatar' + [[${i}]];">
                         </label>
                     </div>
 
@@ -450,6 +450,8 @@
         </div>
     </div>
 </div>
+
+<!-- Formular ascuns pentru submit -->
 <form id="avatarForm" th:action="@{/profile/avatar}" method="post" style="display:none">
     <input type="hidden" name="avatar" id="avatarValue"/>
     <!-- CSRF doar dacă există -->

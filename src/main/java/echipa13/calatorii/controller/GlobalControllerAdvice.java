@@ -43,7 +43,7 @@ public class GlobalControllerAdvice {
     // 🔹 2. Avatar global
     @ModelAttribute("navbarAvatarUrl")
     public String navbarAvatarUrl(Authentication auth) {
-        final String fallback = "https://api.dicebear.com/9.x/dylan/svg?seed=avatar1";
+        final String fallback = "https://api.dicebear.com/9.x/personas/svg?seed=avatar1";
 
         if (auth == null || !auth.isAuthenticated()
                 || "anonymousUser".equals(String.valueOf(auth.getPrincipal()))) {
@@ -60,7 +60,7 @@ public class GlobalControllerAdvice {
         if (seed == null || seed.isBlank()) return fallback;
         if (seed.startsWith("http") || seed.startsWith("/")) return seed;
 
-        return "https://api.dicebear.com/9.x/dylan/svg?seed=" + seed;
+        return "https://api.dicebear.com/9.x/personas/svg?seed=" + seed;
     }
 
 

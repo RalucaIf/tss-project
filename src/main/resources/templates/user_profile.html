@@ -205,7 +205,7 @@
                  data-bs-target="#avatarModal"
                  style="cursor: pointer; position: relative; display:inline-block;">
 
-                <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${user.avatar}}"
+                <img th:src="@{'https://api.dicebear.com/9.x/personas/svg?seed=' + ${user.avatar}}"
                      alt="Avatar"
                      class="avatar"
                      th:classappend="${navbarLevelClass}">
@@ -319,7 +319,7 @@
                      data-bs-target="#avatarModal"
                      style="cursor:pointer;">
                     <div class="leaderboard__avatar-wrap">
-                        <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${up.user.avatar}}"
+                        <img th:src="@{'https://api.dicebear.com/9.x/personas/svg?seed=' + ${up.user.avatar}}"
                              alt="Avatar" class="avatar">
                         <img th:if="${up.level >= 5}"
                              th:src="@{'/imagini/rame/frame' + ${frameNumbers[up.user.id]} + '.gif'}"
@@ -331,7 +331,7 @@
                      class="leaderboard__avatar"
                      style="cursor:default;">
                     <div class="leaderboard__avatar-wrap">
-                        <img th:src="@{'https://api.dicebear.com/9.x/dylan/svg?seed=' + ${up.user.avatar}}"
+                        <img th:src="@{'https://api.dicebear.com/9.x/personas/svg?seed=' + ${up.user.avatar}}"
                              alt="Avatar" class="avatar">
                         <img th:if="${up.level >= 5}"
                              th:src="@{'/imagini/rame/frame' + ${frameNumbers[up.user.id]} + '.gif'}"
