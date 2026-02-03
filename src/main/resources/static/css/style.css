@@ -9540,6 +9540,17 @@ body.scrolled #navmenu a.active:hover {
 .dot{
     opacity: .55;
 }
+.btn-accent-danger-outline {
+    background: transparent;
+    border: 1.5px solid #dc3545;
+    color: #dc3545;
+}
+.btn-accent-danger-outline:hover,
+.btn-accent-danger-outline:focus {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+}
 
 
 
