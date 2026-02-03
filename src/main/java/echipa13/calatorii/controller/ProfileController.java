@@ -21,16 +21,25 @@ public class ProfileController {
     // --- Pagina profilului ---
     @GetMapping
     public String profile(Model model, Authentication auth) {
-        String email = auth.getName(); // preluăm email-ul utilizatorului logat
-        UserEntity user = userRepository.findByEmail(email);
+        if (auth == null || !auth.isAuthenticated()) {
+            return "redirect:/login";
+        }
+
+        String loginValue = auth.getName(); // poate fi email sau username
+
+        UserEntity user = userRepository.findByEmail(loginValue);
+        if (user == null) {
+            user = userRepository.findByUsername(loginValue);
+        }
 
         if (user == null) {
             return "redirect:/Itravel?error=userNotFound";
         }
 
-        model.addAttribute("user", user); // UserEntity în model
-        return "layout"; // numele template-ului Thymeleaf
+        model.addAttribute("user", user);
+        return "user_profile";
     }
+
 
     // --- Salvare avatar ---  !!!
     @PostMapping("/avatar")

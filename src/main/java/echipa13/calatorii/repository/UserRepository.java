@@ -2,6 +2,8 @@ package echipa13.calatorii.repository;
 
 import echipa13.calatorii.models.UserEntity;
 import echipa13.calatorii.models.UserPoints;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,5 +19,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Query ("SELECT up FROM UserPoints up JOIN FETCH up.user ORDER BY up.points DESC")
     List<UserPoints> findAllUserPoints();
+    Page<UserEntity> findByUsernameContainingIgnoreCase(String q, Pageable pageable);
 
 }

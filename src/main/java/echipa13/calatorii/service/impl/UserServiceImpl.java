@@ -9,6 +9,7 @@ import echipa13.calatorii.repository.UserPointsRepository;
 import echipa13.calatorii.repository.UserRepository;
 import echipa13.calatorii.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -71,5 +72,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserPoints> findAllUserPoints(){
         return userRepository.findAllUserPoints();
+    }
+
+    @Override
+    public Long getCurrentUserId(Authentication auth) {
+        return 0L;
     }
 }

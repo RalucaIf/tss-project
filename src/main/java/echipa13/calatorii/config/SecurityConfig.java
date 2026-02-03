@@ -59,7 +59,7 @@ public class SecurityConfig {
                                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/imagine/**").permitAll()
                         // === TRIPS: DOAR USER ===
                         .requestMatchers("/trips/**").hasRole("User")   // => necesită autoritate ROLE_USER
-
+                                .requestMatchers("/users/**").hasRole("User")
                         .requestMatchers("/tours/buy/**").hasRole("User")
                         .requestMatchers("/tours/**").hasRole("User")
                         // === GHID: creare/administrare tours ===

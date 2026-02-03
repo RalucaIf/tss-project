@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ro"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Descoperă utilizatori</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+
+    <div class="page-title dark-background" th:style="|background-image: url('@{/walpaper/showcase-7.webp}');|">
+        <div class="container position-relative">
+            <h1>Descoperă utilizatori</h1>
+            <p>Găsește oameni cu care să îți împărtășești pasiunile de călătorie.</p>
+        </div>
+    </div>
+
+    <div class="container my-4" sec:authorize="isAuthenticated()">
+
+        <!-- Search bar -->
+        <div class="premium-panel p-3 p-md-4 mb-4">
+            <form th:action="@{/users}" method="get" class="d-flex gap-2 align-items-center">
+                <input type="text"
+                       name="q"
+                       class="form-control"
+                       placeholder="Caută după username..."
+                       th:value="${q}">
+                <button class="btn btn-login" type="submit">
+                    <i class="bi bi-search"></i> Caută
+                </button>
+            </form>
+        </div>
+
+        <!-- Listă utilizatori -->
+        <div class="premium-panel p-3 p-md-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <h4 class="m-0">Rezultate</h4>
+                    <small class="text-muted"
+                           th:text="${usersPage.totalElements} + ' utilizatori găsiți'">0 utilizatori găsiți</small>
+                </div>
+
+                <span class="badge bg-light text-dark"
+                      th:text="'Pagina ' + (${usersPage.number}+1) + '/' + ${usersPage.totalPages}">Pagina</span>
+            </div>
+
+            <!-- Empty -->
+            <div class="text-muted" th:if="${usersPage == null or usersPage.totalElements == 0}">
+                Nu există rezultate pentru căutarea ta.
+            </div>
+
+            <!-- Grid -->
+            <div class="row g-3" th:if="${usersPage != null and usersPage.totalElements > 0}">
+                <div class="col-lg-4 col-md-6" th:each="u : ${usersPage.content}">
+                    <div class="user-card-premium">
+
+                        <div class="user-card-left">
+                            <div class="user-avatar-wrap">
+                                <img th:src="@{'https://api.dicebear.com/9.x/personas/svg?seed=' + ${u.avatar}}"
+                                     alt="Avatar"
+                                     class="user-avatar">
+                            </div>
+
+                            <div class="user-meta">
+                                <div class="user-name" th:text="${u.username}">username</div>
+                                <div class="user-sub text-muted small" th:text="${u.email}">email</div>
+                            </div>
+                        </div>
+
+                        <div class="user-card-right">
+
+                            <!-- Nu permite follow la tine -->
+                            <button class="btn btn-sm btn-secondary" disabled
+                                    th:if="${u.id == me.id}">
+                                Tu
+                            </button>
+
+                            <!-- Follow/Unfollow -->
+                            <form th:if="${u.id != me.id}"
+                                  th:action="@{/users/{id}/follow-toggle(id=${u.id})}"
+                                  method="post"
+                                  class="m-0">
+                                <input th:if="${_csrf != null}" type="hidden"
+                                       th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                                <!-- revii pe aceeași pagină cu query + page -->
+                                <input type="hidden" name="redirect"
+                                       th:value="@{/users(q=${q}, page=${usersPage.number})}"/>
+
+                                <button type="submit"
+                                        class="btn btn-sm"
+                                        th:classappend="${followingIds != null and #sets.contains(followingIds, u.id)} ? ' btn-danger' : ' btn-login' "
+                                        th:text="${followingIds != null and #sets.contains(followingIds, u.id)} ? 'Unfollow' : 'Follow'">
+                                    Follow
+                                </button>
+                            </form>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-center gap-2 mt-4"
+                 th:if="${usersPage != null and usersPage.totalPages > 1}">
+
+                <a class="btn btn-sm btn-light"
+                   th:href="@{/users(q=${q}, page=${usersPage.number-1})}"
+                   th:classappend="${usersPage.first} ? ' disabled' : ''}">
+                    &laquo; Anterior
+                </a>
+
+                <a class="btn btn-sm btn-light"
+                   th:href="@{/users(q=${q}, page=${usersPage.number+1})}"
+                   th:classappend="${usersPage.last} ? ' disabled' : ''}">
+                    Următor &raquo;
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Styles premium -->
+    <style>
+        .premium-panel{
+            background: var(--surface-color);
+            border-radius: 16px;
+            border: 1px solid rgba(0,0,0,.08);
+            box-shadow: 0 10px 24px rgba(0,0,0,.08);
+        }
+
+        .user-card-premium{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap: 14px;
+            padding: 14px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(0,0,0,.06);
+            background: rgba(255,255,255,.85);
+            box-shadow: 0 10px 22px rgba(0,0,0,.06);
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+        .user-card-premium:hover{
+            transform: translateY(-3px);
+            box-shadow: 0 18px 40px rgba(0,0,0,.12);
+        }
+        .user-card-left{
+            display:flex;
+            align-items:center;
+            gap: 12px;
+            min-width: 0;
+        }
+        .user-avatar-wrap{
+            width: 48px; height: 48px;
+            border-radius: 999px;
+            overflow:hidden;
+            border: 1px solid rgba(0,0,0,.08);
+            background: #fff;
+            flex: 0 0 auto;
+        }
+        .user-avatar{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .user-meta{ min-width: 0; }
+        .user-name{
+            font-weight: 800;
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 220px;
+        }
+        .user-sub{
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 220px;
+        }
+    </style>
+
+</div>
+</body>
+</html>
