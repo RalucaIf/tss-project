@@ -80,7 +80,8 @@
         .purchase-list:hover,
         .destination-card:hover,
         .journal-card:hover,
-        .map-card:hover{
+        .map-card
+        {
             transform: translateY(-8px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             border-color: rgba(0,0,0,0.2);
@@ -113,7 +114,8 @@
 
 
         /* Cardul Jurnal – ocupă ambele coloane, colaj stânga + text dreapta */
-        .journal-card{
+        .journal-card,
+        .map-card{
             grid-column: span 2;
             display:flex;
             align-items:center;
@@ -188,24 +190,35 @@
             filter: saturate(.92) contrast(1.03);
         }
 
-        /* Forțăm etichetele să fie vizibile */
         .country-label {
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            color: #333 !important; /* Un gri închis/negru */
+            color: #333 !important;
             font-weight: bold;
             font-size: 11px;
-            pointer-events: none; /* Important: să poți da click pe țară "prin" text */
+            pointer-events: none;
+            transition: opacity 0.3s ease; /* Tranziție fină */
         }
 
-        /* Scoate micul triunghi (săgeata) de la tooltip */
-        .leaflet-tooltip-top:before,
-        .leaflet-tooltip-bottom:before,
-        .leaflet-tooltip-left:before,
-        .leaflet-tooltip-right:before {
+        /* Clasa care va fi adăugată/scoasă de JS */
+        .labels-hidden .country-label {
             display: none !important;
         }
+
+        .leaflet-tooltip-pane {
+            z-index: 1000 !important;
+        }
+
+        .leaflet-tooltip {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            color: #333 !important;
+            font-weight: bold;
+            font-size: 11px;
+        }
+
 
     </style>
 <div class="profile-container">
@@ -456,9 +469,16 @@
 
     </div>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <div class="map-card">
+    <div sec:authorize="hasRole('User') and !hasRole('Guide')" class="map-card">
         <h4>Harta mea de călător</h4>
         <p class="text-muted">Apasă pe o țară pentru a o marca.</p>
+        <div class="mb-3">
+            <label class="form-label">Nu vezi țara pe care o dorești?</label>
+            <div class="input-group">
+                <input type="text" id="countrySearch" class="form-control" placeholder="Caută țara...">
+                <button class="btn btn-login w-100" type="button" id="btnSearch">Caută</button>
+            </div>
+        </div>
         <div id="map" style="height: 500px; width: 100%; background: #f8f9fa;"></div>
     </div>
 
@@ -466,61 +486,150 @@
 
     <script th:inline="javascript">
         /*<![CDATA[*/
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inițializăm harta
-            var map = L.map('map').setView([20, 0], 2);
+        document.addEventListener('DOMContentLoaded', function () {
 
-            // Încărcăm contururile țărilor
-            fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
-                .then(function(response) {
-                    return response.json();
+            var map = L.map('map', {
+                minZoom: 2,
+                maxZoom: 6,
+                antialiasing: true
+            }).setView([20, 0], 2);
+
+            function updateLabelVisibility() {
+                var currentZoom = map.getZoom();
+                var mapContainer = document.getElementById('map');
+
+                if (currentZoom < 4) {
+                    mapContainer.classList.add('labels-hidden');
+                } else {
+                    mapContainer.classList.remove('labels-hidden');
+                }
+            }
+
+            let visitedCountries = [];
+            let allCountries = [];
+
+            // 1️⃣ Luăm țările vizitate O SINGURĂ DATĂ
+            fetch('/api/map/visited')
+                .then(res => res.json())
+                .then(data => {
+                    console.log(" Țări vizitate de la server:", data);
+                    visitedCountries = data;
+                    loadMap();
                 })
-                .then(function(data) {
-                    L.geoJSON(data, {
-                        style: function(feature) {
-                            return {
+                .catch(err => console.error(" Eroare /visited:", err));
+
+            function loadMap() {
+                fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
+                    .then(res => res.json())
+                    .then(data => {
+
+                        L.geoJSON(data, {
+                            style: {
                                 fillColor: '#d1d1d1',
                                 weight: 1,
                                 opacity: 1,
                                 color: 'white',
                                 fillOpacity: 0.7
-                            };
-                        },
-                        onEachFeature: function(feature, layer) {
-                            // Hover effect
-                            layer.on('mouseover', function() {
-                                this.setStyle({ fillColor: '#adb5bd', fillOpacity: 1 });
-                            });
-                            layer.on('mouseout', function() {
-                                this.setStyle({ fillColor: '#d1d1d1', fillOpacity: 0.7 });
-                            });
+                            },
+                            onEachFeature: function (feature, layer) {
 
-                            // CLICK pentru bifare
-                            layer.on('click', function() {
-                                this.setStyle({ fillColor: '#28a745', fillOpacity: 1 });
-                                alert("Ai selectat: " + feature.properties.ADMIN);
-                                // Aici vom pune fetch-ul către Java mâine
-                            });
-                                layer.bindTooltip(feature.properties.ADMIN,
-                                    {
-                                        permanent: true,
-                                        direction: "center",
-                                        className: "country-label",
-                                        opacity: 1,      // Forțează opacitate maximă
-                                        noHide: true
+                                const countryName = feature.properties.name;
+                                layer.visited = visitedCountries.includes(countryName);
+
+                                allCountries.push({
+                                    name: countryName,
+                                    layer: layer
+                                });
+
+                                // TOOLTIP
+                                layer.bindTooltip(countryName, {
+                                    permanent: true,
+                                    direction: "center",
+                                    className: "country-label",
+                                    opacity: 1
+                                });
+
+                                // Dacă e vizitată → verde din start
+                                if (layer.visited) {
+                                    layer.setStyle({ fillColor: '#f95e4d', fillOpacity: 1 });
+                                }
+
+                                // HOVER (NU strică verdele)
+                                layer.on('mouseover', function () {
+                                    if (!layer.visited) {
+                                        this.setStyle({ fillOpacity: 1, fillColor: '#adb5bd' });
+                                    }
+                                });
+
+                                layer.on('mouseout', function () {
+                                    if (!layer.visited) {
+                                        this.setStyle({ fillColor: '#d1d1d1', fillOpacity: 0.7 });
+                                    }
+                                });
+
+                                // CLICK doar dacă NU e vizitată
+                                if (!layer.visited) {
+                                    layer.on('click', function () {
+                                        console.log("🖱️ Click pe:", countryName);
+
+                                        fetch('/api/map/visit?country=' + encodeURIComponent(countryName), {
+                                            method: 'POST'
+                                        })
+                                            .then(res => {
+                                                console.log("Status:", res.status);
+
+                                                if (res.ok) {
+                                                    layer.visited = true;
+                                                    layer.setStyle({ fillColor: '#f95e4d', fillOpacity: 1 });
+                                                    layer.off('click');
+                                                    alert(" Ai vizitat " + countryName);
+                                                }
+                                                else if (res.status === 409) {
+                                                    alert("Nu ai excursie cumpărată în această țară");
+                                                }
+                                                else {
+                                                    alert("Eroare la salvare");
+                                                }
+                                            })
+                                            .catch(err => {
+                                                console.error(" Eroare visit:", err);
+                                                alert("Eroare server");
+                                            });
                                     });
+                                }
+                            }
+                        }).addTo(map);
 
-                        }
-                    }).addTo(map);
-                })
-                .catch(function(error) {
-                    console.error('Eroare la încărcarea hărții:', error);
-                });
+                        updateLabelVisibility();
+                    });
+            }
 
-            // Rezolvă bug-ul de afișare gri/parțială
-            setTimeout(function(){
-                map.invalidateSize();
-            }, 500);
+            // 🔍 SEARCH
+            const searchinput = document.getElementById('countrySearch');
+            const searchBtn = document.getElementById('btnSearch');
+
+            function cautare() {
+                const query = searchinput.value.trim().toLowerCase();
+
+                const found = allCountries.find(c =>
+                    c.name.toLowerCase() === query
+                );
+
+                if (found) {
+                    map.fitBounds(found.layer.getBounds());
+                } else {
+                    alert("Țara nu a fost găsită!");
+                }
+            }
+
+            searchBtn.addEventListener('click', cautare);
+            searchinput.addEventListener('keypress', e => {
+                if (e.key === 'Enter') cautare();
+            });
+
+            map.on('zoomend', updateLabelVisibility);
+            setTimeout(() => map.invalidateSize(), 500);
+
         });
         /*]]>*/
     </script>

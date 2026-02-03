@@ -260,6 +260,9 @@ public class BuyTourController {
             }
 
 // 🔥 AICI e cheia cu orphanRemoval
+            for (ItinerariuZi zi : existing) {
+                zi.setTour(null);
+            }
             tour.getItinerariu().clear();
             tour.getItinerariu().addAll(finalList);
 
