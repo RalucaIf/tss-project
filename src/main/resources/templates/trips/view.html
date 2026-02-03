@@ -9,7 +9,6 @@
 <body>
 <div layout:fragment="content">
 
-  <!-- Page Title (hero cu imagine) -->
   <div class="page-title dark-background"
        th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
     <div class="container position-relative">
@@ -27,23 +26,37 @@
     </div>
   </div>
 
-  <!-- Conținutul paginii -->
   <section class="container py-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2 class="m-0">Detalii itinerariu</h2>
       <div class="d-flex gap-2">
-        <a class="btn btn-outline-primary" th:href="@{|/trips/${trip.id}/edit|}">Editează</a>
+        <a class="btn btn-sm btn-accent-outline" th:href="@{|/trips/${trip.id}/edit|}">Editează</a>
 
         <form th:action="@{|/trips/${trip.id}/delete|}" method="post"
               onsubmit="return confirm('Ștergi acest itinerariu?');">
-          <!-- CSRF doar dacă e prezent -->
           <input th:if="${_csrf != null}" type="hidden"
                  th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-          <button type="submit" class="btn btn-outline-danger">Șterge</button>
+          <button type="submit" class="btn btn-sm btn-accent-danger-outline">Șterge</button>
         </form>
 
-        <a class="btn btn-secondary" th:href="@{/trips}">Înapoi</a>
+        <a class="btn btn-sm btn-accent-ghost" th:href="@{/trips}">Înapoi</a>
+
+      </div>
+    </div>
+
+    <!-- ✅ Copertă + upload -->
+    <div class="card mb-3 overflow-hidden" style="border-radius: 18px;">
+      <div class="trip-cover-view"
+           th:style="|background-image: url('${tripCoverUrl}');|"></div>
+      <div class="card-body d-flex flex-wrap align-items-center gap-2">
+        <strong>Copertă:</strong>
+        <form th:action="@{|/trips/${trip.id}/cover|}" method="post" enctype="multipart/form-data" class="d-flex gap-2 align-items-center">
+          <input th:if="${_csrf != null}" type="hidden"
+                 th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+          <input type="file" name="cover" accept="image/*" class="form-control form-control-sm" style="max-width: 260px;">
+          <button type="submit" class="btn btn-sm btn-accent">Salvează</button>
+        </form>
       </div>
     </div>
 
@@ -52,34 +65,533 @@
       <span th:text="${#temporals.format(trip.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01</span>
     </p>
 
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Descriere</h5>
-        <p class="card-text" th:text="${trip.description}">—</p>
-      </div>
-    </div>
-      <div class="card">
-          <div class="card-body">
-              <h5 class="card-title">Excursii</h5>
-              <li th:each="e : ${trip.excursii}" >
-                  <a th:href="@{/tours/{id}(id = ${e.id})}"
-                      th:text="${e.title}">
-                  </a>
-              </li>
+    <div class="row g-4 mt-1">
+
+      <!-- STÂNGA: Descriere + Jurnal -->
+      <div class="col-lg-7">
+        <div class="d-grid gap-4">
+
+          <!-- DESCRIERE -->
+          <div class="premium-panel">
+            <div class="premium-panel__head">
+              <div class="premium-panel__title">
+                <span class="premium-panel__icon"><i class="bi bi-journal-text"></i></span>
+                <div>
+                  <h5 class="m-0">Descriere</h5>
+                  <small class="text-muted">Detalii despre itinerariu</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="premium-panel__body">
+              <p class="premium-panel__text" th:text="${trip.description}">—</p>
+
+              <div class="premium-panel__meta">
+                <div class="meta-chip">
+                  <i class="bi bi-calendar2-week"></i>
+                  <span>
+                <strong>Perioadă:</strong>
+                <span th:text="${trip.startDate}">2025-01-01</span> –
+                <span th:text="${trip.endDate}">2025-01-05</span>
+              </span>
+                </div>
+
+                <div class="meta-chip">
+                  <i class="bi bi-tag"></i>
+                  <span><strong>Categorie:</strong> <span th:text="${trip.category}">CITY_BREAK</span></span>
+                </div>
+              </div>
+            </div>
           </div>
+
+          <!-- JURNAL (sub descriere) -->
+          <div class="premium-panel premium-panel--link">
+            <div class="premium-panel__head">
+              <div class="premium-panel__title">
+                <span class="premium-panel__icon"><i class="bi bi-camera"></i></span>
+                <div>
+                  <h5 class="m-0">Jurnal de călătorie</h5>
+                  <small class="text-muted">Poze, notițe și zilele itinerariului</small>
+                </div>
+              </div>
+            </div>
+
+            <a class="premium-panel__body premium-panel__body--click"
+               th:href="@{/journal/{id}(id=${trip.id})}">
+              <div class="journal-teaser">
+                <div class="journal-teaser__left">
+                  <div class="journal-teaser__badge">
+                    <i class="bi bi-images"></i>
+                  </div>
+                  <div>
+                    <div class="fw-bold">Deschide jurnalul</div>
+                    <div class="text-muted small">Adaugă poze pe zi, setează coperta și editează notițele.</div>
+                  </div>
+                </div>
+
+                <div class="journal-teaser__right">
+              <span class="journal-pill">
+                <i class="bi bi-arrow-right"></i> Vezi
+              </span>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
       </div>
 
-    <!-- Dacă vrei, poți afișa și item-urile itinerariului -->
-    <!--
-    <hr class="my-4"/>
-    <h5>Program pe zile</h5>
-    <div th:if="${#lists.isEmpty(items)}" class="text-muted">Nu ai încă activități.</div>
-    <ul class="list-group" th:if="${!#lists.isEmpty(items)}">
-      <li class="list-group-item" th:each="it : ${items}">
-        Ziua <span th:text="${it.dayIndex}">1</span> — <span th:text="${it.title}">...</span>
-      </li>
-    </ul>
-    -->
+      <!-- DREAPTA: Excursii + Buget (Buget sub Excursii) -->
+      <div class="col-lg-5">
+        <div class="d-grid gap-4">
+
+          <!-- EXCURSII -->
+          <div class="premium-panel">
+            <div class="premium-panel__head">
+              <div class="premium-panel__title">
+                <span class="premium-panel__icon"><i class="bi bi-map"></i></span>
+                <div>
+                  <h5 class="m-0">Excursii</h5>
+                  <small class="text-muted">Tururile cumpărate din acest itinerariu</small>
+                </div>
+              </div>
+
+              <span class="count-pill" th:text="${trip.excursii != null ? #lists.size(trip.excursii) : 0}">0</span>
+            </div>
+
+            <div class="premium-panel__body">
+              <div class="empty-state" th:if="${trip.excursii == null or #lists.isEmpty(trip.excursii)}">
+                <div class="empty-state__icon"><i class="bi bi-compass"></i></div>
+                <div>
+                  <div class="fw-bold">Nu ai excursii încă</div>
+                  <div class="text-muted small">Cumpără un tur și adaugă-l în acest itinerariu.</div>
+                </div>
+                <a class="btn btn-sm btn-outline-primary ms-auto" th:href="@{/Tours}">Vezi tururi</a>
+              </div>
+
+              <div class="tour-list" th:if="${trip.excursii != null and !#lists.isEmpty(trip.excursii)}">
+                <div class="tour-row" th:each="e : ${trip.excursii}">
+                  <div class="tour-row__icon"><i class="bi bi-geo-alt"></i></div>
+
+                  <div class="tour-row__content">
+                    <div class="tour-row__title" th:text="${e.title}">Titlu tur</div>
+                    <div class="tour-row__sub text-muted">
+                      <span th:text="${e.duration} + ' zile'">—</span>
+                      <span class="dot">•</span>
+                      <span th:text="'Maxim ' + ${e.maxGuests} + ' persoane'">—</span>
+                    </div>
+                  </div>
+
+                  <a class="btn btn-sm btn-outline-secondary tour-row__btn"
+                     th:href="@{/tours/{id}(id=${e.id})}">
+                    Vezi
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BUGET (sub Excursii) -->
+          <div class="premium-panel premium-panel--link">
+            <div class="premium-panel__head">
+              <div class="premium-panel__title">
+                <span class="premium-panel__icon"><i class="bi bi-wallet2"></i></span>
+                <div>
+                  <h5 class="m-0">Buget itinerariu</h5>
+                  <small class="text-muted">Sinteză și portofelul itinerariului</small>
+                </div>
+              </div>
+
+            </div>
+
+            <a class="premium-panel__body premium-panel__body--click"
+               th:href="@{/trips/{id}/wallet(id=${trip.id})}">
+              <div class="budget-teaser">
+                <div class="budget-teaser__left">
+                  <div class="budget-teaser__badge">
+                    <i class="bi bi-cash-coin"></i>
+                  </div>
+                  <div>
+                    <div class="fw-bold">Portofelul itinerariului</div>
+                    <div class="text-muted small">Setează bugetul, adaugă cheltuieli și urmărește totalul.</div>
+                  </div>
+                </div>
+
+                <div class="budget-teaser__right">
+              <span class="journal-pill">
+                <i class="bi bi-arrow-right"></i> Vezi
+              </span>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+
+    <style>
+      .trip-cover-view{
+        height: 220px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+      }
+
+      .trip-cover-view::before{
+        content:"";
+        position:absolute;
+        inset:0;
+        background: inherit;
+        transform: none;
+        filter: none;
+        opacity: 1;
+      }
+
+      .trip-cover-view::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        background: linear-gradient(to bottom, rgba(0,0,0,.10), rgba(0,0,0,.35));
+      }
+
+      /* === Premium panels (Trip view) === */
+      .premium-panel{
+        border-radius: 18px;
+        background: rgba(255,255,255,.92);
+        border: 1px solid rgba(0,0,0,.06);
+        box-shadow: 0 10px 30px rgba(0,0,0,.06);
+        overflow: hidden;
+        transition: transform .2s ease, box-shadow .2s ease;
+      }
+
+      .premium-panel:hover{
+        transform: translateY(-2px);
+        box-shadow: 0 18px 46px rgba(0,0,0,.10);
+      }
+
+      .premium-panel__head{
+        padding: 16px 18px;
+        display:flex;
+        align-items:center;
+        justify-content: space-between;
+        gap: 12px;
+        background: linear-gradient(to bottom, rgba(230,100,80,.10), rgba(255,255,255,0));
+        border-bottom: 1px solid rgba(0,0,0,.06);
+      }
+
+      .premium-panel__title{
+        display:flex;
+        align-items:center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .premium-panel__icon{
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background: rgba(230,100,80,.14);
+        color: #e66450;
+        flex: 0 0 auto;
+      }
+
+      .premium-panel__body{
+        padding: 18px;
+      }
+
+      .premium-panel__text{
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.65;
+        color: rgba(17,24,39,.92);
+      }
+
+      .premium-panel__meta{
+        margin-top: 14px;
+        display:flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .meta-chip{
+        display:inline-flex;
+        align-items:center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(0,0,0,.06);
+        background: rgba(255,255,255,.7);
+        font-size: .9rem;
+      }
+
+      .count-pill{
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(17,24,39,.06);
+        color: rgba(17,24,39,.85);
+        font-weight: 700;
+        font-size: .85rem;
+      }
+
+      /* Excursii list */
+      .tour-list{
+        display:flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .tour-row{
+        display:flex;
+        align-items:center;
+        gap: 12px;
+        padding: 12px 12px;
+        border-radius: 14px;
+        border: 1px solid rgba(0,0,0,.06);
+        background: rgba(255,255,255,.75);
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      }
+
+      .tour-row:hover{
+        transform: translateY(-1px);
+        border-color: rgba(230,100,80,.35);
+        box-shadow: 0 10px 26px rgba(0,0,0,.08);
+      }
+
+      .tour-row__icon{
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background: rgba(230,100,80,.12);
+        color: #e66450;
+        flex: 0 0 auto;
+      }
+
+      .tour-row__content{
+        min-width: 0;
+        flex: 1 1 auto;
+      }
+
+      .tour-row__title{
+        font-weight: 800;
+        color: rgba(17,24,39,.92);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .tour-row__sub{
+        font-size: .88rem;
+        margin-top: 2px;
+      }
+
+      .dot{
+        margin: 0 6px;
+        opacity: .55;
+      }
+
+      .tour-row__btn{
+        white-space: nowrap;
+      }
+
+      .empty-state{
+        display:flex;
+        align-items:center;
+        gap: 12px;
+        padding: 14px 14px;
+        border-radius: 14px;
+        border: 1px dashed rgba(0,0,0,.14);
+        background: rgba(255,255,255,.65);
+      }
+
+      .empty-state__icon{
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background: rgba(17,24,39,.06);
+        color: rgba(17,24,39,.65);
+      }
+
+      /* === Premium link panel (Trip view) === */
+      .premium-panel--link .premium-panel__body--click{
+        display: block;
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .premium-panel--link .premium-panel__body--click:hover{
+        text-decoration: none;
+      }
+
+      .journal-teaser{
+        display:flex;
+        align-items:center;
+        justify-content: space-between;
+        gap: 14px;
+
+        padding: 12px 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(0,0,0,.06);
+        background: rgba(255,255,255,.75);
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      }
+
+      .premium-panel--link:hover .journal-teaser{
+        transform: translateY(-1px);
+        border-color: rgba(230,100,80,.35);
+        box-shadow: 0 10px 26px rgba(0,0,0,.08);
+      }
+
+      .journal-teaser__left{
+        display:flex;
+        align-items:center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .journal-teaser__badge{
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background: rgba(230,100,80,.12);
+        color: #e66450;
+        flex: 0 0 auto;
+      }
+
+      .journal-pill{
+        display:inline-flex;
+        align-items:center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(0,0,0,.06);
+        background: rgba(17,24,39,.06);
+        font-size: .88rem;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      /* === Budget teaser (Trip view) === */
+      .budget-teaser{
+        display:flex;
+        align-items:center;
+        justify-content: space-between;
+        gap: 14px;
+
+        padding: 12px 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(0,0,0,.06);
+        background: rgba(255,255,255,.75);
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      }
+
+      .premium-panel--link:hover .budget-teaser{
+        transform: translateY(-1px);
+        border-color: rgba(230,100,80,.35);
+        box-shadow: 0 10px 26px rgba(0,0,0,.08);
+      }
+
+      .budget-teaser__left{
+        display:flex;
+        align-items:center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .budget-teaser__badge{
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background: rgba(230,100,80,.12);
+        color: #e66450;
+        flex: 0 0 auto;
+      }
+
+      /* Buton accent (portocaliu aplicație) */
+      .btn-accent {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+        color: var(--contrast-color);
+      }
+
+      .btn-accent:hover,
+      .btn-accent:focus {
+        background-color: color-mix(in srgb, var(--accent-color), #000 12%);
+        border-color: color-mix(in srgb, var(--accent-color), #000 12%);
+        color: var(--contrast-color);
+      }
+
+      /* === Butoane accent (portocaliu aplicație) === */
+      .btn-accent {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+        color: var(--contrast-color);
+      }
+      .btn-accent:hover,
+      .btn-accent:focus {
+        background-color: color-mix(in srgb, var(--accent-color), #000 12%);
+        border-color: color-mix(in srgb, var(--accent-color), #000 12%);
+        color: var(--contrast-color);
+      }
+
+      /* Contur portocaliu (pentru Editează) */
+      .btn-accent-outline {
+        background: transparent;
+        border: 1.5px solid var(--accent-color);
+        color: var(--accent-color);
+      }
+      .btn-accent-outline:hover,
+      .btn-accent-outline:focus {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+        color: var(--contrast-color);
+      }
+
+      /* „Înapoi” discret, dar în tema aplicației */
+      .btn-accent-ghost {
+        background: rgba(230,100,80,.10);
+        border: 1px solid rgba(230,100,80,.18);
+        color: var(--accent-color);
+      }
+      .btn-accent-ghost:hover,
+      .btn-accent-ghost:focus {
+        background: rgba(230,100,80,.16);
+        border-color: rgba(230,100,80,.28);
+        color: var(--accent-color);
+      }
+
+      /* Șterge: contur roșu (păstrăm semantica), dar în aceeași estetică */
+      .btn-accent-danger-outline {
+        background: transparent;
+        border: 1.5px solid #dc3545;
+        color: #dc3545;
+      }
+      .btn-accent-danger-outline:hover,
+      .btn-accent-danger-outline:focus {
+        background: #dc3545;
+        border-color: #dc3545;
+        color: #fff;
+      }
+
+    </style>
+
+
   </section>
 </div>
 </body>

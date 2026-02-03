@@ -1,27 +1,43 @@
-console.log("theme.js loaded 🚀");
+/* File: src/main/resources/static/js/isotope.js */
 
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.querySelector(".destination-grid");
-    if (!container) return;
+    const filters = document.querySelector(".destination-filters");
+
+    if (!container || !filters || typeof Isotope === "undefined") return;
+
+    const wrapper =
+        container.closest(".destinations-isotope") ||
+        container.closest("[data-default-filter]") ||
+        container.parentElement;
+
+    const defaultFilter = (wrapper && wrapper.getAttribute("data-default-filter")) || "*";
+    const layoutMode = (wrapper && wrapper.getAttribute("data-layout")) || "fitRows";
 
     const iso = new Isotope(container, {
-        itemSelector: '.destination-item',
-        layoutMode: 'fitRows',
-        transitionDuration: '0.35s'
+        itemSelector: ".destination-item",
+        layoutMode,
+        transitionDuration: "350ms",
+
+        // ✅ efect de apariție/dispariție la filtrare (UN SINGUR efect)
+        hiddenStyle: { opacity: 0, transform: "scale(0.96)" },
+        visibleStyle: { opacity: 1, transform: "scale(1)" },
+
+        // (opțional) apar pe rând, discret
+        stagger: 20,
     });
 
+    // Inițializare
+    iso.arrange({ filter: defaultFilter });
 
-
-    document.querySelectorAll(".destination-filters li").forEach(filter => {
-        filter.addEventListener("click", (e) => {
+    filters.querySelectorAll("li").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
             e.preventDefault();
 
-            document.querySelector(".destination-filters .filter-active")
-                ?.classList.remove("filter-active");
+            filters.querySelector(".filter-active")?.classList.remove("filter-active");
+            btn.classList.add("filter-active");
 
-            filter.classList.add("filter-active");
-
-            const value = filter.getAttribute("data-filter");
+            const value = btn.getAttribute("data-filter") || "*";
             iso.arrange({ filter: value });
         });
     });

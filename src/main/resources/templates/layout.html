@@ -35,6 +35,12 @@
     <!-- CSS propriu -->
     <link th:href="@{/css/style.css}" rel="stylesheet">
 
+    <style>
+        #navmenu a.active { font-weight: 700; opacity: 1 !important; }
+        body.scrolled #navmenu a.active { font-weight: 700; opacity: 1 !important; }
+    </style>
+
+
     <!-- =======================================================
     * Template Name: TravelTime
     * Template URL: https://bootstrapmade.com/traveltime-bootstrap-travel-template/
@@ -58,44 +64,29 @@
 
         <nav id="navmenu" class="navmenu" >
             <ul>
-                <li><a th:href="@{/Itravel}" class="active">Home</a></li>
-                <li><a th:href="@{/About}">About</a></li>
-                <li><a th:href="@{/destinations}">Destinations</a></li>
-                <li sec:authorize="hasRole('User') and !hasAnyRole('Guide')">
-                    <a th:href="@{/trips}">Trips</a>
-                </li>
-
-                <!-- Ghid → Tours -->
+                <li><a th:href="@{/Itravel}">Acasă</a></li>
+                <li><a th:href="@{/About}">Despre</a></li>
+                <li><a th:href="@{/destinations}">Destinații</a></li>
                 <li sec:authorize="hasRole('User')">
-                    <a th:href="@{/Tours}">Tours</a>
+                    <a th:href="@{/Tours}">Tururi</a>
+                </li>
+                <li sec:authorize="hasRole('User') and !hasAnyRole('Guide')">
+                    <a th:href="@{/trips}">Itinerariile mele</a>
                 </li>
 
 
 
-                <li class="dropdown"><a href="#"><span>More Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                    <ul>
-<!--                        <li><a href="destination-details.html">Destination Details</a></li>-->
-<!--                        <li><a th:href="@{/Tour_details}">Tour Details</a></li>-->
-<!--                        <li><a href="booking.html">Booking</a></li>-->
-<!--                        <li><a href="testimonials">Testimonials</a></li>-->
-<!--                        <li><a href="faq.html">Frequently Asked Questions</a></li>-->
-<!--                        <li><a href="blog-details.html">Blog Details</a></li>-->
-                        <li><a th:href="@{/Terms}">Terms</a></li>
-                        <li><a th:href="@{/Privacy}">Privacy</a></li>
-
-                    </ul>
-                </li>
                 <li sec:authorize="hasAnyRole('Admin','Guide')" class="dropdown">
                     <a href="#"><span>Actions</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                     <ul class="custom-dropdown">
                         <!-- Link doar pentru Admin -->
                         <li sec:authorize="hasRole('Admin')">
-                            <a th:href="@{/destinations/new}">Create Destination</a>
+                            <a th:href="@{/destinations/new}">Creează Destinație</a>
                         </li>
 
                         <!-- Link doar pentru Guide -->
                         <li sec:authorize="hasRole('Guide')">
-                            <a th:href="@{/Itravel/new}">Create Tour</a>
+                            <a th:href="@{/Itravel/new}">Creează Tur</a>
                         </li>
                     </ul>
                 </li>
@@ -210,7 +201,7 @@
             <div class="col-lg-4">
                 <div class="footer-content">
                     <a href="index.html" class="logo d-flex align-items-center mb-4">
-                        <span class="sitename">TravelTime</span>
+                        <span class="sitename">ITravel</span>
                     </a>
                     <p class="mb-4">Oferim experiențe de călătorie de neuitat și servicii personalizate pentru fiecare aventură. Echipa noastră este dedicată confortului și siguranței tale.</p>
 
@@ -236,28 +227,24 @@
                     <h4>Companie</h4>
                     <ul>
                         <li><a href="#"><i class="bi bi-chevron-right"></i> Despre Noi</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Cariere</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Presă</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Blog</a></li>
+<!--                        <li><a href="#"><i class="bi bi-chevron-right"></i> Blog</a></li>-->
                         <li><a href="#"><i class="bi bi-chevron-right"></i> Contact</a></li>
                     </ul>
                 </div>
             </div>
 
-            <div class="col-lg-2 col-6">
-                <div class="footer-links">
-                    <h4>Soluții</h4>
-                    <ul>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Strategie Digitală</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Cloud Computing</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Analiză Date</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Soluții AI</a></li>
-                        <li><a href="#"><i class="bi bi-chevron-right"></i> Securitate Cibernetică</a></li>
-                    </ul>
-                </div>
-            </div>
+<!--            <div class="col-lg-2 col-6">-->
+<!--                <div class="footer-links">-->
+<!--                    <h4>Soluții</h4>-->
+<!--                    <ul>-->
+<!--                        <li><a href="#"><i class="bi bi-chevron-right"></i> Strategie Digitală</a></li>-->
+<!--                        <li><a href="#"><i class="bi bi-chevron-right"></i> Soluții AI</a></li>-->
+<!--                        <li><a href="#"><i class="bi bi-chevron-right"></i> Securitate Cibernetică</a></li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <div class="col-lg-4">
+            <div class="col-lg-2 col-6">
                 <div class="footer-contact">
                     <h4>Contactează-ne</h4>
                     <div class="contact-item">
@@ -265,7 +252,7 @@
                             <i class="bi bi-geo-alt"></i>
                         </div>
                         <div class="contact-info">
-                            <p>2847 Maple Avenue<br>Los Angeles, CA 90210<br>Statele Unite</p>
+                            <p>Strada Academiei, numărul 14<br>București<br>România</p>
                         </div>
                     </div>
 
@@ -274,7 +261,7 @@
                             <i class="bi bi-telephone"></i>
                         </div>
                         <div class="contact-info">
-                            <p>+1 (555) 987-6543</p>
+                            <p>+40 773 198 267</p>
                         </div>
                     </div>
 
@@ -283,7 +270,7 @@
                             <i class="bi bi-envelope"></i>
                         </div>
                         <div class="contact-info">
-                            <p>contact@example.com</p>
+                            <p>dir@gmail.com</p>
                         </div>
                     </div>
 
@@ -305,14 +292,14 @@
             <div class="row align-items-center">
                 <div class="col-lg-6">
                     <div class="copyright">
-                        <p>© <span>Drepturi de autor</span> <strong class="px-1 sitename">MyWebsite</strong> <span>Toate drepturile rezervate</span></p>
+                        <p>© <span>Drepturi de autor</span> <strong class="px-1 sitename">ITravel</strong> <span>Toate drepturile rezervate</span></p>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="footer-bottom-links">
-                        <a href="#">Politica de Confidențialitate</a>
-                        <a href="#">Termeni și Condiții</a>
-                        <a href="#">Politica Cookie</a>
+                        <a th:href="@{/Privacy}">Politica de confidențialitate</a>
+                        <a th:href="@{/Terms}">Termeni și condiții</a>
+<!--                        <a href="#">Politica Cookie</a>-->
                     </div>
                     <div class="credits">
                     </div>
@@ -337,7 +324,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Welcome Back!</h5>
+                <h5 class="modal-title">Bine ai Revenit!</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -345,7 +332,7 @@
                 <form th:action="@{/auth/login}" method="post">
 
                     <div class="mb-3">
-                        <label class="form-label">Email or Username</label>
+                        <label class="form-label">Email sau Username</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="usernameOrEmail" placeholder="Enter your email or username" required>
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -353,19 +340,19 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
+                        <label class="form-label">Parolă</label>
                         <div class="input-group">
                             <input type="password" class="form-control" name="password" placeholder="Enter your password" required>
                             <span class="input-group-text"><i class="fas fa-eye"></i></span>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-login w-100">Sign In</button>
+                    <button type="submit" class="btn btn-login w-100">Sign in</button>
 
                     <div class="register-link mt-3 text-center">
-                        Don't have an account?
+                        Nu ai un cont?
                         <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">
-                            Register now
+                            Înregistrează-te acum
                         </a>
                     </div>
                 </form>
@@ -381,24 +368,24 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Register</h5>
+                <h5 class="modal-title">Înregistrează-te</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="/auth/register" method="post">
 
                     <div class="mb-3">
-                        <label class="form-label">Your Name</label>
+                        <label class="form-label">Nume</label>
                         <input type="text" class="form-control" name="username" placeholder="Your name" required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Email address</label>
+                        <label class="form-label">Adresă de Email</label>
                         <input type="email" class="form-control" name="email" placeholder="name@example.com" required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
+                        <label class="form-label">Parolă</label>
                         <input type="password" class="form-control" name="password_hash" placeholder="Password" required>
                     </div>
                     <div class="form-check mt-3">
@@ -408,9 +395,9 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="btn btn-login">Register</button>
+                    <button type="submit" class="btn btn-login">Înregistrare</button>
 
-                    <div class="divider mt-3"><span>or sign up with</span></div>
+                    <div class="divider mt-3"><span>sau sign up cu</span></div>
 
                     <div class="social-login mt-2">
                         <button type="button" class="btn btn-social">
@@ -495,6 +482,56 @@ container.appendChild(clone);
 }
 </script>
 
+<script>
+    (function () {
+        function normalizePath(p) {
+            if (!p) return '/';
+            return (p.length > 1 && p.endsWith('/')) ? p.slice(0, -1) : p;
+        }
+
+        function setActiveNav() {
+            const nav = document.querySelector('#navmenu');
+            if (!nav) return;
+
+            const path = normalizePath(window.location.pathname);
+
+            const links = Array.from(nav.querySelectorAll('a'))
+                .filter(a => a.getAttribute('href') && !a.getAttribute('href').startsWith('#'));
+
+            // curăță active de pe toate
+            links.forEach(a => a.classList.remove('active'));
+
+            // match funcție: activează după pathname
+            const rules = [
+                { match: (p) => p === '/' || p.startsWith('/Itravel'), hrefEndsWith: '/Itravel' },
+                { match: (p) => p.startsWith('/About'), hrefEndsWith: '/About' },
+                { match: (p) => p.startsWith('/destinations'), hrefIncludes: '/destinations' },
+                { match: (p) => p.startsWith('/Tours') || p.startsWith('/tours'), hrefEndsWith: '/Tours' },
+                { match: (p) => p.startsWith('/trips'), hrefEndsWith: '/trips' },
+                { match: (p) => p.startsWith('/journal'), hrefEndsWith: '/journal' }
+            ];
+
+            for (const r of rules) {
+                if (!r.match(path)) continue;
+
+                const found = links.find(a => {
+                    const h = a.getAttribute('href');
+                    if (r.hrefEndsWith) return h.endsWith(r.hrefEndsWith);
+                    if (r.hrefIncludes) return h.includes(r.hrefIncludes);
+                    return false;
+                });
+
+                if (found) found.classList.add('active');
+                break;
+            }
+        }
+
+        window.addEventListener('load', setActiveNav);
+        document.addEventListener('scroll', setActiveNav);
+    })();
+</script>
+
+
 <!--<script>-->
 <!--    const filterButtons = document.querySelectorAll('.filter-pill');-->
 <!--    const tours = document.querySelectorAll('#tour-container .tour-card');-->
@@ -524,14 +561,19 @@ container.appendChild(clone);
 
 
 <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
-<script th:src="@{/js/isotope.js}"></script>
+
+<script th:src="@{/vendor/imagesloaded/imagesloaded.pkgd.min.js}"></script>
+
+
 <script th:src="@{/js/theme.js}"></script>
 <script th:src="@{/js/chatBot.js}"></script>
 <script th:src="@{/js/avatar.js}"></script>
+<script th:src="@{/js/isotope.js}"></script>
 <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/main.js}"></script>
 <script th:src="@{/js/dropdown.js}"></script>
 <script th:src="@{/js/showCoin.js}"></script>
+
 
 
 </body>

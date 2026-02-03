@@ -14,7 +14,7 @@
        th:style="|background-image: url('@{/walpaper/showcase-11.webp}');|">
     <div class="container position-relative">
       <h1>Itinerarii</h1>
-      <p>Create memorable moments with us.</p>
+      <p>Planifică, organizează și păstrează amintirile.</p>
     </div>
   </div>
 
@@ -23,14 +23,12 @@
     <!-- BARA DE CATEGORII + CTA -->
     <div class="chips-wrapper">
       <div class="chips">
-        <!-- afișate permanent -->
-        <button class="chip is-active" type="button" data-filter="all">All</button>
+        <button class="chip is-active" type="button" data-filter="all">Toate</button>
         <button class="chip" type="button" data-filter="city_break">City break</button>
-        <button class="chip" type="button" data-filter="adventure">Adventure</button>
+        <button class="chip" type="button" data-filter="adventure">Aventură</button>
         <button class="chip" type="button" data-filter="business">Business</button>
-        <button class="chip" type="button" data-filter="relax">Relax</button>
+        <button class="chip" type="button" data-filter="relax">Relaxare</button>
 
-        <!-- CTA pe alb -->
         <a class="chip chip--cta ms-auto" th:href="@{/trips/new}">+ Creează itinerariu</a>
       </div>
     </div>
@@ -40,7 +38,7 @@
       Nu există un itinerariu în această categorie.
     </div>
 
-    <!-- LISTA CA R D U R I -->
+    <!-- LISTA CARDURI -->
     <div class="row g-4 mt-2">
       <div class="col-12" th:if="${#lists.isEmpty(trips)}">
         <div class="alert alert-info">Încă nu ai niciun itinerariu. Creează unul nou.</div>
@@ -48,14 +46,44 @@
 
       <div class="col-md-6"
            th:each="t : ${trips}"
-           th:with="cat=${#strings.toLowerCase(t.category)}">
+           th:with="cat=${#strings.toLowerCase(t.category)},
+                    coverUrl=${coverUrlByTripId[t.id]}">
 
         <div class="trip-card card h-100 shadow-sm"
              th:attr="data-category=${cat}">
+
+          <!-- ✅ Imagine copertă (difuz) -->
+          <div class="trip-card__media"
+               th:style="|background-image: url('${coverUrl}');|">
+
+            <div class="trip-card__media-gradient"></div>
+
+            <!-- ✅ Upload copertă (POST clasic + redirect) -->
+            <form class="trip-card__cover-form"
+                  th:action="@{|/trips/${t.id}/cover|}"
+                  method="post"
+                  enctype="multipart/form-data">
+              <input th:if="${_csrf != null}" type="hidden"
+                     th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+              <input class="trip-card__cover-input"
+                     type="file"
+                     th:id="${'cover-' + t.id}"
+                     name="cover"
+                     accept="image/*"/>
+
+              <label class="trip-card__cover-btn" th:for="${'cover-' + t.id}">
+                <i class="bi bi-image"></i> Copertă
+              </label>
+
+              <button class="trip-card__cover-save" type="submit" disabled>
+                Salvează
+              </button>
+            </form>
+          </div>
+
           <div class="card-body p-4 position-relative">
-            <!-- badge categorie -->
-            <span class="trip-card__badge"
-                  th:text="${t.category}">CITY_BREAK</span>
+            <span class="trip-card__badge" th:text="${t.category}">CITY_BREAK</span>
 
             <h3 class="trip-card__title mb-1">
               <a th:href="@{|/trips/${t.id}|}" th:text="${t.title}">Titlu</a>
@@ -88,155 +116,95 @@
     </div>
   </section>
 
-  <!-- Stilurile chips + card (efecte ca în Destinations) -->
   <style>
-    .chips-wrapper{
-      display:flex;
-      justify-content:center;
-      margin-top:-40px;
+    .chips-wrapper{display:flex;justify-content:center;margin-top:-40px;}
+    .chips{display:flex;align-items:center;gap:22px;background:#fff;border-radius:999px;padding:14px 18px;box-shadow:0 10px 30px rgba(0,0,0,.06),0 2px 10px rgba(0,0,0,.04);position:relative;overflow:hidden;}
+    .chip{appearance:none;border:0;background:transparent;padding:12px 22px;border-radius:999px;font-weight:600;line-height:1;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease, color .18s ease, background .18s ease;color:#6b7280;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;}
+    .chip:hover,.chip:focus{transform:translateY(-1px);color:#111827;}
+    .chip.is-active{background:#e66450;color:#fff;box-shadow:0 10px 24px rgba(230,100,80,.35);}
+    .chip--cta{margin-left:auto;background:#fff;border:1px solid rgba(0,0,0,.08);box-shadow:0 8px 24px rgba(0,0,0,.08);}
+    .chip--cta,.chip--cta:link,.chip--cta:visited{color:#e66450 !important;font-weight:700;}
+    .chip--cta:hover,.chip--cta:focus{background:#fff;color:#e66450 !important;transform:translateY(-1px);box-shadow:0 12px 36px rgba(0,0,0,.14);text-decoration:none;}
+
+    .trip-card{position:relative;border-radius:20px;overflow:hidden;background:#fff;transition:transform .2s ease, box-shadow .2s ease;box-shadow:0 4px 10px rgba(0,0,0,.1);}
+    .trip-card:hover{transform:scale(1.03);box-shadow:0 10px 30px rgba(0, 0, 0, 0.25);z-index:2;}
+
+    /* ✅ MEDIA (copertă difuză) */
+    .trip-card__media{
+      position: relative;
+      height: 160px;
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
     }
-    .chips{
+    .trip-card__media::before{
+      filter: none;
+      opacity: 1;
+      transform: none;
+    }
+    .trip-card__media-gradient{
+      background: linear-gradient(to bottom, rgba(0,0,0,.10), rgba(0,0,0,.45));
+    }
+
+    /* ✅ Form upload copertă (top-left) */
+    .trip-card__cover-form{
+      position:absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 2;
       display:flex;
+      gap: 8px;
       align-items:center;
-      gap:22px;
-      background:#fff;
-      border-radius:999px;
-      padding:14px 18px;
-      box-shadow:
-              0 10px 30px rgba(0,0,0,.06),
-              0 2px 10px rgba(0,0,0,.04);
-      position:relative;
-      overflow:hidden;
     }
-    .chip{
-      appearance:none;
-      border:0;
-      background:transparent;
-      padding:12px 22px;
-      border-radius:999px;
-      font-weight:600;
-      line-height:1;
-      cursor:pointer;
-      transition:transform .18s ease, box-shadow .18s ease, color .18s ease, background .18s ease;
-      color:#6b7280; /* text gri ca în Destinations */
-      text-decoration:none;
+    .trip-card__cover-input{ display:none; }
+    .trip-card__cover-btn{
       display:inline-flex;
       align-items:center;
-      justify-content:center;
-      white-space:nowrap;
-    }
-    .chip:hover,
-    .chip:focus{
-      transform:translateY(-1px);
-      color:#111827;
-    }
-    .chip.is-active{
-      background:#e66450; /* accent ca în exemplu */
-      color:#fff;
-      box-shadow:0 10px 24px rgba(230,100,80,.35);
-    }
-
-    /* CTA pe alb, text vizibil mereu */
-    .chip--cta{
-      margin-left:auto;
-      background:#fff;
-      border:1px solid rgba(0,0,0,.08);
-      box-shadow:0 8px 24px rgba(0,0,0,.08);
-    }
-    .chip--cta,
-    .chip--cta:link,
-    .chip--cta:visited{
-      color:#e66450 !important;
-      font-weight:700;
-    }
-    .chip--cta:hover,
-    .chip--cta:focus{
-      background:#fff;
-      color:#e66450 !important;
-      transform:translateY(-1px);
-      box-shadow:0 12px 36px rgba(0,0,0,.14);
+      gap:6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.9);
+      color: #111827;
+      font-weight: 700;
+      font-size: 12px;
+      cursor:pointer;
+      border: 1px solid rgba(0,0,0,.08);
       text-decoration:none;
+      transition: transform .18s ease, box-shadow .18s ease;
     }
-    body.dark-background .chips{
-      background:#111827;
-      box-shadow:0 10px 30px rgba(0,0,0,.5);
-    }
-    body.dark-background .chip{
-      color:#cbd5e1;
-    }
-    body.dark-background .chip.is-active{
-      background:#e66450;
-      box-shadow:0 10px 24px rgba(230,100,80,.25);
+    .trip-card__cover-btn:hover{ transform: translateY(-1px); box-shadow: 0 10px 22px rgba(0,0,0,.12); }
+    .trip-card__cover-save{
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.25);
+      background: rgba(230,100,80,.95);
       color:#fff;
+      font-weight: 800;
+      font-size: 12px;
+      cursor:pointer;
+      opacity: .65;
+      transition: opacity .18s ease, transform .18s ease;
     }
-    body.dark-background .chip:hover{ color:#fff; }
-    body.dark-background .chip--cta{
-      background:#fff;
-      border-color:rgba(255,255,255,.25);
-    }
+    .trip-card__cover-save:disabled{ cursor:not-allowed; }
+    .trip-card__cover-save:not(:disabled){ opacity: 1; }
+    .trip-card__cover-save:not(:disabled):hover{ transform: translateY(-1px); }
 
-    /* Card */
-    /* Card – fără padding-top aici */
-    .trip-card{
-      position: relative;
-      border-radius: 20px;
-      overflow: hidden;
-      background: #ffffff;
-      transition: transform .2s ease, box-shadow .2s ease;
-      box-shadow: 0 4px 10px rgba(0,0,0,.1);
-    }
-
-    .trip-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      z-index: 2;
-    }
-
-    /* Badge fix în colțul cardului */
-    .trip-card__badge{
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      left: auto;
-      background: #ff6b6b;
-      color: #fff;
-      font-size: .875rem;
-      padding: 5px 10px;
-      border-radius: 12px;
-      box-shadow: 0 2px 5px rgba(0,0,0,.2);
-      z-index: 3;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* REZERVĂ loc pentru badge în interiorul conținutului cardului */
-    .trip-card .card-body{
-      padding-top: 64px;   /* ~ 16(top) + ~32(înălțime badge) + puțin aer */
-    }
-
-    /* opțional – anulează marja default a titlului dacă vrei mai compact */
-    .trip-card__title{ margin-top: 0; }
-    .trip-card__title a{ color:#e66450; text-decoration:none; }
-    .trip-card__title a:hover{ text-decoration:underline; }
-
-
-
-
-    body.dark-background .trip-card{ border-color:rgba(255,255,255,.08); }
-    body.dark-background .trip-card__badge{ background:#1f2937; color:#e5e7eb; }
-
+    /* Badge */
+    .trip-card__badge{position:absolute;top:16px;right:16px;background:#ff6b6b;color:#fff;font-size:.875rem;padding:5px 10px;border-radius:12px;box-shadow:0 2px 5px rgba(0,0,0,.2);z-index:3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .trip-card .card-body{padding-top:64px;}
+    .trip-card__title{margin-top:0;}
+    .trip-card__title a{color:#e66450;text-decoration:none;}
+    .trip-card__title a:hover{text-decoration:underline;}
   </style>
 
-  <!-- JS filtrare client-side -->
   <script>
+    // Filtrare client-side (chip-uri)
     (function () {
       const chips = Array.from(document.querySelectorAll('[data-filter]'));
       const cards = Array.from(document.querySelectorAll('[data-category]'));
       const noRes = document.getElementById('noResults');
 
       function applyFilter(filter){
-        // toggle chip activ
         chips.forEach(c => c.classList.toggle('is-active', c.dataset.filter === filter));
 
         let any = false;
@@ -249,25 +217,26 @@
 
         if (noRes) noRes.classList.toggle('d-none', any);
 
-        // pune filtrul în URL (fără reload)
         const url = new URL(window.location);
         if (filter === 'all') url.searchParams.delete('cat');
         else url.searchParams.set('cat', filter);
         history.replaceState(null, '', url);
       }
 
-      // click pe chip
-      document.addEventListener('click', (e) => {
-        const chip = e.target.closest('[data-filter]');
-        if (!chip) return;
-        e.preventDefault();
-        applyFilter(chip.dataset.filter);
+      chips.forEach(btn => {
+        btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
       });
+    })();
 
-      // init din ?cat=...
-      const param = new URLSearchParams(window.location.search).get('cat');
-      const initial = (param || 'all').toLowerCase();
-      applyFilter(initial);
+    // ✅ Enable "Salvează" doar când alegi o imagine
+    (function () {
+      document.querySelectorAll('.trip-card__cover-input').forEach(input => {
+        input.addEventListener('change', () => {
+          const form = input.closest('form');
+          const btn = form ? form.querySelector('.trip-card__cover-save') : null;
+          if (btn) btn.disabled = !(input.files && input.files.length);
+        });
+      });
     })();
   </script>
 

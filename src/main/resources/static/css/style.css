@@ -2502,7 +2502,10 @@ section,
     font-weight: 500;
     padding: 10px 20px;
     border-radius: 40px;
-    transition: all 0.3s ease;
+
+    /* ✅ nu mai animăm "all" (care include transform la activare/dezactivare) */
+    transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+
     white-space: nowrap;
 }
 
@@ -2513,11 +2516,17 @@ section,
     }
 }
 
-.travel-destinations .filter-tabs .destination-filters li:hover,
-.travel-destinations .filter-tabs .destination-filters li.filter-active {
+.travel-destinations .filter-tabs .destination-filters li:hover {
     color: var(--contrast-color);
     background: var(--accent-color);
     transform: translateY(-1px);
+}
+
+/* ✅ Active: fără transform (elimină al doilea efect când "Toate" se dezactivează) */
+.travel-destinations .filter-tabs .destination-filters li.filter-active {
+    color: var(--contrast-color);
+    background: var(--accent-color);
+    transform: none;
 }
 
 .travel-destinations .destination-grid .destination-overlay {
@@ -8866,9 +8875,32 @@ body.dark-background .btn-theme i {
     font-weight: bold;
 }
 
-.isotope-item {
-    transition: transform 0.5s ease, opacity 0.5s ease;
-}
+/* Tranziție pentru filtrare Isotope */
+/*.isotope-item {*/
+/*    transition: transform 350ms ease, opacity 350ms ease;*/
+/*    will-change: transform, opacity;*/
+/*}*/
+
+
+/*!* Efect de apariție (doar vizual, fără să concureze cu Isotope) *!*/
+/*@keyframes destinationFadeIn {*/
+/*    from {*/
+/*        opacity: 0;*/
+/*        filter: blur(2px);*/
+/*        transform: translateY(6px);*/
+/*    }*/
+/*    to {*/
+/*        opacity: 1;*/
+/*        filter: blur(0);*/
+/*        transform: translateY(0);*/
+/*    }*/
+/*}*/
+
+/*!* Se aplică doar când punem clasa din JS *!*/
+/*.isotope-item.isotope-animate-in {*/
+/*    animation: destinationFadeIn 280ms ease-out both;*/
+/*}*/
+
 
 
 .destination-card .overlay .destination-tag.popular {
@@ -8940,6 +8972,591 @@ body.dark-background .btn-theme i {
     0% { opacity: 1; transform: translateY(0) scale(1); }
     100% { opacity: 0; transform: translateY(-20px) scale(1.2); }
 }
+
+/* === FIX: păstrează highlight-ul (portocaliu) pentru linkul activ și când body are .scrolled === */
+
+/* Dacă ai variabilă de accent în proiect, folosește-o (TravelTime de obicei are --accent-color) */
+:root {
+    --nav-active-color: var(--accent-color, #e66450); /* fallback dacă nu există --accent-color */
+}
+
+/* Stare normală */
+#navmenu a.active,
+#navmenu a.active:focus,
+#navmenu a.active:hover {
+    color: var(--nav-active-color) !important;
+    opacity: 1 !important;
+}
+
+/* Stare la scroll (aici se strica la tine) */
+body.scrolled #navmenu a.active,
+body.scrolled #navmenu a.active:focus,
+body.scrolled #navmenu a.active:hover {
+    color: var(--nav-active-color) !important;
+    opacity: 1 !important;
+}
+
+/* === Home CTA premium (ambele identice, side-by-side, shift spre dreapta) === */
+.cta-buttons--home {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+
+    justify-content: center;
+    padding-left: 70px; /* ajustează 40–120px după gust */
+}
+
+/* Stil comun premium */
+.btn-premium {
+    padding: 9px 18px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-radius: 999px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    white-space: nowrap;
+    text-decoration: none;
+
+    background-color: var(--accent-color);
+    color: var(--contrast-color);
+
+    /* ✅ chenar puțin mai subțire */
+    border: 1.5px solid var(--accent-color);
+
+    transition: transform .25s ease, box-shadow .25s ease, background-color .25s ease, filter .25s ease, color .25s ease;
+}
+
+/* Dacă ai lăsat clasa btn-premium--outline în HTML, o neutralizăm */
+.btn-premium--outline {
+    background-color: var(--accent-color);
+    color: var(--contrast-color);
+    border-color: var(--accent-color);
+}
+
+/* Hover/focus: premium lift + text alb */
+.btn-premium:hover,
+.btn-premium:focus {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--default-color), transparent 70%);
+    filter: brightness(0.95);
+    outline: none;
+
+    /* ✅ rămâne alb */
+    color: #fff;
+}
+
+.btn-premium i {
+    transition: transform .2s ease, color .2s ease;
+}
+
+/* Icon: se mișcă + rămâne alb */
+.btn-premium:hover i,
+.btn-premium:focus i {
+    transform: translateX(3px);
+    color: #fff;
+}
+
+
+/* Mobile: nu mai shiftăm spre dreapta */
+@media (max-width: 576px) {
+    .cta-buttons--home {
+        padding-left: 0;
+        justify-content: center;
+    }
+}
+
+/* Spațiu mic între conținut și footer (ca să nu fie lipit) */
+#footer {
+    margin-top: 18px; /* ajustează 12–28px după gust */
+}
+
+/* Evită “a doua tranziție” când se dezactivează butonul vechi (ex: Toate) */
+.travel-destinations .filter-tabs .destination-filters li.no-filter-transition {
+    transition: none !important;
+}
+
+/* === Destinations: efect de apariție la filtrare (fără conflict cu Isotope) === */
+@keyframes destCardFadeIn {
+    from { opacity: 0; filter: blur(2px); }
+    to   { opacity: 1; filter: blur(0); }
+}
+
+/*.destination-item.dest-animate-in {*/
+/*    animation: destCardFadeIn 320ms ease-out both;*/
+/*}*/
+
+/* ========= Premium panels (global) ========= */
+.premium-panel{
+    border-radius: 18px;
+    background: rgba(255,255,255,.92);
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    overflow: hidden;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.premium-panel:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 18px 46px rgba(0,0,0,.10);
+    border-color: rgba(230,100,80,.25);
+}
+
+.premium-panel__head{
+    padding: 16px 18px;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 12px;
+    background: linear-gradient(to bottom, rgba(230,100,80,.10), rgba(255,255,255,0));
+    border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.premium-panel__title{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.premium-panel__icon{
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(230,100,80,.14);
+    color: var(--accent-color);
+    flex: 0 0 auto;
+}
+
+.premium-panel__body{
+    padding: 18px;
+}
+
+.premium-panel__body--center{
+    text-align:center;
+}
+
+/* Profil: listă info mai curată */
+.profile-info-list{
+    list-style:none;
+    padding:0;
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.profile-info-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(0,0,0,.06);
+    background: rgba(255,255,255,.70);
+}
+
+.profile-info-row i{
+    color: var(--accent-color);
+}
+/* ========= Profil: Jurnal (premium) ========= */
+.profile-journal .profile-journal__link{
+    display:block;
+    color: inherit;
+    text-decoration:none;
+}
+
+.profile-journal .profile-journal__link:hover{
+    text-decoration:none;
+}
+
+/* Layout intern */
+.profile-journal__content{
+    display:flex;
+    align-items:center;
+    gap: 18px;
+}
+
+.profile-journal__text{
+    min-width: 0;
+}
+
+.profile-journal__title{
+    font-weight: 800;
+    color: rgba(17,24,39,.92);
+    font-size: 1.05rem;
+}
+
+.profile-journal__sub{
+    margin-top: 4px;
+    font-size: .95rem;
+    line-height: 1.5;
+}
+
+/* Pill în header */
+.profile-pill{
+    display:inline-flex;
+    align-items:center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,.06);
+    background: rgba(17,24,39,.06);
+    font-size: .88rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+/* Meta chips (refolosește stilul din itinerary dacă îl ai deja; altfel e ok) */
+.profile-journal__meta{
+    margin-top: 12px;
+    display:flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Responsive */
+@media (max-width: 992px){
+    .profile-journal__content{
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* ========= Leaderboard premium ========= */
+.leaderboard--premium{
+    border-radius: 20px;
+    background: rgba(255,255,255,.92);
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    overflow: hidden;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.leaderboard--premium:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 20px 55px rgba(0,0,0,0.22);
+    border-color: rgba(230,100,80,.22);
+}
+
+.leaderboard__head{
+    padding: 16px 18px;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 12px;
+    background: linear-gradient(to bottom, rgba(230,100,80,.10), rgba(255,255,255,0));
+    border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.leaderboard__title{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.leaderboard__icon{
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(230,100,80,.14);
+    color: var(--accent-color);
+    flex: 0 0 auto;
+}
+
+.leaderboard__pill{
+    display:inline-flex;
+    align-items:center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,.06);
+    background: rgba(17,24,39,.06);
+    font-size: .88rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.leaderboard__body{
+    padding: 14px 16px 16px;
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.leaderboard__row{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    padding: 12px 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,.06);
+    background: rgba(255,255,255,.70);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.leaderboard__row:hover{
+    transform: translateY(-1px);
+    border-color: rgba(230,100,80,.28);
+    box-shadow: 0 10px 26px rgba(0,0,0,.08);
+}
+
+.leaderboard__row.is-me{
+    background: rgba(230,100,80,.12);
+    border-color: rgba(230,100,80,.30);
+}
+
+.leaderboard__rank{
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight: 900;
+    background: rgba(17,24,39,.06);
+    color: rgba(17,24,39,.80);
+    flex: 0 0 auto;
+}
+
+.leaderboard__rank.is-gold{ background: rgba(255, 193, 7, .18); color: rgba(140, 95, 0, .95); }
+.leaderboard__rank.is-silver{ background: rgba(108, 117, 125, .14); color: rgba(60, 70, 80, .95); }
+.leaderboard__rank.is-bronze{ background: rgba(205, 127, 50, .16); color: rgba(120, 70, 20, .95); }
+
+.leaderboard__avatar{
+    flex: 0 0 auto;
+}
+
+.leaderboard__avatar-wrap{
+    position: relative;
+    display: inline-block;
+}
+
+.leaderboard__user{
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.leaderboard__name{
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    font-weight: 900;
+    color: rgba(17,24,39,.92);
+}
+
+.leaderboard__you{
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(230,100,80,.18);
+    color: var(--accent-color);
+    font-size: .78rem;
+    font-weight: 900;
+}
+
+.leaderboard__sub{
+    margin-top: 2px;
+    font-size: .88rem;
+}
+
+.leaderboard__score{
+    flex: 0 0 auto;
+    font-weight: 900;
+    color: rgba(17,24,39,.90);
+    background: rgba(17,24,39,.06);
+    border: 1px solid rgba(0,0,0,.06);
+    padding: 8px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+/* ========= Purchase list premium ========= */
+.purchase-list--premium{
+    border-radius: 20px;
+    background: rgba(255,255,255,.92);
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    overflow: hidden;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.purchase-list--premium:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 20px 55px rgba(0,0,0,0.22);
+    border-color: rgba(230,100,80,.22);
+}
+
+.purchase__head{
+    padding: 16px 18px;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 12px;
+    background: linear-gradient(to bottom, rgba(230,100,80,.10), rgba(255,255,255,0));
+    border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.purchase__title{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.purchase__icon{
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(230,100,80,.14);
+    color: var(--accent-color);
+    flex: 0 0 auto;
+}
+
+.purchase__pill{
+    display:inline-flex;
+    align-items:center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,.06);
+    background: rgba(17,24,39,.06);
+    font-size: .88rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.purchase__body{
+    padding: 14px 16px 16px;
+}
+
+/* Empty */
+.purchase-empty{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    padding: 14px 14px;
+    border-radius: 16px;
+    border: 1px dashed rgba(0,0,0,.14);
+    background: rgba(255,255,255,.65);
+}
+
+.purchase-empty__icon{
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(17,24,39,.06);
+    color: rgba(17,24,39,.65);
+}
+
+/* Items */
+.purchase-grid{
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.purchase-item{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,.06);
+    background: rgba(255,255,255,.70);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.purchase-item:hover{
+    transform: translateY(-1px);
+    border-color: rgba(230,100,80,.28);
+    box-shadow: 0 10px 26px rgba(0,0,0,.08);
+}
+
+.purchase-item__left{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.purchase-item__badge{
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(230,100,80,.12);
+    color: var(--accent-color);
+    flex: 0 0 auto;
+}
+
+.purchase-item__content{
+    min-width: 0;
+}
+
+.purchase-item__title{
+    font-weight: 900;
+    color: rgba(17,24,39,.92);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.purchase-item__meta{
+    margin-top: 2px;
+    font-size: .88rem;
+    display:flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items:center;
+}
+
+.purchase-item__right{
+    flex: 0 0 auto;
+}
+
+.dot{
+    opacity: .55;
+}
+.btn-accent-danger-outline {
+    background: transparent;
+    border: 1.5px solid #dc3545;
+    color: #dc3545;
+}
+.btn-accent-danger-outline:hover,
+.btn-accent-danger-outline:focus {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+}
+
+
+
+
+
+
 
 
 
