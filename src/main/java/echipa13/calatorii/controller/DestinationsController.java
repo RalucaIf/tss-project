@@ -4,7 +4,11 @@ import echipa13.calatorii.Dto.DestinationsDto;
 import echipa13.calatorii.models.Continent;
 import echipa13.calatorii.models.Destinations;
 import echipa13.calatorii.service.DestinationsService;
+import echipa13.calatorii.service.FavoriteDestinationService;
+import echipa13.calatorii.service.UserService;
 import org.springframework.data.domain.*;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,16 +16,24 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Controller
-@RequestMapping("/destinations") // ✅ LOWERCASE
+@RequestMapping("/destinations")
 public class DestinationsController {
 
     private final DestinationsService destinationsService;
+    private final FavoriteDestinationService favoriteDestinationService;
+    private final UserService userService;
 
-    public DestinationsController(DestinationsService destinationsService) {
+    public DestinationsController(DestinationsService destinationsService,
+                                  FavoriteDestinationService favoriteDestinationService,
+                                  UserService userService) {
         this.destinationsService = destinationsService;
+        this.favoriteDestinationService = favoriteDestinationService;
+        this.userService = userService;
     }
 
     /* ===============================
@@ -57,19 +69,15 @@ public class DestinationsController {
             Destinations destination;
 
             if (id != null) {
-                // 🔁 UPDATE – luăm entity-ul existent
                 destination = destinationsService.findEntityById(id);
             } else {
-                // ➕ CREATE
                 destination = new Destinations();
             }
 
-            // update câmpuri
             destination.setName(dto.getName());
             destination.setDescription(dto.getDescription());
             destination.setContinent(dto.getContinent());
 
-            // 📸 doar dacă există imagine nouă
             if (imageFile != null && !imageFile.isEmpty()) {
                 String uploadDir = new File("uploads/destinations").getAbsolutePath();
                 File folder = new File(uploadDir);
@@ -81,7 +89,6 @@ public class DestinationsController {
 
                 destination.setImage("destinations/" + filename);
             }
-            // 🔥 dacă NU e imagine → nu atingi destination.image
 
             destinationsService.save(destination);
 
@@ -103,13 +110,14 @@ public class DestinationsController {
     }
 
     /* ===============================
-       LIST + PAGINATION
+       LIST + PAGINATION (+ FAVORITES)
        =============================== */
 
     @GetMapping
     public String listDestinations(
             @RequestParam(defaultValue = "0") int page,
-            Model model
+            Model model,
+            Authentication auth
     ) {
         int size = 12;
         Pageable pageable = PageRequest.of(
@@ -118,8 +126,7 @@ public class DestinationsController {
                 Sort.by("createdAt").descending()
         );
 
-        Page<Destinations> destinationsPage =
-                destinationsService.findAll(pageable);
+        Page<Destinations> destinationsPage = destinationsService.findAll(pageable);
 
         List<DestinationsDto> calatorii = destinationsPage
                 .stream()
@@ -129,6 +136,18 @@ public class DestinationsController {
         model.addAttribute("calatorii", calatorii);
         model.addAttribute("page", destinationsPage.getNumber());
         model.addAttribute("totalPages", destinationsPage.getTotalPages());
+
+        // ✅ IMPORTANT pentru pasul 6: trimitem id-urile favoritelor
+        Set<Long> favoriteDestinationIds = Collections.emptySet();
+
+        if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+            Long userId = userService.getCurrentUserId(auth);
+            // Asigură-te că metoda există în service:
+            // Set<Long> getFavoriteDestinationIds(Long userId)
+            favoriteDestinationIds = favoriteDestinationService.getFavoriteDestinationIds(userId);
+        }
+
+        model.addAttribute("favoriteDestinationIds", favoriteDestinationIds);
 
         return "destinations-list";
     }
