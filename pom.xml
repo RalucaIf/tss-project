@@ -42,12 +42,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.thymeleaf.extras</groupId>
-            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
-            <version>3.1.3.RELEASE</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
@@ -67,6 +61,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.mysql</groupId>
@@ -108,12 +103,12 @@
             <artifactId>thymeleaf</artifactId>
             <version>3.1.2.RELEASE</version>
         </dependency>
-        <dependency>
-            <groupId>echipa13</groupId>
-            <artifactId>calatorii</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
 
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
@@ -130,6 +125,13 @@
                 <configuration>
                     <source>17</source>
                     <target>17</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.42</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <!-- JaCoCo - Code Coverage -->
@@ -153,11 +155,9 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <excludes>
-                        <exclude>echipa13/calatorii/config/**</exclude>
-                        <exclude>echipa13/calatorii/controller/**</exclude>
-                        <exclude>echipa13/calatorii/CalatoriiApplication.class</exclude>
-                    </excludes>
+                    <includes>
+                        <include>echipa13/calatorii/service/impl/WalletServiceImpl.class</include>
+                    </includes>
                 </configuration>
             </plugin>
 
@@ -178,13 +178,21 @@
                         <param>echipa13.calatorii.service.impl.WalletServiceImpl</param>
                     </targetClasses>
                     <targetTests>
-                        <param>echipa13.calatorii.service.impl.WalletServiceImplTest</param>
+                        <param>echipa13.calatorii.service.impl.WalletServiceImplEquivalenceTest</param>
+                        <param>echipa13.calatorii.service.impl.WalletServiceImplBoundaryTest</param>
+                        <param>echipa13.calatorii.service.impl.WalletServiceImplStatementTest</param>
+                        <param>echipa13.calatorii.service.impl.WalletServiceImplDecisionTest</param>
+                        <param>echipa13.calatorii.service.impl.WalletServiceImplConditionTest</param>
+                        <param>echipa13.calatorii.service.impl.WalletServiceImplCircuitsTest</param>
+                        <param>echipa13.calatorii.service.impl.WalletServiceImplMutationTest</param>
+                        <param>echipa13.calatorii.service.impl.ai.*</param>
                     </targetTests>
                     <outputFormats>
                         <outputFormat>HTML</outputFormat>
+                        <outputFormat>XML</outputFormat>
                     </outputFormats>
                     <mutators>
-                        <mutator>DEFAULTS</mutator>
+                        <mutator>STRONGER</mutator>
                     </mutators>
                     <timestampedReports>false</timestampedReports>
                 </configuration>
