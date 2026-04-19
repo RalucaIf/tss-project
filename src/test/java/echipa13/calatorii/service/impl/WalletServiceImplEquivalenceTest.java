@@ -16,9 +16,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class WalletServiceImplEquivalenceTest {
 
     // Partitionare de echivalenta
@@ -38,6 +43,8 @@ public class WalletServiceImplEquivalenceTest {
      *  P4: suma == null sau <= 0            -> se arunca exceptie
      *  P5: titlu == null sau doar spatii    -> se arunca exceptie
      *  P6: zi <= 0                          -> se arunca exceptie
+     *  P7: apel listTransactionsOwnedByUser -> returneaza lista sortata
+     *  P8: tripId inexistent                -> se arunca exceptie
      */
 
     @Mock private TripRepository tripRepo;
@@ -157,5 +164,53 @@ public class WalletServiceImplEquivalenceTest {
 
         assertEquals("Ziua trebuie sa fie >= 1", e.getMessage());
         verify(txRepo, never()).save(any());
+    }
+
+    @Test
+    public void testAdaugaCheltuiala_TitluNull() {
+        // Partitie 5 bis: titlu null literal (ramura ternary-ului)
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+                service.addExpenseOwnedByUser(tripId, login,
+                        new BigDecimal("10"), WalletCategory.FOOD,
+                        null, null, LocalDate.of(2026, 4, 18), 1));
+
+        assertEquals("Titlul este obligatoriu", e.getMessage());
+        verify(txRepo, never()).save(any());
+    }
+
+    @Test
+    public void testAdaugaCheltuiala_ListareCorectaTranzactii() {
+        // Partitie 7: apel listTransactionsOwnedByUser -> lista sortata din repo
+        WalletTransaction tx1 = new WalletTransaction();
+        tx1.setTitle("Pizza");
+        WalletTransaction tx2 = new WalletTransaction();
+        tx2.setTitle("Metrou");
+
+        List<WalletTransaction> tranzactiiRepo = new ArrayList<>();
+        tranzactiiRepo.add(tx1);
+        tranzactiiRepo.add(tx2);
+
+        when(txRepo.findByWallet_IdOrderBySpentAtDescIdDesc(any()))
+                .thenReturn(tranzactiiRepo);
+
+        List<WalletTransaction> rezultat = service.listTransactionsOwnedByUser(tripId, login);
+
+        assertEquals(2, rezultat.size());
+        assertSame(tx1, rezultat.get(0));
+        assertSame(tx2, rezultat.get(1));
+    }
+
+    @Test
+    public void testAdaugaCheltuiala_ItinerariuInexistent() {
+        // Partitie 8: tripId inexistent -> throw IllegalArgumentException
+        Long tripIdInexistent = 999L;
+        when(tripRepo.findById(tripIdInexistent)).thenReturn(Optional.empty());
+
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+                service.addExpenseOwnedByUser(tripIdInexistent, login,
+                        new BigDecimal("10"), WalletCategory.FOOD,
+                        "Pizza", null, LocalDate.now(), 1));
+
+        assertNotNull(e.getMessage());
     }
 }

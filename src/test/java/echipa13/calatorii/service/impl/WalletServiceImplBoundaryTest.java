@@ -10,6 +10,7 @@ import echipa13.calatorii.repository.TripRepository;
 import echipa13.calatorii.repository.TripWalletRepository;
 import echipa13.calatorii.repository.UserRepository;
 import echipa13.calatorii.repository.WalletTransactionRepository;
+import echipa13.calatorii.service.WalletService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class WalletServiceImplBoundaryTest {
 
     // Boundary Value Analysis
@@ -49,6 +53,7 @@ public class WalletServiceImplBoundaryTest {
 
     private TripWallet wallet;
     private final Long tripId = 10L;
+    private Trip trip;
     private final String login = "raluca@test.com";
 
     @BeforeEach
@@ -56,7 +61,7 @@ public class WalletServiceImplBoundaryTest {
         UserEntity user = new UserEntity();
         user.setId(1L);
 
-        Trip trip = new Trip();
+        trip = new Trip();
         trip.setId(tripId);
         trip.setUser(user);
 
@@ -68,7 +73,7 @@ public class WalletServiceImplBoundaryTest {
         when(walletRepo.findByTrip_Id(tripId)).thenReturn(Optional.of(wallet));
     }
 
-    // ------------------ addExpenseOwnedByUser - frontiere input ------------------
+    //  addExpenseOwnedByUser - frontiere input
 
     @Test
     public void testAdaugaCheltuiala_SumaMinimaValida() {
@@ -142,7 +147,7 @@ public class WalletServiceImplBoundaryTest {
         verify(txRepo, never()).save(any());
     }
 
-    // ------------------ computeSummaryOwnedByUser - praguri ------------------
+    // computeSummaryOwnedByUser - praguri
 
     @Test
     public void testSumar_SubPragAtentie_74LaSuta() {

@@ -152,13 +152,13 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <includes>
+                                <include>echipa13/calatorii/service/impl/WalletServiceImpl.class</include>
+                            </includes>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <includes>
-                        <include>echipa13/calatorii/service/impl/WalletServiceImpl.class</include>
-                    </includes>
-                </configuration>
             </plugin>
 
             <!-- PITest - Mutation Testing -->

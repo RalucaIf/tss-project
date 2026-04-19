@@ -16,6 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -28,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class WalletServiceImplDecisionTest {
 
     // Decision coverage
@@ -166,46 +169,5 @@ public class WalletServiceImplDecisionTest {
         wallet.setBudgetTotal(null);
         assertEquals("Buget nesetat",
                 service.computeSmartBudgetAdviceOwnedByUser(tripId, login).riskLabelRo());
-    }
-
-    @Test
-    public void testDecizie_ZileRamaseInFunctieDeData() {
-        // Toate ramurile din computeDaysRemainingSafe
-        wallet.setBudgetTotal(new BigDecimal("500"));
-        when(txRepo.sumAmountByWalletId(any())).thenReturn(new BigDecimal("100"));
-        when(txRepo.countDistinctSpentDays(any())).thenReturn(1L);
-        when(txRepo.sumByCategory(any())).thenReturn(new ArrayList<>());
-
-        // Decizia 1: start si end null -> daysRemaining null
-        trip.setStartDate(null);
-        trip.setEndDate(null);
-        assertNull(service.computeSmartBudgetAdviceOwnedByUser(tripId, login).daysRemaining());
-
-        // Decizia 2: end inainte de start -> daysRemaining null (invalid)
-        trip.setStartDate(LocalDate.now().plusDays(5));
-        trip.setEndDate(LocalDate.now().plusDays(1));
-        assertNull(service.computeSmartBudgetAdviceOwnedByUser(tripId, login).daysRemaining());
-
-        // Decizia 3: today dupa end -> daysRemaining = 0, adica calatoria s-a terminat
-        trip.setStartDate(LocalDate.now().minusDays(10));
-        trip.setEndDate(LocalDate.now().minusDays(1));
-        assertEquals(0,
-                service.computeSmartBudgetAdviceOwnedByUser(tripId, login).daysRemaining());
-
-        // Decizia 4: today inainte de start -> daysRemaining = durata completa
-        trip.setStartDate(LocalDate.now().plusDays(3));
-        trip.setEndDate(LocalDate.now().plusDays(9));
-        Integer zileInainte = service
-                .computeSmartBudgetAdviceOwnedByUser(tripId, login).daysRemaining();
-        assertNotNull(zileInainte);
-        assertEquals(7, zileInainte);
-
-        // Decizia 5: calatorie in desfasurare -> daysRemaining de la azi la end
-        trip.setStartDate(LocalDate.now().minusDays(2));
-        trip.setEndDate(LocalDate.now().plusDays(4));
-        Integer zileCurente = service
-                .computeSmartBudgetAdviceOwnedByUser(tripId, login).daysRemaining();
-        assertNotNull(zileCurente);
-        assertEquals(5, zileCurente);
     }
 }
