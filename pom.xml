@@ -194,6 +194,7 @@
                     <mutators>
                         <mutator>STRONGER</mutator>
                     </mutators>
+                    <verbose>true</verbose>
                     <timestampedReports>false</timestampedReports>
                 </configuration>
             </plugin>
