@@ -143,16 +143,16 @@ public class WalletServiceImpl implements WalletService {
         TripWallet wallet = getOrCreateWalletOwnedByUser(tripId, usernameOrEmail);
 
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Suma trebuie să fie > 0.");
+            throw new IllegalArgumentException("Suma trebuie sa fie > 0");
         }
 
         String safeTitle = (title == null) ? "" : title.trim();
         if (safeTitle.isBlank()) {
-            throw new IllegalArgumentException("Titlul este obligatoriu.");
+            throw new IllegalArgumentException("Titlul este obligatoriu");
         }
 
         if (dayIndex != null && dayIndex <= 0) {
-            throw new IllegalArgumentException("Ziua trebuie să fie >= 1.");
+            throw new IllegalArgumentException("Ziua trebuie sa fie >= 1");
         }
 
         WalletTransaction tx = new WalletTransaction();

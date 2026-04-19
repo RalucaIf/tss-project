@@ -131,7 +131,7 @@ public class WalletServiceImplEquivalenceTest {
                         new BigDecimal("-1"), WalletCategory.FOOD,
                         "Pizza", null, LocalDate.of(2026, 4, 18), 1));
 
-        assertEquals("Suma trebuie să fie > 0.", e.getMessage());
+        assertEquals("Suma trebuie sa fie > 0", e.getMessage());
         verify(txRepo, never()).save(any());
     }
 
@@ -143,7 +143,7 @@ public class WalletServiceImplEquivalenceTest {
                         new BigDecimal("20.00"), WalletCategory.FOOD,
                         "   ", null, LocalDate.of(2026, 4, 18), 1));
 
-        assertEquals("Titlul este obligatoriu.", e.getMessage());
+        assertEquals("Titlul este obligatoriu", e.getMessage());
         verify(txRepo, never()).save(any());
     }
 
@@ -155,7 +155,7 @@ public class WalletServiceImplEquivalenceTest {
                         new BigDecimal("20.00"), WalletCategory.FOOD,
                         "Pizza", null, LocalDate.of(2026, 4, 18), 0));
 
-        assertEquals("Ziua trebuie să fie >= 1.", e.getMessage());
+        assertEquals("Ziua trebuie sa fie >= 1", e.getMessage());
         verify(txRepo, never()).save(any());
     }
 }
