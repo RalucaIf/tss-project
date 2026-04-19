@@ -28,9 +28,9 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class WalletServiceImplEquivalenceTest {
 
-    // a) Partitionare de echivalenta
+    // Partitionare de echivalenta
     /*
-     * Metoda testata: addExpenseOwnedByUser
+     * Metoda: addExpenseOwnedByUser
      * Partitii:
      *  P1: suma > 0, titlu non-blank, zi valida, categorie si data non-null -> se salveaza
      *  P2: categorie == null                -> se salveaza cu OTHER
@@ -49,7 +49,7 @@ public class WalletServiceImplEquivalenceTest {
 
     private TripWallet wallet;
     private final Long tripId = 10L;
-    private final String login = "ana@test.com";
+    private final String login = "raluca@test.com";
 
     @BeforeEach
     public void setUp() {
