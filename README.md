@@ -291,6 +291,8 @@ PITest a schimbat `if (percent >= 75)` în `if (percent > 75)`. Diferența: cu `
 
 ## Rezultate JaCoCo
 
+![Raport JaCoCo](docs/screenshots/coverage.png)
+
 **Statement Coverage: 91%** (818/893 instrucțiuni)
 **Branch Coverage: 80%** (121/150 ramuri)
 
