@@ -11,8 +11,6 @@
 | Lupeș Ioan-Marian | Membru |
 | Denisa Gheorghe | Membru |
 
-**Repository:** https://github.com/RalucaIf/tss-project
-
 ---
 
 ## Cuprins
