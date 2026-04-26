@@ -42,7 +42,6 @@ Clasa de test se numește WalletServiceImplAITest.
 
 ![Răspuns AI - partea 3](Screenshots/ss4.png)
 
-![Răspuns AI - partea 4](Screenshots/ss5.png)
 
 
 
