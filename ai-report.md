@@ -36,13 +36,13 @@ Clasa de test se numește WalletServiceImplAITest.
 
 ### Răspunsul generat de AI
 
-![Răspuns AI - partea 1](screenshots/ss2.png)
+![Răspuns AI - partea 1](Screenshots/ss2.png)
 
-![Răspuns AI - partea 2](screenshots/ss3.png)
+![Răspuns AI - partea 2](Screenshots/ss3.png)
 
-![Răspuns AI - partea 3](screenshots/ss4.png)
+![Răspuns AI - partea 3](Screenshots/ss4.png)
 
-![Răspuns AI - partea 4](screenshots/ss5.png)
+![Răspuns AI - partea 4](Screenshots/ss5.png)
 
 
 
