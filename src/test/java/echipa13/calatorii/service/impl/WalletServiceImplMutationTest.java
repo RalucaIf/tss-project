@@ -4,6 +4,7 @@ import echipa13.calatorii.Dto.WalletInsights;
 import echipa13.calatorii.Dto.WalletSummary;
 import echipa13.calatorii.models.*;
 import echipa13.calatorii.repository.*;
+import echipa13.calatorii.service.WalletService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -130,15 +131,38 @@ public class WalletServiceImplMutationTest {
     }
 
     @Test
-    @DisplayName("Mutant 2: percentUsed exact 100 trebuie sa returneze DEPASIT")
-    public void testPercentUsed100ReturnezaDepasit() {
+    @DisplayName("Mutant 2: percentUsed exact 100 trebuie sa returneze Depasit in SmartBudgetAdvice")
+    public void testSmartBudgetAdvicePercentUsed100ReturnezaDepasit() throws Exception {
+        // Setam buget 100, cheltuit 100 -> percent = 100 -> "Depășit"
         wallet.setBudgetTotal(new BigDecimal("100.00"));
+
+        // Trip cu date valide
+        Trip trip = new Trip();
+        trip.setId(tripId);
+
+        UserEntity user = new UserEntity();
+        user.setId(1L);
+        trip.setUser(user);
+
+        // Setam startDate si endDate prin reflection
+        java.lang.reflect.Field startField = Trip.class.getDeclaredField("startDate");
+        startField.setAccessible(true);
+        startField.set(trip, LocalDate.now().minusDays(5));
+
+        java.lang.reflect.Field endField = Trip.class.getDeclaredField("endDate");
+        endField.setAccessible(true);
+        endField.set(trip, LocalDate.now().plusDays(5));
+
+        when(tripRepo.findById(tripId)).thenReturn(Optional.of(trip));
         when(txRepo.sumAmountByWalletId(1L)).thenReturn(new BigDecimal("100.00"));
+        when(txRepo.countDistinctSpentDays(1L)).thenReturn(5L);
+        when(txRepo.sumByCategory(1L)).thenReturn(new ArrayList<>());
 
-        WalletSummary summary = service.computeSummaryOwnedByUser(tripId, login);
+        WalletService.SmartBudgetAdvice advice = service.computeSmartBudgetAdviceOwnedByUser(tripId, login);
 
-        assertNotNull(summary);
-        assertEquals(WalletSummary.Status.DEPASIT, summary.getStatus());
-        assertEquals(100, summary.getPercent());
+        assertNotNull(advice);
+        // "Depășit" distinge >= 100 de > 100
+        assertEquals("Depășit", advice.riskLabelRo());
+        assertEquals(100, advice.percentUsed());
     }
 }
