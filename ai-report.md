@@ -46,7 +46,7 @@ Chiar și după adăugarea importurilor, codul **nu compilează**.
 
 ## Rezultatul rulării — Build Failed
 
-### Erori de compilare (40+ erori)
+### Erori de compilare (72 erori)
 
 Suita generată de AI produce **Build Failed** cu peste 40 de erori de compilare,
 grupate în 5 categorii:
