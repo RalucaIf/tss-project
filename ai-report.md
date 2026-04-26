@@ -29,7 +29,16 @@ Clasa de test se numește WalletServiceImplAITest.
 
 **Tool folosit:** ChatGPT (OpenAI)
 
+## Capturi de ecran
 
+### Promptul folosit
+![Prompt AI](ss1)
+
+### Răspunsul generat de AI
+![Răspuns AI](ss2,ss3,ss4)
+
+### Erorile suitei AI
+![Erori AI](screenshots/ai-tests-failed.png)
 ---
 
 ## Răspunsul AI — codul generat
@@ -46,6 +55,8 @@ Chiar și după adăugarea importurilor, codul **nu compilează**.
 ---
 
 ## Rezultatul rulării — Build Failed
+
+
 
 ### Erori de compilare (72 erori)
 
