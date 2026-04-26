@@ -32,10 +32,10 @@ Clasa de test se numește WalletServiceImplAITest.
 ## Capturi de ecran
 
 ### Promptul folosit
-![Prompt AI](ss1)
+![Prompt AI](ss1.png)
 
 ### Răspunsul generat de AI
-![Răspuns AI](ss2,ss3,ss4)
+![Răspuns AI](ss2.png,ss3.png,ss4.png)
 
 ### Erorile suitei AI
 ![Erori AI](screenshots/ai-tests-failed.png)
