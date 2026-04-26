@@ -28,7 +28,6 @@ Clasa de test se numește WalletServiceImplAITest.
 ```
 
 **Tool folosit:** ChatGPT (OpenAI)
-**Data generării:** aprilie 2026
 
 ---
 
