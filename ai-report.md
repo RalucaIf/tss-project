@@ -35,11 +35,16 @@ Clasa de test se numește WalletServiceImplAITest.
 ![Prompt AI](Screenshots/ss1.png)
 
 ### Răspunsul generat de AI
-![Răspuns AI](Screenshots/ss2.png,Screenshots/ss3.png,Screenshots/ss4.png)
 
-### Erorile suitei AI
-![Erori AI](screenshots/ai-tests-failed.png)
----
+![Răspuns AI - partea 1](screenshots/ss2.png)
+
+![Răspuns AI - partea 2](screenshots/ss3.png)
+
+![Răspuns AI - partea 3](screenshots/ss4.png)
+
+![Răspuns AI - partea 4](screenshots/ss5.png)
+
+
 
 ## Răspunsul AI — codul generat
 
@@ -130,6 +135,10 @@ contextul proiectului și face presupuneri incorecte despre structura codului.
 | Import-uri corecte | ✅ Da | ❌ `org.apache.catalina.User` |
 | Duplicate / redundante | 0 | prezente |
 
+---
+
+### Erorile suitei AI
+![Erori AI](Screenshots/erori1.png)
 ---
 
 ## Analiza diferențelor
