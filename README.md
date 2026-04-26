@@ -312,6 +312,7 @@ PITest a schimbat `if (percent >= 75)` în `if (percent > 75)`. Diferența: cu `
 
 ## Rezultate PITest
 
+![Raport PITest](Screenshots/Pit_Test.png)
 **Mutation Score: 60%** — 125 din 211 mutanți omorâți
 
 **Puncte forte:**
