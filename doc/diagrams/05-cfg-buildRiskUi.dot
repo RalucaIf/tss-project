@@ -1,0 +1,42 @@
+digraph buildRiskUi {
+    rankdir=TB;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=10, style=filled];
+    edge [fontname="Arial", fontsize=9];
+
+    Start [shape=ellipse, label="START\nbuildRiskUi(budget, percentUsed)", fillcolor="#C8E6C9"];
+
+    n1 [shape=diamond, label="budget == null\nsau\nbudget <= 0\nsau\npercentUsed == null ?", fillcolor="#FFCCBC"];
+    r1 [shape=box, label="\"Buget nesetat\"\nbg-secondary", fillcolor="#CFD8DC"];
+
+    n2 [shape=diamond, label="percentUsed >= 100 ?", fillcolor="#FFCCBC"];
+    r2 [shape=box, label="\"Depășit\"\nbg-danger", fillcolor="#EF9A9A"];
+
+    n3 [shape=diamond, label="percentUsed >= 90 ?", fillcolor="#FFCCBC"];
+    r3 [shape=box, label="\"Critic\"\nbg-danger", fillcolor="#EF9A9A"];
+
+    n4 [shape=diamond, label="percentUsed >= 75 ?", fillcolor="#FFCCBC"];
+    r4 [shape=box, label="\"Atenție\"\nbg-warning", fillcolor="#FFE082"];
+
+    r5 [shape=box, label="\"OK\"\nbg-success", fillcolor="#A5D6A7"];
+
+    End [shape=ellipse, label="END", fillcolor="#C8E6C9"];
+
+    Start -> n1;
+    n1 -> r1 [label="TRUE", color="#D32F2F"];
+    n1 -> n2 [label="FALSE", color="#388E3C"];
+    r1 -> End;
+
+    n2 -> r2 [label="TRUE", color="#D32F2F"];
+    n2 -> n3 [label="FALSE", color="#388E3C"];
+    r2 -> End;
+
+    n3 -> r3 [label="TRUE", color="#D32F2F"];
+    n3 -> n4 [label="FALSE", color="#388E3C"];
+    r3 -> End;
+
+    n4 -> r4 [label="TRUE", color="#D32F2F"];
+    n4 -> r5 [label="FALSE", color="#388E3C"];
+    r4 -> End;
+    r5 -> End;
+}

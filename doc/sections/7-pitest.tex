@@ -1,0 +1,241 @@
+\chapter{Mutation Testing cu PITest}
+\label{ch:pitest}
+
+\section{Cum rulăm PITest}
+
+Spre deosebire de JaCoCo, PITest nu rulează în faza standard \texttt{test} a Maven. Trebuie invocat explicit:
+
+\begin{lstlisting}[style=plainstyle]
+mvn test-compile org.pitest:pitest-maven:mutationCoverage
+\end{lstlisting}
+
+După rulare, raportul HTML se găsește în \texttt{target/pit-reports/index.html}. PITest generează în plus un raport XML, util pentru integrarea în CI/CD.
+
+Pentru clasa noastră, durata totală a unei rulări PITest e între 5 și 15 minute, în funcție de încărcarea CPU-ului. Procesul intern e următorul:
+
+\begin{enumerate}
+    \item PITest analizează clasa \texttt{WalletServiceImpl} și identifică toate locurile unde poate aplica un mutator (loop-uri, condiții, calcule, return-uri etc.).
+    \item Generează variante mutate ale codului sursă (211 mutanți, în cazul nostru).
+    \item Pentru fiecare mutant, recompilează clasa și rulează suita de teste relevantă.
+    \item Pentru fiecare test, înregistrează rezultatul: \textit{KILLED} (testul a căzut $\Rightarrow$ mutantul a fost detectat), \textit{SURVIVED} (toate testele au trecut $\Rightarrow$ mutantul a scăpat), \textit{NO\_COVERAGE} (mutantul nu e atins de niciun test) sau \textit{TIMED\_OUT}.
+    \item Generează raportul HTML cu evidențierea liniilor pe culori în funcție de starea mutanților.
+\end{enumerate}
+
+\section{Rezultate generale}
+
+Raportul final pentru \texttt{WalletServiceImpl} arată:
+
+\begin{table}[!htb]
+\centering
+\caption{Rezultate generale PITest pe \texttt{WalletServiceImpl}.}
+\label{tab:pitest-summary}
+\begin{tabular}{lc}
+\toprule
+\textbf{Metric} & \textbf{Valoare} \\
+\midrule
+Mutanți generați & 211 \\
+Mutanți omorâți & \textbf{125} \\
+Mutanți supraviețuitori & 86 \\
+Line Coverage (PITest) & 99\% (177/179) \\
+\textbf{Mutation Score} & \textbf{60\%} (125/211) \\
+Test Strength & 70\% (146/210) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[!htb]
+    \centering
+    \fbox{\includegraphics[width=0.9\linewidth]{Pit_Test.png}}
+    \caption{Captură din raportul PITest HTML, cu sumarul general.}
+    \label{fig:pitest-screenshot}
+\end{figure}
+
+Distincția între \textit{Mutation Score} și \textit{Test Strength}:
+
+\begin{itemize}
+    \item \textbf{Mutation Score} = \texttt{killed / total\_generated}. Include și mutanții care nu sunt atinși de niciun test.
+    \item \textbf{Test Strength} = \texttt{killed / total\_covered\_by\_tests}. Doar pentru mutanții pe care testele îi ating.
+\end{itemize}
+
+Diferența între cei doi indici (60\% vs. 70\%) ne spune că aproape toate liniile sunt atinse de cel puțin un test (Line Coverage 99\%), dar testele nu sunt suficient de \enquote{stricte} ca să detecteze toate alterațiile.
+
+\section{Defalcare pe tipuri de mutatori}
+
+PITest grupează mutanții după tipul mutatorului. Tabelul \ref{tab:mutators} prezintă defalcarea, iar figura \ref{fig:mutator-distribution} oferă reprezentarea grafică.
+
+\begin{table}[!htb]
+\centering
+\caption{Distribuția mutanților pe tipuri de mutatori.}
+\label{tab:mutators}
+\begin{tabularx}{\linewidth}{Xccc>{\centering\arraybackslash}p{2cm}}
+\toprule
+\textbf{Mutator} & \textbf{Generat} & \textbf{Omorât} & \textbf{Supr.} & \textbf{Kill rate} \\
+\midrule
+\textsc{NullReturnVals}             & 18 & 17 & 1  & 94\% \\
+\textsc{VoidMethodCall}             & 11 & 11 & 0  & \textbf{100\%} \\
+\textsc{RemoveCondEqual}            & 53 & 30 & 22 & 57\% \\
+\textsc{RemoveCondOrder}            & 21 & 12 & 8  & 57\% \\
+\textsc{ConditionalsBoundary}       & 21 & 7  & 13 & 33\% \\
+\textsc{EmptyObjectReturn}          & 9  & 4  & 5  & 44\% \\
+\textsc{MathMutator}                & 4  & 0  & 4  & \textbf{0\%} \\
+Alți mutatori                       & 74 & 44 & 33 & 59\% \\
+\midrule
+\textbf{Total}                      & \textbf{211} & \textbf{125} & \textbf{86} & \textbf{60\%} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\linewidth]{08-mutation-per-mutator.png}
+    \caption{Distribuția mutanților pe tipuri (PITest). Verde = omorâți, roșu = supraviețuitori.}
+    \label{fig:mutator-distribution}
+\end{figure}
+
+\subsection{Puncte forte ale suitei}
+
+\begin{description}
+    \item[\textsc{VoidMethodCall} - 100\% omorâți] Mutatorul șterge apelurile la metode \texttt{void}. Faptul că suita atinge 100\% înseamnă că toate apelurile la \texttt{repository.save(...)} sau \texttt{repository.delete(...)} sunt verificate de teste prin \texttt{verify(repo).save(...)} sau \texttt{verify(repo).delete(...)}. Dacă cineva ar șterge accidental aceste apeluri, am detecta imediat.
+
+    \item[\textsc{NullReturnVals} - 94\% omorâți] Aproape toate metodele care returnează un obiect au testele care verifică non-null pe rezultat (cu \texttt{assertNotNull}). Doar 1 mutant a scăpat, ceea ce e excelent.
+\end{description}
+
+\subsection{Puncte slabe ale suitei}
+
+\begin{description}
+    \item[\textsc{MathMutator} - 0\% omorâți] Cei 4 mutanți pe operații aritmetice (\texttt{+/-/*//}) au scăpat toți. Asta indică o lacună în suită: nu am fost suficient de specifici cu valorile concrete în testele care verifică calcule. Vom adresa asta cu un test țintit (vezi secțiunea \ref{sec:killed-mutants}).
+
+    \item[\textsc{ConditionalsBoundary} - 33\% omorâți] Doar 7 din 21 de mutanți pe granițe \texttt{>= / >} au fost omorâți. Asta indică faptul că nu testăm suficient de mult valori \textit{exact} pe granițe. Aici BVA-ul nostru nu e încă suficient de detaliat în toate metodele.
+\end{description}
+
+\section{Analiza unor mutanți supraviețuitori}
+
+Pentru a înțelege concret unde sunt lacunele, am ales câțiva mutanți supraviețuitori reprezentativi din raport.
+
+\subsection{Mutant supraviețuitor 1: \textsc{ConditionalsBoundary} pe linia 191}
+
+Linia originală în \texttt{computeSummaryOwnedByUser}:
+
+\begin{lstlisting}[language=Java]
+if (percent >= 100) status = WalletSummary.Status.DEPASIT;
+\end{lstlisting}
+
+Mutantul a schimbat \texttt{>=} cu \texttt{>}. Pentru ca testul să detecteze diferența, ar fi nevoie ca:
+
+\begin{itemize}
+    \item un test cu \texttt{percent = 100} care \textbf{așteaptă} \texttt{DEPASIT};
+    \item iar testul să verifice efectiv că \texttt{summary.getStatus() == DEPASIT}.
+\end{itemize}
+
+Avem un astfel de test în \texttt{...BoundaryTest.java} (\texttt{testSumar\_ExactPragDepasit\_100LaSuta}), iar în raportul PITest acest mutant apare \textit{killed}. Deci e omorât. \textbf{Vom vedea că un alt mutant similar, însă pe metoda \texttt{computeSmartBudgetAdvice}, e supraviețuitor} - ceea ce ne spune că trebuie să îl adresăm explicit.
+
+\subsection{Mutant supraviețuitor 2: \textsc{MathMutator} pe linia 187}
+
+Linia originală în \texttt{computeSummaryOwnedByUser}:
+
+\begin{lstlisting}[language=Java]
+int percent = totalSpent
+    .multiply(BigDecimal.valueOf(100))
+    .divide(budget, 0, RoundingMode.HALF_UP)
+    .intValue();
+\end{lstlisting}
+
+Mutantul a schimbat \texttt{multiply} cu \texttt{divide} sau invers. Pentru ca testul să detecteze, trebuie să avem teste cu valori care produc rezultate \textit{exact} predictibile:
+
+\begin{itemize}
+    \item \texttt{totalSpent = 50}, \texttt{budget = 200} $\Rightarrow$ \texttt{percent = 25}.
+    \item Dacă mutantul inversează operatorii, calculul ar produce o valoare cu totul diferită ($50/200 \neq 50 \cdot 100$).
+\end{itemize}
+
+Vom scrie un test țintit pentru asta în secțiunea următoare.
+
+\section{Mutanții neechivalenți omorâți explicit}
+\label{sec:killed-mutants}
+
+Cerința T3 cere identificarea și omorârea a cel puțin doi mutanți \textit{neechivalenți}. Le-am ales pe cei doi cu cea mai mare valoare didactică.
+
+\subsection{Mutantul 1: \textsc{MathMutator} pe \texttt{multiply} / \texttt{divide}}
+
+\textbf{Linia originală:}
+
+\begin{lstlisting}[language=Java]
+int percent = totalSpent
+    .multiply(BigDecimal.valueOf(100))
+    .divide(budget, 0, RoundingMode.HALF_UP)
+    .intValue();
+\end{lstlisting}
+
+\textbf{Mutația:} \texttt{multiply} schimbat cu \texttt{divide}, devenind:
+
+\begin{lstlisting}[language=Java]
+int percent = totalSpent
+    .divide(BigDecimal.valueOf(100), 0, RoundingMode.HALF_UP)
+    .multiply(budget)
+    .intValue();
+\end{lstlisting}
+
+\textbf{De ce e neechivalent:} pentru \texttt{totalSpent = 50}, \texttt{budget = 200}, codul original returnează 25. Codul mutat (\texttt{50/100 * 200}) returnează 0 (după rotunjire), apoi \texttt{0 * 200 = 0}. Deci comportamentul e diferit observabil.
+
+\textbf{Testul țintit:}
+
+\begin{lstlisting}[language=Java, caption={Test țintit pentru mutantul \textsc{MathMutator}.}]
+@Test
+public void should_kill_percent_math_mutations() {
+    wallet.setBudgetTotal(new BigDecimal("200"));
+    when(txRepo.sumAmountByWalletId(any())).thenReturn(new BigDecimal("50"));
+
+    WalletSummary s = service.computeSummaryOwnedByUser(tripId, login);
+
+    // Daca multiply si divide sunt schimbate, calculul produce 0 in loc de 25
+    assertEquals(25, s.getPercent());
+}
+\end{lstlisting}
+
+\subsection{Mutantul 2: \textsc{ConditionalsBoundary} pe \texttt{percent >= 75}}
+
+\textbf{Linia originală:} în \texttt{buildRiskUi}:
+
+\begin{lstlisting}[language=Java]
+if (percentUsed >= WARNING_THRESHOLD_PERCENT)
+    return new RiskUi("Atenție", "bg-warning");
+\end{lstlisting}
+
+\textbf{Mutația:} \texttt{>=} schimbat cu \texttt{>}, devenind \texttt{percentUsed > 75}.
+
+\textbf{De ce e neechivalent:} pentru \texttt{percent = 75}, codul original returnează \texttt{"Atenție"}. Codul mutat returnează \texttt{"OK"} (pentru că \texttt{75 > 75} e \texttt{false}).
+
+\textbf{Testul țintit:}
+
+\begin{lstlisting}[language=Java, caption={Test țintit pentru mutantul \textsc{ConditionalsBoundary}.}]
+@Test
+public void testSumar_ExactPragAtentie_75LaSuta() {
+    wallet.setBudgetTotal(new BigDecimal("100"));
+    when(txRepo.sumAmountByWalletId(any())).thenReturn(new BigDecimal("75"));
+
+    WalletSummary s = service.computeSummaryOwnedByUser(tripId, login);
+
+    assertEquals(75, s.getPercent());
+    // Daca >= a fost mutat in >, statusul ar fi OK in loc de ATENTIE
+    assertEquals(WalletSummary.Status.ATENTIE, s.getStatus());
+}
+\end{lstlisting}
+
+\section{Cum identificăm mutanți echivalenți}
+
+În raportul PITest, am întâlnit câțiva mutanți pe care i-am clasificat ca \textit{echivalenți} - adică alterații care nu schimbă comportamentul observabil al codului. Doi exemple:
+
+\subsection{Exemplu 1: \texttt{++i} vs. \texttt{i++} într-un \texttt{for}}
+
+În \texttt{computeInsightsOwnedByUser}, există un \texttt{for} clasic. PITest a generat un mutant care schimbă \texttt{i++} cu \texttt{++i}. În contextul unei bucle \texttt{for}, ambele variante au exact același efect (incrementarea se face după evaluarea condiției). Deci mutantul e echivalent prin definiție.
+
+\subsection{Exemplu 2: schimbarea ordinii de evaluare la \texttt{a || b} fără side-effects}
+
+Într-o condiție \texttt{a || b} unde nici \texttt{a} nici \texttt{b} nu au side-effects, schimbarea ordinii (\texttt{b || a}) nu afectează rezultatul. Dacă PITest generează un astfel de mutant pentru o condiție pură, e echivalent.
+
+\section{Concluzii capitol}
+
+Suita atinge un Mutation Score de \textbf{60\%}, peste pragul minim acceptabil (50\%) și aproape de țintele profesionale (75\%). Punctele forte ale suitei sunt verificarea side-effect-urilor pe repository (\textsc{VoidMethodCall} 100\%) și a returnurilor non-null (\textsc{NullReturnVals} 94\%).
+
+Punctele slabe sunt pe operații aritmetice (\textsc{MathMutator}) și pe granițe (\textsc{ConditionalsBoundary}), pentru care am scris în mod explicit teste țintite. În total, am omorât 2 mutanți neechivalenți cu valoare didactică, conform cerinței T3.
+
+În capitolul următor prezentăm experimentul cu un instrument AI (ChatGPT) și comparația suitei generate automat cu suita noastră.

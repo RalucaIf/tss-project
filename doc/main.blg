@@ -1,0 +1,72 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+Reallocating 'name_of_file' (item size: 1) to 21 items.
+A level-1 auxiliary file: sections/0-title.aux
+Reallocating 'name_of_file' (item size: 1) to 24 items.
+A level-1 auxiliary file: sections/0-abstract.aux
+Reallocating 'name_of_file' (item size: 1) to 27 items.
+A level-1 auxiliary file: sections/1-introducere.aux
+Reallocating 'name_of_file' (item size: 1) to 28 items.
+A level-1 auxiliary file: sections/2-preliminarii.aux
+Reallocating 'name_of_file' (item size: 1) to 27 items.
+A level-1 auxiliary file: sections/3-configurare.aux
+Reallocating 'name_of_file' (item size: 1) to 25 items.
+A level-1 auxiliary file: sections/4-aplicatia.aux
+Reallocating 'name_of_file' (item size: 1) to 25 items.
+A level-1 auxiliary file: sections/5-strategii.aux
+Reallocating 'name_of_file' (item size: 1) to 22 items.
+A level-1 auxiliary file: sections/6-jacoco.aux
+Reallocating 'name_of_file' (item size: 1) to 22 items.
+A level-1 auxiliary file: sections/7-pitest.aux
+Reallocating 'name_of_file' (item size: 1) to 29 items.
+A level-1 auxiliary file: sections/8-comparatie-ai.aux
+Reallocating 'name_of_file' (item size: 1) to 25 items.
+A level-1 auxiliary file: sections/9-concluzii.aux
+Reallocating 'name_of_file' (item size: 1) to 6 items.
+The style file: plain.bst
+Reallocating 'name_of_file' (item size: 1) to 13 items.
+Reallocating 'name_of_file' (item size: 1) to 21 items.
+A level-1 auxiliary file: sections/A-anexe.aux
+Database file #1: bibliography.bib
+You've used 16 entries,
+            2118 wiz_defined-function locations,
+            581 strings with 6292 characters,
+and the built_in function-call counts, 4113 in all, are:
+= -- 402
+> -- 165
+< -- 1
++ -- 70
+- -- 52
+* -- 190
+:= -- 697
+add.period$ -- 55
+call.type$ -- 16
+change.case$ -- 73
+chr.to.int$ -- 0
+cite$ -- 16
+duplicate$ -- 143
+empty$ -- 372
+format.name$ -- 52
+if$ -- 879
+int.to.chr$ -- 0
+int.to.str$ -- 16
+missing$ -- 7
+newline$ -- 90
+num.names$ -- 32
+pop$ -- 124
+preamble$ -- 1
+purify$ -- 58
+quote$ -- 0
+skip$ -- 114
+stack$ -- 0
+substring$ -- 164
+swap$ -- 25
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 60
+warning$ -- 0
+while$ -- 39
+width$ -- 18
+write$ -- 181

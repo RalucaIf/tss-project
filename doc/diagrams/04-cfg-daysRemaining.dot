@@ -1,0 +1,37 @@
+digraph daysRemainingCFG {
+    rankdir=TB;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=10, style=filled];
+    edge [fontname="Arial", fontsize=9];
+
+    Start [shape=ellipse, label="START\ncomputeDaysRemainingSafe", fillcolor="#C8E6C9"];
+
+    n1 [shape=box, label="start = trip.getStartDate()\nend = trip.getEndDate()", fillcolor="#FFF9C4"];
+    n2 [shape=diamond, label="start == null\nsau\nend == null\nsau\nend < start ?", fillcolor="#FFCCBC"];
+    n3 [shape=box, label="return null", fillcolor="#FFAB91"];
+
+    n4 [shape=box, label="today = LocalDate.now()", fillcolor="#FFF9C4"];
+    n5 [shape=diamond, label="today.isAfter(end) ?", fillcolor="#FFCCBC"];
+    n6 [shape=box, label="return 0", fillcolor="#FFAB91"];
+
+    n7 [shape=diamond, label="today.isBefore(start) ?", fillcolor="#FFCCBC"];
+    n8 [shape=box, label="return\n(end - start + 1)", fillcolor="#FFAB91"];
+
+    n9 [shape=box, label="return\n(end - today + 1)", fillcolor="#FFAB91"];
+
+    End [shape=ellipse, label="END", fillcolor="#C8E6C9"];
+
+    Start -> n1;
+    n1 -> n2;
+    n2 -> n3 [label="TRUE", color="#D32F2F"];
+    n2 -> n4 [label="FALSE", color="#388E3C"];
+    n3 -> End;
+    n4 -> n5;
+    n5 -> n6 [label="TRUE", color="#D32F2F"];
+    n5 -> n7 [label="FALSE", color="#388E3C"];
+    n6 -> End;
+    n7 -> n8 [label="TRUE", color="#D32F2F"];
+    n7 -> n9 [label="FALSE", color="#388E3C"];
+    n8 -> End;
+    n9 -> End;
+}

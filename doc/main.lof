@@ -1,0 +1,29 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Ierarhia strategiilor de testare aplicate în proiect, organizate pe ramurile Black Box / White Box / Mutation, cu numărul de teste scrise pentru fiecare strategie.}}{16}{figure.caption.4}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Arhitectura aplicației \textit {Călătorii} pe trei straturi (prezentare, business, persistență), cu evidențierea clasei testate \texttt {WalletServiceImpl}.}}{25}{figure.caption.11}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Diagrama claselor pentru modulul Wallet, cu accent pe \texttt {WalletServiceImpl} - clasa testată.}}{29}{figure.caption.12}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Distribuția testelor pe cele șase strategii + Mutation. Culorile evidențiază clasificarea Black Box / White Box / Mutation.}}{35}{figure.caption.16}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Cascada de praguri în \texttt {computeSummaryOwnedByUser} (75\% / 90\% / 100\%) și valorile testate prin BVA (74, 75, 99, 100). Triunghiurile albastre indică valorile efectiv folosite în teste.}}{39}{figure.caption.20}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces CFG pentru \texttt {buildRiskUi}: cascadă de 4 \texttt {if}-uri care decid label-ul de risc (Buget nesetat / Depășit / Critic / Atenție / OK).}}{41}{figure.caption.22}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces CFG pentru \texttt {computeDaysRemainingSafe}, cu 8 noduri și 12 muchii. V(G) = 6 indică numărul de circuite independente prin graf.}}{44}{figure.caption.27}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Pipeline-ul de testare: suita JUnit + Mockito alimentează atât JaCoCo (coverage) cât și PITest (mutation testing).}}{46}{figure.caption.29}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Captură din raportul JaCoCo HTML, vizualizat în browser.}}{47}{figure.caption.31}%
+\contentsline {figure}{\numberline {6.3}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Coverage JaCoCo per metodă, cu prag minim de 80\% marcat cu linie roșie.}}{48}{figure.caption.33}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {7.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Captură din raportul PITest HTML, cu sumarul general.}}{52}{figure.caption.35}%
+\contentsline {figure}{\numberline {7.2}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Distribuția mutanților pe tipuri (PITest). Verde = omorâți, roșu = supraviețuitori.}}{53}{figure.caption.37}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {8.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Captură de ecran cu promptul trimis în ChatGPT.}}{59}{figure.caption.38}%
+\contentsline {figure}{\numberline {8.2}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Răspunsul ChatGPT - prima parte a codului generat.}}{59}{figure.caption.39}%
+\contentsline {figure}{\numberline {8.3}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Răspunsul ChatGPT - partea a doua a codului generat.}}{60}{figure.caption.40}%
+\contentsline {figure}{\numberline {8.4}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Răspunsul ChatGPT - partea finală a codului generat.}}{60}{figure.caption.41}%
+\contentsline {figure}{\numberline {8.5}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Captură din IntelliJ IDEA cu erorile de compilare ale suitei generate de AI.}}{61}{figure.caption.42}%
+\contentsline {figure}{\numberline {8.6}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Comparația vizuală suita proprie vs. suita AI pe metricile principale.}}{63}{figure.caption.47}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {A.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces CFG pentru \texttt {addExpenseOwnedByUser}: trei decizii principale (sumă, titlu, dayIndex) cu trei branch-uri de eroare și o cale de succes.}}{79}{figure.caption.50}%

@@ -1,0 +1,26 @@
+digraph pipeline {
+    rankdir=LR;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=11, style="filled,rounded", shape=box];
+    edge [fontname="Arial", fontsize=10];
+
+    src [label="Cod sursă\nWalletServiceImpl", fillcolor="#BBDEFB", color="#0D47A1"];
+    tests [label="Suita testelor\n(7 fișiere, ~40 teste)", fillcolor="#C5E1A5", color="#33691E"];
+
+    junit [label="JUnit 5\n(rulare teste)", fillcolor="#FFE082", color="#FF6F00"];
+    mockito [label="Mockito\n(mock dependencies)", fillcolor="#FFCCBC", color="#BF360C"];
+
+    jacoco [label="JaCoCo\n(line/branch coverage)", fillcolor="#CE93D8", color="#4A148C"];
+    pitest [label="PITest\n(mutation testing)", fillcolor="#F48FB1", color="#880E4F"];
+
+    rep_jacoco [label="Raport JaCoCo HTML\n(target/site/jacoco/)", fillcolor="#E1BEE7", shape=note];
+    rep_pitest [label="Raport PITest HTML\n(target/pit-reports/)", fillcolor="#F8BBD0", shape=note];
+
+    src -> junit;
+    tests -> junit;
+    mockito -> junit [style=dashed, label="izolare"];
+    junit -> jacoco;
+    junit -> pitest;
+    jacoco -> rep_jacoco;
+    pitest -> rep_pitest;
+}

@@ -1,0 +1,145 @@
+\xpg@aux {}{romanian}
+\xpg@aux {}{romanian}
+\xpg@aux {}{romanian}
+\xpg@aux {}{english}
+\xpg@aux {}{romanian}
+\contentsline {chapter}{\numberline {1}Introducere}{11}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Context și motivație}{11}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Obiectivele proiectului}{11}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Echipa și diviziunea muncii}{12}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Structura lucrării}{12}{section.1.4}%
+\contentsline {chapter}{\numberline {2}Preliminarii teoretice}{14}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Testare unitară: ce este și ce nu este}{14}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Testarea funcțională (Black Box) vs. testarea structurală (White Box)}{15}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Black Box}{15}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}White Box}{15}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Mutation Testing}{15}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Statement coverage}{17}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Decision coverage}{17}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Condition coverage}{17}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Short-circuit-ul Java}{18}{subsection.2.5.1}%
+\contentsline {section}{\numberline {2.6}Basis Path Coverage (Circuits)}{18}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Mutation Testing - operatori și interpretare}{19}{section.2.7}%
+\contentsline {subsection}{\numberline {2.7.1}Mutanți echivalenți}{19}{subsection.2.7.1}%
+\contentsline {section}{\numberline {2.8}JaCoCo - cum măsoară coverage-ul}{20}{section.2.8}%
+\contentsline {section}{\numberline {2.9}De ce JUnit 5 + Mockito + JaCoCo + PITest}{20}{section.2.9}%
+\contentsline {chapter}{\numberline {3}Configurația de lucru}{22}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Hardware}{22}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Sistem de operare și mașini virtuale}{22}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Stiva tehnologică}{23}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Justificarea alegerii instrumentelor de testare}{23}{subsection.3.3.1}%
+\contentsline {paragraph}{JUnit 5 (Jupiter)}{23}{section*.7}%
+\contentsline {paragraph}{Mockito}{24}{section*.8}%
+\contentsline {paragraph}{JaCoCo}{24}{section*.9}%
+\contentsline {paragraph}{PITest}{24}{section*.10}%
+\contentsline {section}{\numberline {3.4}Arhitectura proiectului}{24}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Configurarea Maven (pom.xml)}{24}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Versiunea de Java și note de compatibilitate}{27}{section.3.6}%
+\contentsline {chapter}{\numberline {4}Aplicația și clasa testată}{28}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Aplicația \textit {Călătorii}}{28}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Modulul Wallet - context și roluri}{28}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Diagrama claselor}{29}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Clasa \texttt {WalletServiceImpl} - prezentare}{30}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Metodele publice principale}{30}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Logica de ownership check}{30}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}Pragurile dinamice și enum-ul de stare}{31}{subsection.4.4.3}%
+\contentsline {subsection}{\numberline {4.4.4}Buget inteligent (\textit {smart advice}) - extensie}{31}{subsection.4.4.4}%
+\contentsline {section}{\numberline {4.5}De ce am ales \texttt {WalletServiceImpl} pentru testare}{32}{section.4.5}%
+\contentsline {chapter}{\numberline {5}Strategiile de testare aplicate}{34}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Organizarea suitei}{34}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Decizia de a aplica strategiile pe metode diferite}{34}{subsection.5.1.1}%
+\contentsline {section}{\numberline {5.2}Echipamentul comun de test (test fixture)}{35}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Equivalence Partitioning}{37}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Metoda țintă: \texttt {addExpenseOwnedByUser}}{37}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Exemplu de test EP}{37}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Numărul de teste pentru EP}{38}{subsection.5.3.3}%
+\contentsline {section}{\numberline {5.4}Boundary Value Analysis}{38}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Frontiere pentru \texttt {addExpenseOwnedByUser}}{38}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Frontiere pentru cascada de praguri}{38}{subsection.5.4.2}%
+\contentsline {subsection}{\numberline {5.4.3}Numărul de teste pentru BVA}{39}{subsection.5.4.3}%
+\contentsline {section}{\numberline {5.5}Statement Coverage}{39}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}Metoda țintă: \texttt {updateBudgetOwnedByUser}}{39}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}Numărul de teste pentru Statement}{40}{subsection.5.5.2}%
+\contentsline {section}{\numberline {5.6}Decision Coverage}{40}{section.5.6}%
+\contentsline {subsection}{\numberline {5.6.1}Metoda țintă: \texttt {computeSmartBudgetAdviceOwnedByUser}}{40}{subsection.5.6.1}%
+\contentsline {subsection}{\numberline {5.6.2}CFG pentru \texttt {buildRiskUi}}{41}{subsection.5.6.2}%
+\contentsline {subsection}{\numberline {5.6.3}Cele 5 ramuri testate}{41}{subsection.5.6.3}%
+\contentsline {section}{\numberline {5.7}Condition Coverage}{42}{section.5.7}%
+\contentsline {subsection}{\numberline {5.7.1}Cele 6 condiții compuse țintite}{42}{subsection.5.7.1}%
+\contentsline {subsection}{\numberline {5.7.2}Exemplu detaliat: C3 cu trei operanzi OR}{42}{subsection.5.7.2}%
+\contentsline {subsection}{\numberline {5.7.3}Numărul de teste pentru Condition}{43}{subsection.5.7.3}%
+\contentsline {section}{\numberline {5.8}Basis Path / Circuits Coverage}{43}{section.5.8}%
+\contentsline {subsection}{\numberline {5.8.1}Metode țintite}{43}{subsection.5.8.1}%
+\contentsline {subsection}{\numberline {5.8.2}Exemplu detaliat: \texttt {computeDaysRemainingSafe}}{43}{subsection.5.8.2}%
+\contentsline {subsection}{\numberline {5.8.3}Numărul de teste pentru Circuits}{45}{subsection.5.8.3}%
+\contentsline {section}{\numberline {5.9}Concluzii capitol}{45}{section.5.9}%
+\contentsline {chapter}{\numberline {6}Rezultate JaCoCo}{46}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Pipeline-ul de testare}{46}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Cum rulăm JaCoCo}{46}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Rezultate generale}{47}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Rezultate per metodă}{47}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Interpretarea metodelor cu coverage incomplet}{48}{section.6.5}%
+\contentsline {subsection}{\numberline {6.5.1}\texttt {computeInsightsOwnedByUser} (50\% branch)}{48}{subsection.6.5.1}%
+\contentsline {subsection}{\numberline {6.5.2}\texttt {findUserByUsernameOrEmail} (62\% branch)}{49}{subsection.6.5.2}%
+\contentsline {subsection}{\numberline {6.5.3}\texttt {buildRiskUi} și \texttt {buildRecommendation} (76\%, 91\% branch)}{49}{subsection.6.5.3}%
+\contentsline {section}{\numberline {6.6}De ce nu am forțat 100\%}{49}{section.6.6}%
+\contentsline {section}{\numberline {6.7}Comparație: Statement vs. Branch Coverage}{50}{section.6.7}%
+\contentsline {section}{\numberline {6.8}Concluzii capitol}{50}{section.6.8}%
+\contentsline {chapter}{\numberline {7}Mutation Testing cu PITest}{51}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Cum rulăm PITest}{51}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Rezultate generale}{51}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Defalcare pe tipuri de mutatori}{52}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}Puncte forte ale suitei}{52}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}Puncte slabe ale suitei}{53}{subsection.7.3.2}%
+\contentsline {section}{\numberline {7.4}Analiza unor mutanți supraviețuitori}{54}{section.7.4}%
+\contentsline {subsection}{\numberline {7.4.1}Mutant supraviețuitor 1: \textsc {ConditionalsBoundary} pe linia 191}{54}{subsection.7.4.1}%
+\contentsline {subsection}{\numberline {7.4.2}Mutant supraviețuitor 2: \textsc {MathMutator} pe linia 187}{54}{subsection.7.4.2}%
+\contentsline {section}{\numberline {7.5}Mutanții neechivalenți omorâți explicit}{54}{section.7.5}%
+\contentsline {subsection}{\numberline {7.5.1}Mutantul 1: \textsc {MathMutator} pe \texttt {multiply} / \texttt {divide}}{55}{subsection.7.5.1}%
+\contentsline {subsection}{\numberline {7.5.2}Mutantul 2: \textsc {ConditionalsBoundary} pe \texttt {percent >= 75}}{55}{subsection.7.5.2}%
+\contentsline {section}{\numberline {7.6}Cum identificăm mutanți echivalenți}{56}{section.7.6}%
+\contentsline {subsection}{\numberline {7.6.1}Exemplu 1: \texttt {++i} vs. \texttt {i++} într-un \texttt {for}}{56}{subsection.7.6.1}%
+\contentsline {subsection}{\numberline {7.6.2}Exemplu 2: schimbarea ordinii de evaluare la \texttt {a || b} fără side-effects}{56}{subsection.7.6.2}%
+\contentsline {section}{\numberline {7.7}Concluzii capitol}{56}{section.7.7}%
+\contentsline {chapter}{\numberline {8}Suita generată de AI - experiment și comparație}{58}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Scopul experimentului}{58}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Promptul folosit}{58}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Răspunsul generat}{59}{section.8.3}%
+\contentsline {section}{\numberline {8.4}Rezultatul rulării: Build Failed}{60}{section.8.4}%
+\contentsline {subsection}{\numberline {8.4.1}47 de erori de compilare}{60}{subsection.8.4.1}%
+\contentsline {subsection}{\numberline {8.4.2}Categoria 1: Clase inventate, inexistente în proiect}{61}{subsection.8.4.2}%
+\contentsline {subsection}{\numberline {8.4.3}Categoria 2: Metode inventate pe modele}{61}{subsection.8.4.3}%
+\contentsline {subsection}{\numberline {8.4.4}Categoria 3: Metode inventate pe repository-uri}{62}{subsection.8.4.4}%
+\contentsline {subsection}{\numberline {8.4.5}Categoria 4: Tipuri de date incompatibile}{62}{subsection.8.4.5}%
+\contentsline {subsection}{\numberline {8.4.6}Categoria 5: Import greșit critic}{62}{subsection.8.4.6}%
+\contentsline {section}{\numberline {8.5}Comparație cantitativă suita proprie vs. suita AI}{63}{section.8.5}%
+\contentsline {section}{\numberline {8.6}Analiza diferențelor}{64}{section.8.6}%
+\contentsline {subsection}{\numberline {8.6.1}Unde AI-ul ajută}{64}{subsection.8.6.1}%
+\contentsline {subsection}{\numberline {8.6.2}Unde AI-ul greșește}{64}{subsection.8.6.2}%
+\contentsline {subsection}{\numberline {8.6.3}O observație colaterală}{65}{subsection.8.6.3}%
+\contentsline {section}{\numberline {8.7}Concluzia experimentului}{65}{section.8.7}%
+\contentsline {chapter}{\numberline {9}Concluzii}{66}{chapter.9}%
+\contentsline {section}{\numberline {9.1}Recapitulare obiective vs. realizat}{66}{section.9.1}%
+\contentsline {section}{\numberline {9.2}Ce am învățat}{66}{section.9.2}%
+\contentsline {subsection}{\numberline {9.2.1}Despre proiect}{66}{subsection.9.2.1}%
+\contentsline {subsection}{\numberline {9.2.2}Despre folosirea AI-ului}{67}{subsection.9.2.2}%
+\contentsline {section}{\numberline {9.3}Direcții viitoare}{67}{section.9.3}%
+\contentsline {subsection}{\numberline {9.3.1}Creșterea Mutation Score peste 75\%}{68}{subsection.9.3.1}%
+\contentsline {subsection}{\numberline {9.3.2}Property-Based Testing}{68}{subsection.9.3.2}%
+\contentsline {subsection}{\numberline {9.3.3}Integrare în CI/CD}{68}{subsection.9.3.3}%
+\contentsline {subsection}{\numberline {9.3.4}Testare de integrare cu Testcontainers}{68}{subsection.9.3.4}%
+\contentsline {section}{\numberline {9.4}Considerații finale}{68}{section.9.4}%
+\contentsline {chapter}{Bibliografie}{71}{chapter*.49}%
+\contentsline {chapter}{\numberline {A}Cod sursă relevant}{72}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Fragmente din \texttt {WalletServiceImpl}}{72}{section.A.1}%
+\contentsline {subsection}{\numberline {A.1.1}Constructorul cu injecție de dependențe}{72}{subsection.A.1.1}%
+\contentsline {subsection}{\numberline {A.1.2}Metoda \texttt {addExpenseOwnedByUser}}{73}{subsection.A.1.2}%
+\contentsline {subsection}{\numberline {A.1.3}Metoda \texttt {computeDaysRemainingSafe}}{73}{subsection.A.1.3}%
+\contentsline {section}{\numberline {A.2}Fragmente din suita de teste}{74}{section.A.2}%
+\contentsline {subsection}{\numberline {A.2.1}Configurare comună}{74}{subsection.A.2.1}%
+\contentsline {subsection}{\numberline {A.2.2}Test pentru clasa de echivalență P4 (sumă invalidă)}{75}{subsection.A.2.2}%
+\contentsline {subsection}{\numberline {A.2.3}Test pentru BVA pe pragul de 75\%}{75}{subsection.A.2.3}%
+\contentsline {subsection}{\numberline {A.2.4}Test pentru Condition Coverage cu 3 operanzi OR}{76}{subsection.A.2.4}%
+\contentsline {subsection}{\numberline {A.2.5}Test țintit pentru mutantul \textsc {MathMutator}}{76}{subsection.A.2.5}%
+\contentsline {subsection}{\numberline {A.2.6}Test pentru Circuits pe \texttt {computeDaysRemainingSafe}}{77}{subsection.A.2.6}%
+\contentsline {section}{\numberline {A.3}CFG pentru \texttt {addExpenseOwnedByUser}}{78}{section.A.3}%

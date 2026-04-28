@@ -1,0 +1,189 @@
+\chapter{Aplicația și clasa testată}
+\label{ch:aplicatia}
+
+\section{Aplicația \textit{Călătorii}}
+
+\textit{Călătorii} este o aplicație web de planificare și jurnalizare a vacanțelor, dezvoltată de echipa noastră ca proiect personal pe parcursul anului. Aplicația permite utilizatorilor să:
+
+\begin{itemize}
+    \item creeze itinerarii multi-day (\textit{trips}) cu titlu, dată de început, dată de sfârșit, descriere și categorie;
+    \item adauge un \textit{jurnal} pe fiecare zi - notițe, poze, locații vizitate;
+    \item cumpere \textit{tururi} create de ghizi din comunitate (folosind un sistem de puncte fictiv);
+    \item urmărească pe o hartă interactivă țările vizitate;
+    \item urmărească alte profiluri de utilizator și să interacționeze prin urmăriri (\textit{follow}-uri);
+    \item discute cu un \textit{chatbot} despre destinații și recomandări;
+    \item \textbf{gestioneze bugetul fiecărei călătorii} (modulul \textit{Wallet} - cel pe care îl testăm).
+\end{itemize}
+
+Aplicația are aproximativ 25 de entități JPA, 15 controllere Spring MVC și peste 30 de template-uri Thymeleaf. Pentru proiectul T3, am ales un singur modul reprezentativ - \textit{Wallet} - pe care să aplicăm testarea unitară completă.
+
+\section{Modulul Wallet - context și roluri}
+
+Fiecare călătorie (\texttt{Trip}) are asociat un singur portofel (\texttt{TripWallet}), legat printr-o relație 1-la-1 prin foreign key. Portofelul are un buget total și o monedă (RON sau EUR), iar utilizatorul poate adăuga \textit{tranzacții} (\texttt{WalletTransaction}) pentru fiecare cheltuială făcută în călătorie.
+
+Rolul aplicativ al modulului este să răspundă la întrebări de tipul:
+
+\begin{itemize}
+    \item Câți bani am alocat pentru această vacanță?
+    \item Cât am cheltuit până acum, pe categorii (mâncare, transport, cazare, suveniruri etc.)?
+    \item Sunt în limita bugetului sau aproape de a-l depăși?
+    \item Cu ritmul curent de cheltuieli, în câte zile voi epuiza bugetul?
+    \item Cât îmi mai pot permite să cheltui pe zi pentru a rămâne în buget?
+\end{itemize}
+
+Răspunsurile la aceste întrebări sunt calculate de \texttt{WalletServiceImpl} pe baza datelor din baza de date. Răspunsurile sunt apoi afișate în interfață într-o pagină dedicată, cu KPI-uri colorate, grafice de cheltuieli pe categorii și un mesaj de recomandare în limba română.
+
+\section{Diagrama claselor}
+
+Figura \ref{fig:classes} prezintă diagrama claselor implicate în modulul Wallet, cu \texttt{WalletServiceImpl} în centru și entitățile JPA cu care interacționează.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\linewidth]{02-classes.png}
+    \caption{Diagrama claselor pentru modulul Wallet, cu accent pe \texttt{WalletServiceImpl} - clasa testată.}
+    \label{fig:classes}
+\end{figure}
+
+Câteva observații din diagramă:
+
+\begin{itemize}
+    \item \texttt{WalletServiceImpl} implementează interfața \texttt{WalletService} (programare orientată pe contract).
+    \item Are patru dependențe injectate prin constructor (toate sunt repository-uri JPA): \texttt{TripRepository}, \texttt{TripWalletRepository}, \texttt{UserRepository}, \texttt{WalletTransactionRepository}.
+    \item \texttt{TripWallet} are relație 1-la-1 cu \texttt{Trip}, iar \texttt{Trip} are relație N-la-1 cu \texttt{UserEntity} (un user poate avea mai multe călătorii).
+    \item \texttt{WalletTransaction} are relație N-la-1 cu \texttt{TripWallet} (un portofel poate avea multe tranzacții) și folosește un enum \texttt{WalletCategory} cu șase valori (FOOD, TRANSPORT, LODGING, ACTIVITIES, SOUVENIRS, OTHER).
+\end{itemize}
+
+\section{Clasa \texttt{WalletServiceImpl} - prezentare}
+
+\texttt{WalletServiceImpl} este o clasă de aproximativ 435 de linii, cu 21 de metode publice și 7 metode private. Complexitatea ciclomatică McCabe a metodelor variază între 1 (getters/setters automate) și 18 (metoda \texttt{buildRecommendation}, care construiește textul recomandării pe baza mai multor condiții).
+
+\subsection{Metodele publice principale}
+
+Tabelul \ref{tab:methods} listează metodele publice și, pentru fiecare, descrierea succintă și complexitatea ciclomatică estimată.
+
+\begin{table}[!htb]
+\centering
+\caption{Metodele publice din \texttt{WalletServiceImpl}, ordonate după complexitate.}
+\label{tab:methods}
+\begin{tabularx}{\linewidth}{lXc}
+\toprule
+\textbf{Metodă} & \textbf{Descriere} & \textbf{V(G)} \\
+\midrule
+\texttt{computeSmartBudgetAdvice...} & Generează sfat inteligent: ritm, allowance, forecast & 18 \\
+\texttt{computeSummaryOwnedByUser} & KPI buget: total / cheltuit / status & 5 \\
+\texttt{computeInsightsOwnedByUser} & Insights pe categorii și zile active & 6 \\
+\texttt{addExpenseOwnedByUser} & Adaugă cheltuială cu validări & 4 \\
+\texttt{deleteTransaction...} & Șterge tranzacție cu verificare ownership & 4 \\
+\texttt{updateBudgetOwnedByUser} & Actualizează buget cu validări & 5 \\
+\texttt{getOrCreateWallet...} & Returnează portofelul sau îl creează & 2 \\
+\texttt{listTransactions...} & Listează tranzacțiile sortate & 1 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Metodele \texttt{...OwnedByUser} primesc întotdeauna ca parametru un \texttt{login} (email sau username), iar prima operațiune internă pe care o fac este să verifice că utilizatorul curent are acces la călătoria respectivă. Aceasta e logica de \textit{ownership check}, esențială pentru securitatea aplicației.
+
+\subsection{Logica de ownership check}
+
+Înainte de orice operație, \texttt{WalletServiceImpl} verifică două lucruri:
+
+\begin{enumerate}
+    \item Utilizatorul cu login-ul dat există în baza de date.
+    \item Călătoria cu \texttt{tripId} dat aparține efectiv acestui utilizator.
+\end{enumerate}
+
+Codul concret e următorul:
+
+\begin{lstlisting}[language=Java, caption={Logica de ownership check.}]
+private Trip getTripOwnedByUser(Long tripId, String usernameOrEmail) {
+    UserEntity user = findUserByUsernameOrEmail(usernameOrEmail)
+        .orElseThrow(() -> new IllegalArgumentException(
+            "Utilizator inexistent."));
+
+    Trip trip = tripRepository.findById(tripId)
+        .orElseThrow(() -> new IllegalArgumentException(
+            "Itinerariu inexistent."));
+
+    if (trip.getUser() == null
+            || !Objects.equals(trip.getUser().getId(), user.getId())) {
+        throw new IllegalStateException(
+            "Nu ai acces la acest itinerariu.");
+    }
+    return trip;
+}
+\end{lstlisting}
+
+Metoda are trei puncte de eșec posibile (utilizator inexistent, călătorie inexistentă, ownership greșit) care trebuie acoperite de teste pentru fiecare strategie aplicată.
+
+\subsection{Pragurile dinamice și enum-ul de stare}
+
+Una dintre cele mai testabile părți ale clasei este logica de \textit{stare a bugetului}, care folosește un enum cu 4 valori și două praguri configurabile:
+
+\begin{lstlisting}[language=Java, caption={Pragurile și enum-ul Status.}]
+private static final int WARNING_THRESHOLD_PERCENT  = 75;
+private static final int CRITICAL_THRESHOLD_PERCENT = 90;
+
+public enum Status {
+    NESETAT, OK, ATENTIE, DEPASIT
+}
+\end{lstlisting}
+
+Logica de stare:
+
+\begin{lstlisting}[language=Java]
+if (percent >= 100)                     status = Status.DEPASIT;
+else if (percent >= WARNING_THRESHOLD)  status = Status.ATENTIE;
+else                                    status = Status.OK;
+\end{lstlisting}
+
+Această cascadă de praguri e un teren foarte fertil pentru \textbf{Boundary Value Analysis}: trebuie să verificăm cu testele exact valorile 74, 75, 99, 100 pentru a ne asigura că pragurile sunt setate corect și că relația \texttt{>=} e folosită corect (nu \texttt{>}).
+
+\subsection{Buget inteligent (\textit{smart advice}) - extensie}
+
+În plus față de calculul KPI clasic, am adăugat o metodă numită \texttt{computeSmartBudgetAdvice...} care folosește mai multe sub-metode pentru a calcula:
+
+\begin{itemize}
+    \item \textbf{burn rate per zi} - cheltuiala medie zilnică, calculată pe baza zilelor efective de consum;
+    \item \textbf{daily allowance} - cât îți poți permite să cheltui pe zi pentru a rămâne în buget până la finalul călătoriei;
+    \item \textbf{days to exceed} - estimarea numărului de zile până la depășirea bugetului, dacă ritmul actual continuă;
+    \item \textbf{recommendation} - un text în română care sintetizează informațiile pentru utilizator.
+\end{itemize}
+
+Această metodă e cea cu cea mai mare complexitate ciclomatică (V(G) = 18), pentru că apelează intern alte trei metode private cu propriile decizii (\texttt{buildRiskUi}, \texttt{computeDaysRemainingSafe}, \texttt{buildRecommendation}). Tocmai din cauza complexității, o folosim ca subiect principal pentru \textit{Decision Coverage} și \textit{Condition Coverage}.
+
+\section{De ce am ales \texttt{WalletServiceImpl} pentru testare}
+
+În aplicația \textit{Călătorii} avem multiple clase de serviciu: \texttt{TripServiceImpl}, \texttt{UserServiceImpl}, \texttt{TourServiceImpl}, \texttt{LeaderboardServiceImpl} etc. Înainte de a alege \texttt{WalletServiceImpl}, am evaluat fiecare candidat după mai multe criterii:
+
+\begin{table}[!htb]
+\centering
+\caption{Compararea claselor candidat pentru testare unitară.}
+\label{tab:candidates}
+\begin{tabularx}{\linewidth}{Xccccc}
+\toprule
+\textbf{Clasă} & \textbf{V(G) max} & \textbf{Cond. compuse} & \textbf{Calcule} & \textbf{Mockabil} & \textbf{Ales} \\
+\midrule
+\texttt{TripServiceImpl} & 4 & \(\times\) & \(\times\) & \checkmark & nu \\
+\texttt{UserServiceImpl} & 6 & \(\times\) & \(\times\) & dificil & nu \\
+\texttt{TourServiceImpl} & 5 & \checkmark & \(\times\) & \checkmark & nu \\
+\texttt{LeaderboardServiceImpl} & 8 & \checkmark & \checkmark & \checkmark & nu \\
+\texttt{WalletServiceImpl} & \textbf{18} & \textbf{\checkmark} & \textbf{\checkmark} & \textbf{\checkmark} & \textbf{da} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Motivele concrete pentru care am ales \texttt{WalletServiceImpl}:
+
+\begin{enumerate}
+    \item \textbf{Complexitate suficientă pentru toate cele șase strategii.} Are condiții compuse cu 2-3 operanzi (pentru Condition Coverage), cascade de \texttt{if}-uri pe praguri (pentru Decision Coverage), metode cu V(G) între 5 și 18 (pentru Circuits Coverage), și calcule cu \texttt{BigDecimal} (pentru Math Mutators în PITest).
+
+    \item \textbf{Logică de business reală, nu CRUD trivial.} Clasa nu face doar \texttt{save} și \texttt{findById} - face validări, calcule pe rate, comparații pe praguri, generare de mesaje. Asta înseamnă că testele au valoare reală: prind bug-uri concrete.
+
+    \item \textbf{Patru dependențe perfect mockable.} \texttt{WalletServiceImpl} primește toate dependențele prin constructor, ceea ce face Mockito-ul direct: \texttt{@Mock} + \texttt{@InjectMocks} și gata. Nu trebuie context Spring, nu trebuie bază de date.
+
+    \item \textbf{Domeniul aplicativ e \enquote{financiar}.} Asta înseamnă că un bug în această clasă afectează direct percepția utilizatorului despre banii lui - ceea ce e mult mai grav decât un bug în layout-ul HTML. Logic, e exact tipul de cod care trebuie testat cu cea mai mare grijă.
+
+    \item \textbf{Enum cu 4 stări.} \texttt{Status.\{NESETAT, OK, ATENTIE, DEPASIT\}} oferă un set finit, clar definit de comportamente posibile, ceea ce face testele deterministe și ușor de verificat.
+\end{enumerate}
+
+În capitolul următor prezentăm efectiv aplicarea celor șase strategii pe această clasă, cu exemple de cod, tabele și diagrame pentru fiecare.

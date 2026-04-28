@@ -1,0 +1,95 @@
+\chapter{Concluzii}
+\label{ch:concluzii}
+
+\section{Recapitulare obiective vs. realizat}
+
+La începutul proiectului ne-am stabilit câteva obiective concrete. Iată în ce măsură au fost atinse:
+
+\begin{table}[!htb]
+\centering
+\caption{Obiectivele proiectului și realizarea lor.}
+\label{tab:objectives}
+\begin{tabularx}{\linewidth}{Xll}
+\toprule
+\textbf{Obiectiv} & \textbf{Țintă} & \textbf{Realizat} \\
+\midrule
+Cele 6 strategii de testare aplicate & toate & da, toate \\
+Branch Coverage & $\geq$ 80\% & 80\% \\
+Statement Coverage & $\geq$ 80\% & 91\% \\
+Mutation Score & $\geq$ 60\% & 60\% \\
+Mutanți neechivalenți omorâți explicit & $\geq$ 2 & 2 \\
+Comparație cu suita AI & da & da \\
+Documentație completă & da & da \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Toate obiectivele au fost atinse. La unele - Statement Coverage și Mutation Score - am depășit ținta, la altele am atins exact pragul minim. Diferența vine din natura metricilor: Statement Coverage e ușor de urcat odată ce ai o suită diversificată, în timp ce Mutation Score crește mai greu pentru că cere teste \textit{stricte}, nu doar \textit{numeroase}.
+
+\section{Ce am învățat}
+
+\subsection{Despre proiect}
+
+Lucrul concret pe \texttt{WalletServiceImpl} ne-a forțat să trecem prin câteva etape pe care un curs teoretic nu le poate captura:
+
+\begin{itemize}
+    \item \textbf{Alegerea claselor potrivite pentru testare.} Nu orice clasă merită toate cele șase strategii. \texttt{TripServiceImpl} ar fi fost mult mai săracă didactic, pentru că logica ei e CRUD pur. Identificarea unei clase \enquote{bogate} (cu condiții compuse, calcule, cascade de praguri) e o decizie pe care trebuie să o luăm înaintea oricărui test scris.
+
+    \item \textbf{Distincția BVA / EP în practică.} În teorie, BVA pare doar o variantă mai paranoică a EP. În practică, BVA prinde bug-uri reale: am descoperit la un moment dat că un coleg scrisese \texttt{percent > 75} în loc de \texttt{percent >= 75}, și abia testul cu valoarea exact 75 a făcut diferența observabilă.
+
+    \item \textbf{Mockito și \textit{strictness}}. La început, fixture-ul comun cu mock-uri în \texttt{@BeforeEach} producea \texttt{UnnecessaryStubbingException} la teste care nu foloseau toate stub-urile. Soluția a fost \texttt{@MockitoSettings(strictness = Strictness.LENIENT)}. E un detaliu mic, dar care ne-a luat câteva ore să îl identificăm, pentru că eroarea Mockito nu e foarte explicită.
+
+    \item \textbf{PITest și mutanții echivalenți.} Nu fiecare mutant supraviețuitor e o lacună. Câțiva sunt echivalenți prin construcție și nu pot fi omorâți. Distincția între \enquote{lacună reală} și \enquote{mutant echivalent} cere atenție și, uneori, o discuție în echipă.
+
+    \item \textbf{Trade-off-ul coverage / cod defensive.} Nu e mereu posibil să ajungi la 100\% Branch Coverage fără să compromiți codul. O verificare \texttt{if (x == null)} pe o variabilă care nu poate fi null în runtime real e o protecție utilă, dar e imposibil de testat fără să \enquote{trișezi} cu \texttt{@Spy} sau \texttt{Reflection}.
+\end{itemize}
+
+\subsection{Despre folosirea AI-ului}
+
+Experimentul cu ChatGPT a fost mai instructiv decât ne așteptam. Nu pentru că am descoperit că AI-ul nu funcționează (lucru deja cunoscut), ci pentru că am văzut concret \textit{în ce mod} eșuează: nu cu erori grosolane care sar imediat în ochi, ci cu un cod \enquote{aproape corect} care necesită citire atentă pentru a-i identifica problemele.
+
+Concluzia practică pe care o tragem: AI-ul e folositor ca \textit{generator de schelet} și ca \textit{asistent pentru debug}, dar nu poate înlocui raționamentul testerului uman, care:
+
+\begin{itemize}
+    \item cunoaște API-ul real al codului (nu îl ghicește);
+    \item înțelege logica de business (în cazul nostru: bugetul de călătorie cu praguri 75/90/100);
+    \item cunoaște regulile de securitate (ownership check);
+    \item alege strategiile (BVA, EP, Mutation) conștient pe baza naturii codului.
+\end{itemize}
+
+\section{Direcții viitoare}
+
+Dacă am avea timp suplimentar pe acest proiect, am extinde munca în următoarele direcții:
+
+\subsection{Creșterea Mutation Score peste 75\%}
+
+Cele două categorii de mutatori cu kill rate scăzut (\textsc{MathMutator} 0\%, \textsc{ConditionalsBoundary} 33\%) reprezintă cea mai accesibilă sursă de îmbunătățire. Cu 8-10 teste suplimentare țintite, am putea urca scorul de la 60\% la $\sim$75-80\%.
+
+\subsection{Property-Based Testing}
+
+Pentru calculele matematice (procent buget, burn rate, daily allowance), strategia \textit{Property-Based Testing} cu un instrument ca \textit{jqwik} \cite{jqwik_docs} ar fi un complement util la BVA. În loc să testăm valori specifice, am declara proprietăți (\enquote{procentul calculat e mereu între 0 și un infinit pozitiv}, \enquote{percent = 100 dacă și numai dacă spent = budget}) și am lăsa instrumentul să genereze sute de input-uri aleatoare.
+
+\subsection{Integrare în CI/CD}
+
+În prezent, suita rulează manual. Pasul natural următor ar fi integrarea într-un workflow GitHub Actions care, la fiecare push, să ruleze automat:
+
+\begin{enumerate}
+    \item \texttt{mvn test} - verifică că toate testele trec;
+    \item \texttt{mvn jacoco:report} - generează raportul de coverage;
+    \item \texttt{mvn pitest:mutationCoverage} pe ramurile principale;
+    \item un threshold pe coverage (de ex. \enquote{Branch coverage scade sub 75\% $\Rightarrow$ build failed}).
+\end{enumerate}
+
+Această integrare ar transforma testele dintr-o etapă manuală într-un \textit{quality gate} automat, ceea ce e standard în orice proiect profesional modern.
+
+\subsection{Testare de integrare cu Testcontainers}
+
+Suita actuală mock-uiește integral baza de date. Pentru o testare mai realistă, am putea adăuga teste de integrare cu \textit{Testcontainers} - o bibliotecă care pornește un container Docker cu PostgreSQL real în timpul rulării testelor și permite verificări end-to-end pe layer-ul JPA. Asta ar prinde bug-uri pe care testele unitare nu le văd: erori în convențiile Spring Data, query-uri care compilează dar nu se execută corect, probleme cu lazy loading.
+
+\section{Considerații finale}
+
+Proiectul ne-a oferit ocazia să trecem de la teoria testării (cea învățată la curs) la practica testării (cea aplicată pe cod real). Diferența între cele două nu e mare în teorie, dar în practică se vede imediat: cursul te învață \textit{ce} strategii există, dar proiectul te învață \textit{când} să folosești fiecare, \textit{cum} să le combini, și \textit{de ce} unele teste au mai multă valoare decât altele.
+
+Pentru noi, ca echipă, valoarea cea mai mare a venit din procesul efectiv: discuția despre care metodă merită Condition Coverage, dezbaterea despre cum desenăm CFG-ul pentru \texttt{computeDaysRemainingSafe}, momentul în care un test BVA a prins efectiv un bug \texttt{>= vs. >}.
+
+În sfârșit, faptul că am pus suita într-un \textit{quality gate} concret (80\% Branch, 60\% Mutation) ne-a dat și o referință practică pentru viitor: când vom mai testa cod, știm acum cum arată un prag profesional. Și știm și cât de greu e să-l atingi onest, fără să forțezi metricile.

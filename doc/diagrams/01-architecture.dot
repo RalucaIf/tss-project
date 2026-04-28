@@ -1,0 +1,81 @@
+digraph architecture {
+    rankdir=TB;
+    bgcolor="white";
+    node [fontname="Arial", fontsize=11, style="filled,rounded", shape=box];
+    edge [fontname="Arial", fontsize=10, color="#444444"];
+
+    subgraph cluster_presentation {
+        label="Stratul de prezentare (Web)";
+        labeljust=l;
+        style=filled;
+        fillcolor="#FFF8E1";
+        color="#E6C200";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        WC [label="WalletController", fillcolor="#FFE082"];
+        TC [label="TripController", fillcolor="#FFE082"];
+        UC [label="UserController", fillcolor="#FFE082"];
+        Templ [label="Templates Thymeleaf\n(wallet.html, trips/*.html)", fillcolor="#FFF59D", shape=note];
+    }
+
+    subgraph cluster_service {
+        label="Stratul de business / serviciu";
+        labeljust=l;
+        style=filled;
+        fillcolor="#E3F2FD";
+        color="#1976D2";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        WSI [label="WalletServiceImpl\n(clasa testată)", fillcolor="#64B5F6", color="#0D47A1", penwidth=2.5, fontcolor=white];
+        TSI [label="TripServiceImpl", fillcolor="#90CAF9"];
+        USI [label="UserServiceImpl", fillcolor="#90CAF9"];
+    }
+
+    subgraph cluster_repo {
+        label="Stratul de persistență";
+        labeljust=l;
+        style=filled;
+        fillcolor="#F3E5F5";
+        color="#7B1FA2";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        TR [label="TripRepository", fillcolor="#CE93D8"];
+        TWR [label="TripWalletRepository", fillcolor="#CE93D8"];
+        UR [label="UserRepository", fillcolor="#CE93D8"];
+        WTR [label="WalletTransactionRepository", fillcolor="#CE93D8"];
+    }
+
+    subgraph cluster_db {
+        label="Baza de date";
+        labeljust=l;
+        style=filled;
+        fillcolor="#E8F5E9";
+        color="#388E3C";
+        fontname="Arial Bold";
+        fontsize=12;
+
+        DB [label="PostgreSQL / H2", fillcolor="#A5D6A7", shape=cylinder];
+    }
+
+    WC -> WSI [label="utilizează"];
+    TC -> TSI;
+    UC -> USI;
+
+    WSI -> TR;
+    WSI -> TWR;
+    WSI -> UR;
+    WSI -> WTR;
+
+    TSI -> TR;
+    USI -> UR;
+
+    TR -> DB;
+    TWR -> DB;
+    UR -> DB;
+    WTR -> DB;
+
+    Templ -> WC [style=dashed, dir=back, label="render"];
+}

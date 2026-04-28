@@ -1,0 +1,187 @@
+\chapter{Preliminarii teoretice}
+\label{ch:preliminarii}
+
+În acest capitol prezentăm, pe scurt, fundamentele teoretice ale strategiilor de testare aplicate ulterior. Capitolul nu pretinde să fie exhaustiv: ne concentrăm exact pe cunoștințele pe care le folosim direct în proiect, fără a deschide subiecte tangențiale (de exemplu, testarea de integrare, end-to-end, sau testarea performanței).
+
+\section{Testare unitară: ce este și ce nu este}
+
+\textit{Testarea unitară} este nivelul cel mai de jos al piramidei de testare \cite{martin2008}. La acest nivel, scopul este verificarea unei singure unități de cod (în Java, de regulă o clasă sau o metodă) izolată de restul sistemului.
+
+Această izolare e critică: dacă ar trebui să rulăm testele cu o bază de date reală, cu un context Spring complet ridicat și cu rețea, nu am mai vorbi despre teste unitare ci despre teste de integrare sau end-to-end. Izolarea aduce două avantaje practice mari:
+
+\begin{enumerate}
+    \item \textbf{Viteza.} Testele unitare rulează în milisecunde, deci pot fi rulate de mii de ori pe zi (la fiecare commit, la fiecare salvare de fișier în IDE).
+    \item \textbf{Determinismul.} Un test unitar nu depinde de starea unei baze de date externă, de timpul curent al sistemului, sau de un endpoint HTTP. Dacă cade, motivul e în cod, nu în mediu.
+\end{enumerate}
+
+Pentru a obține izolarea în Java, instrumentul standard este \textbf{Mockito}, o bibliotecă care înlocuiește dependențele reale (în cazul nostru: cele patru repository-uri JPA) cu obiecte simulate (\textit{mock objects}) ce returnează exact ce vrem noi în fiecare test \cite{mockito_docs}.
+
+\section{Testarea funcțională (Black Box) vs. testarea structurală (White Box)}
+
+Cele șase strategii pe care le aplicăm în proiect se împart, conform literaturii \cite{myers2011, fmi_functional_2024}, în două mari familii.
+
+\subsection{Black Box}
+
+În testarea \textit{Black Box}, testerul nu se uită la codul sursă. Pleacă de la specificație: ce trebuie să facă funcția pentru anumite intrări și ce să returneze. În această familie intră:
+
+\begin{itemize}
+    \item \textbf{Equivalence Partitioning (EP)} - input-urile sunt împărțite în clase echivalente, în care comportamentul așteptat este același pentru orice valoare. Se alege apoi un singur reprezentant pe clasă.
+    \item \textbf{Boundary Value Analysis (BVA)} - se testează valori aflate pe frontierele dintre clase, deoarece bug-urile clasice apar exact la \texttt{<} vs. \texttt{<=}.
+\end{itemize}
+
+\subsection{White Box}
+
+În testarea \textit{White Box}, testerul are acces la codul sursă și proiectează testele astfel încât să acopere structura reală a codului \cite{fmi_structural_2024}. Strategiile uzuale se ordonează ca o ierarhie:
+
+\begin{itemize}
+    \item \textbf{Statement Coverage} - fiecare instrucțiune să fie executată cel puțin o dată.
+    \item \textbf{Decision Coverage} - fiecare decizie (\texttt{if}, \texttt{while}, \texttt{ternary}) să fie evaluată atât pe ramura \textit{TRUE}, cât și pe \textit{FALSE}.
+    \item \textbf{Condition Coverage} - pentru condiții compuse (\texttt{\&\&}, \texttt{||}), fiecare sub-condiție să fie evaluată independent pe \textit{TRUE} și pe \textit{FALSE}.
+    \item \textbf{Basis Path Coverage (Circuits)} - parcurgerea tuturor circuitelor independente prin graful de control al metodei.
+\end{itemize}
+
+Figura \ref{fig:strategies} ilustrează ierarhia și relațiile dintre strategii. Cele de pe ramura \textit{White Box} se extind unele pe altele: dacă ai \textit{Condition Coverage}, ai automat și \textit{Decision Coverage}, care la rândul lui implică \textit{Statement Coverage}.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.85\linewidth]{07-strategies.png}
+    \caption{Ierarhia strategiilor de testare aplicate în proiect, organizate pe ramurile Black Box / White Box / Mutation, cu numărul de teste scrise pentru fiecare strategie.}
+    \label{fig:strategies}
+\end{figure}
+
+\subsection{Mutation Testing}
+
+A treia familie - care nu e nici Black Box, nici White Box clasic - este \textit{Mutation Testing}. Aici nu se testează comportamentul codului, ci se testează \textit{calitatea testelor înseși} \cite{fmi_mutation_2024, pitest_docs}.
+
+Metoda funcționează astfel: instrumentul (în cazul nostru \textsc{PITest}) creează în mod automat copii \textit{mutate} ale codului sursă - de exemplu, schimbă \texttt{>} cu \texttt{>=}, înlocuiește \texttt{||} cu \texttt{\&\&}, neagă o condiție - și rulează testele tale pe fiecare copie. Dacă măcar un test cade, mutația e considerată \textit{omorâtă}: înseamnă că suita a detectat alterarea. Dacă toate testele trec, mutația \textit{a supraviețuit}: a trecut prin testele tale fără să fie detectată, ceea ce înseamnă o lacună în suită.
+
+\textit{Mutation score} = procentul de mutanți omorâți din totalul mutanților generați.
+
+Scorul de mutation e o metrică mult mai severă decât \textit{statement} sau \textit{branch coverage}, pentru că poate evidenția situații în care testele \textit{ating} codul, dar nu îl \textit{verifică} - de exemplu, un test care doar invocă o metodă fără să facă niciun \texttt{assert} pe rezultat.
+
+\section{Statement coverage}
+
+\textit{Statement Coverage} este criteriul cel mai relaxat dintre cele structurale: cere doar ca fiecare linie de cod (mai exact, fiecare \textit{instrucțiune executabilă}) să fie executată cel puțin o dată de teste. Nu cere ca toate ramurile if/else să fie acoperite.
+
+Exemplu - dat fragmentul:
+
+\begin{lstlisting}[language=Java]
+if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+    throw new IllegalArgumentException("Suma trebuie sa fie > 0");
+}
+\end{lstlisting}
+
+Pentru \textit{Statement Coverage} e suficient un singur test care intră pe ramura adevărată (de exemplu \texttt{amount = null}). Linia \texttt{throw} e executată, deci toate instrucțiunile sunt acoperite. Dar nu am testat ce se întâmplă în cazul \texttt{amount = 100} - am ratat ramura falsă.
+
+\section{Decision coverage}
+
+\textit{Decision Coverage} este criteriul \textit{branch}: pentru fiecare decizie din cod, atât rezultatul \textit{TRUE} cât și \textit{FALSE} trebuie să fi fost observate. La exemplul anterior, pentru a satisface Decision Coverage, avem nevoie de cel puțin două teste: unul cu \texttt{amount = null} (intră pe \textit{TRUE}) și unul cu \texttt{amount = 100} (intră pe \textit{FALSE}).
+
+Acesta este criteriul măsurat efectiv de JaCoCo în coloana \textit{Branches}. Un branch coverage de 100\% nu garantează absența bug-urilor, dar e un prag minim profesional rezonabil. Comunitatea Google raportează un nivel de coverage pe proiectele lor între 60\% și 70\%, în funcție de domeniu \cite{google_coverage}.
+
+\section{Condition coverage}
+
+\textit{Condition Coverage} merge un nivel mai jos decât Decision: pentru orice condiție compusă (cu \texttt{\&\&} sau \texttt{||}), fiecare sub-condiție trebuie evaluată separat pe \textit{TRUE} și pe \textit{FALSE}.
+
+Importanța acestei distincții apare la condițiile cu mai mulți operanzi. De exemplu:
+
+\begin{lstlisting}[language=Java]
+if (wallet == null || tx.getId() == null
+        || !Objects.equals(tx.getWallet().getId(), wallet.getId())) {
+    throw new IllegalStateException("Nu ai acces la aceasta tranzactie.");
+}
+\end{lstlisting}
+
+\textit{Decision Coverage} se mulțumește cu două teste: unul în care expresia totală e adevărată (oricare din cele trei sub-condiții poate fi adevărată) și unul în care e falsă (toate sunt false). \textit{Condition Coverage} cere însă ca fiecare din cele trei sub-condiții să fie observată \textit{TRUE} și \textit{FALSE}, ceea ce duce la cel puțin 4 teste distincte.
+
+\subsection{Short-circuit-ul Java}
+
+Java evaluează operatorii \texttt{||} și \texttt{\&\&} cu \textit{short-circuit}: dacă primul operand poate decide rezultatul, al doilea nu mai e evaluat. La \texttt{||}, dacă primul e \textit{TRUE}, restul nu se mai evaluează. La \texttt{\&\&}, dacă primul e \textit{FALSE}, restul nu se mai evaluează.
+
+În practică, asta înseamnă că pentru o condiție \texttt{a || b} cu doi operanzi, nu putem genera toate cele patru combinații posibile - \texttt{(T,T), (T,F), (F,T), (F,F)} - pentru că în primele două perechi, valoarea lui \texttt{b} nu se evaluează niciodată. Vom avea practic doar trei cazuri distincte:
+
+\begin{enumerate}
+    \item \texttt{a = TRUE} (b nu contează, e short-circuitat)
+    \item \texttt{a = FALSE, b = TRUE}
+    \item \texttt{a = FALSE, b = FALSE}
+\end{enumerate}
+
+Acest detaliu e important atunci când planificăm testele pentru condiții compuse - nu avem voie să cerem combinații imposibile.
+
+\section{Basis Path Coverage (Circuits)}
+
+\textit{Basis Path Coverage}, sau acoperirea pe \textit{circuite independente}, e cel mai sofisticat criteriu structural. Aici nu mai privim deciziile individual, ci la fluxul de control al metodei ca un întreg.
+
+Pentru fiecare metodă, construim \textit{Control Flow Graph}-ul (CFG): un graf orientat în care nodurile sunt blocuri liniare de cod, iar muchiile sunt transferuri de control (ramuri \texttt{if}, return-uri, throw-uri).
+
+Pentru un graf CFG, definim \textit{complexitatea ciclomatică} a lui McCabe \cite{mccabe1976} ca:
+
+\begin{equation}
+V(G) = E - N + 2
+\end{equation}
+
+unde $E$ este numărul de muchii și $N$ numărul de noduri. O formulă echivalentă, mai practică:
+
+\begin{equation}
+V(G) = \text{numărul de predicate} + 1
+\end{equation}
+
+\textit{Complexitatea ciclomatică} reprezintă numărul minim de \textit{căi independente} prin graf, adică numărul minim de teste necesare pentru a parcurge orice combinație de ramuri.
+
+\textbf{Exemplu.} Pentru metoda \texttt{computeDaysRemainingSafe} din clasa noastră, CFG-ul are 8 noduri și 12 muchii (vezi figura \ref{fig:cfg-days}). Aplicând formula:
+
+\begin{equation*}
+V(G) = 12 - 8 + 2 = 6
+\end{equation*}
+
+Deci avem nevoie de cel puțin 6 teste pentru a parcurge toate căile independente. Aceste 6 căi corespund celor 6 scenarii distincte din metodă: \texttt{start = null}, \texttt{end = null}, interval invalid, călătorie încheiată, călătorie viitoare, călătorie în desfășurare.
+
+\section{Mutation Testing - operatori și interpretare}
+
+\textsc{PITest} suportă mai multe seturi de operatori de mutație. Pentru proiectul nostru am folosit setul \textit{STRONGER}, care e mai cuprinzător decât setul implicit \cite{pitest_mutators}. Cele mai relevante categorii de mutatori sunt:
+
+\begin{description}
+    \item[\textbf{ConditionalsBoundaryMutator}] - schimbă operatorii \texttt{<} cu \texttt{<=}, \texttt{>} cu \texttt{>=} și invers. E mutatorul cel mai eficient pentru a forța testele să distingă valorile exacte de pe granițe.
+
+    \item[\textbf{NegateConditionalsMutator}] - inversează condițiile (de ex. \texttt{a == b} devine \texttt{a != b}). Verifică dacă testele detectează inversarea logică.
+
+    \item[\textbf{MathMutator}] - schimbă operatorii aritmetici: \texttt{+} cu \texttt{-}, \texttt{*} cu \texttt{/} etc. Util pentru verificarea calculelor matematice.
+
+    \item[\textbf{NullReturnValsMutator}] - face metodele să returneze \texttt{null}. Verifică dacă testele detectează valori nule pe care nu le-ar fi așteptat.
+
+    \item[\textbf{VoidMethodCallMutator}] - șterge apelul la o metodă \texttt{void}. Util pentru a verifica dacă side-effect-urile sunt observate de teste (de exemplu, prin \texttt{verify()} pe mock-uri).
+
+    \item[\textbf{RemoveConditionalMutator}] - elimină complet condiția (transformă \texttt{if (cond)} în \texttt{if (true)} sau \texttt{if (false)}). Are două variante: \textit{EQUAL} pentru egalități, \textit{ORDER} pentru comparații.
+\end{description}
+
+\subsection{Mutanți echivalenți}
+
+Un caz important pe care literatura îl tratează cu seriozitate este al \textit{mutanților echivalenți} \cite{papadakis2019}. Un mutant e echivalent dacă, deși codul a fost modificat sintactic, comportamentul lui rămâne identic cu al codului original pentru orice intrare. Astfel de mutanți nu pot fi omorâți de niciun test, pentru că nu există un test care să producă vreo diferență observabilă.
+
+Exemplu trivial: într-un \texttt{for} care iterează exact o dată, schimbarea limitei superioare cu o valoare mai mare (dar tot < \texttt{Integer.MAX\_VALUE}) nu schimbă nimic dacă bucla iese după prima iterație printr-un \texttt{break}. Un astfel de mutant supraviețuiește pentru că, semantic, codul a rămas același.
+
+Distincția între mutanți \textit{neechivalenți} (care \textit{pot} fi omorâți și deci indică o lacună reală în suită) și \textit{echivalenți} (pe care îi documentăm ca atare) e o parte importantă a lucrului cu Mutation Testing. Cerința T3 cere explicit identificarea și omorârea a cel puțin doi mutanți neechivalenți.
+
+\section{JaCoCo - cum măsoară coverage-ul}
+
+JaCoCo \cite{jacoco_docs} e instrumentul standard pentru măsurarea coverage-ului în Java. Funcționează prin \textit{instrumentare la nivel de bytecode}: înainte de rularea testelor, modifică clasele compilate pentru a injecta sonde (\textit{probes}) care înregistrează ce instrucțiuni s-au executat.
+
+Avantajul instrumentării bytecode-ului față de instrumentarea la nivelul codului sursă este precizia: JaCoCo măsoară exact ce s-a executat la nivelul JVM, nu o aproximare bazată pe linii de cod. În plus, raportul final indică nu doar instrucțiunile acoperite, ci și ramurile (\textit{branches}), liniile complexe, metodele atinse și clasele. Pentru proiectul nostru, urmărim în special:
+
+\begin{itemize}
+    \item \textbf{Instructions Coverage} - corespunde aproximativ noțiunii teoretice de \textit{Statement Coverage}, dar la nivel de bytecode.
+    \item \textbf{Branches Coverage} - corespunde direct \textit{Decision Coverage}.
+\end{itemize}
+
+\section{De ce JUnit 5 + Mockito + JaCoCo + PITest}
+
+Stiva de instrumente folosită este combinația standard în ecosistemul Java profesional \cite{junit_docs}. Toate cele patru instrumente sunt mature, bine documentate și se integrează unele cu altele:
+
+\begin{itemize}
+    \item \textbf{JUnit 5} (modulul Jupiter) e framework-ul principal de testare. Permite scrierea testelor cu adnotări (\texttt{@Test}, \texttt{@BeforeEach}), sistem de extensii (\texttt{@ExtendWith}) și asserțiuni declarative (\texttt{assertEquals}, \texttt{assertThrows}).
+    \item \textbf{Mockito} se integrează cu JUnit 5 prin \texttt{MockitoExtension} și permite mock-uirea dependențelor cu \texttt{@Mock} și injectarea lor cu \texttt{@InjectMocks}.
+    \item \textbf{JaCoCo} se integrează ca plugin Maven și instrumentează automat clasele înainte de rularea testelor.
+    \item \textbf{PITest} se integrează tot ca plugin Maven și folosește testele JUnit existente pentru a evalua mutațiile.
+\end{itemize}
+
+În capitolele următoare, prezentăm aplicarea efectivă a acestor concepte pe clasa \texttt{WalletServiceImpl}.

@@ -1,0 +1,179 @@
+\chapter{Configurația de lucru}
+\label{ch:configurare}
+
+În acest capitol descriem configurația concretă pe care a fost dezvoltat și testat proiectul: hardware, sistem de operare, alegerea de a nu folosi mașină virtuală, și versiunile exacte ale instrumentelor.
+
+\section{Hardware}
+
+Dezvoltarea s-a desfășurat în principal pe stația de lucru personală a șefei de echipă, cu următoarele specificații:
+
+\begin{table}[!htb]
+\centering
+\caption{Configurația hardware folosită pentru dezvoltare și testare.}
+\label{tab:hardware}
+\begin{tabular}{ll}
+\toprule
+\textbf{Componentă} & \textbf{Specificație} \\
+\midrule
+Procesor & Intel Core i7-11800H, 8 nuclee, 16 fire, 2.30 GHz \\
+Memorie RAM & 16 GB DDR4 \\
+Stocare & SSD NVMe 512 GB \\
+Placă video & NVIDIA GeForce RTX 3050 (4 GB) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Cele trei membre ale echipei au folosit configurații similare, toate suficient de puternice pentru rularea suitei de teste și a instrumentelor de coverage. Suita completă (\texttt{mvn test}) rulează în aproximativ 2-3 secunde, iar PITest, care e cel mai costisitor, durează între 5 și 15 minute pentru cei 211 mutanți generați.
+
+\section{Sistem de operare și mașini virtuale}
+
+Sistemul de operare folosit a fost \textbf{Windows 11 Pro} (build 22H2), cu \textbf{PowerShell} ca shell pentru rularea comenzilor Maven. Comenzile sunt portabile și pe Linux/macOS dacă proiectul ar fi clonat acolo - Maven Wrapper (\texttt{mvnw}) e inclus în repository și are atât versiune \texttt{.cmd} pentru Windows, cât și script Unix.
+
+\textbf{Nu a fost folosită nicio mașină virtuală.} Toate instrumentele (JDK, Maven, IntelliJ IDEA, Postgres pentru rularea aplicației) au fost instalate nativ pe Windows. Decizia a fost luată din considerente de performanță: rularea unei suite de teste cu Mockito e ușor afectată de overhead-ul unei VM, iar pentru PITest - care rulează \texttt{n} variante mutate ale codului, fiecare cu suita completă - timpul total ar fi crescut semnificativ.
+
+Pentru baza de date am folosit \textbf{PostgreSQL 16} pentru aplicație și \textbf{H2 in-memory} pentru cazurile în care a fost nevoie să rulăm aplicația fără backend extern. Atenție însă: testele unitare nu folosesc nici Postgres, nici H2 - dependențele sunt complet mock-uite cu Mockito, deci suita rulează independent de orice bază de date.
+
+\section{Stiva tehnologică}
+
+Aplicația \textit{Călătorii} e construită pe Java 17 și Spring Boot 3.3.4. Tabelul \ref{tab:stack} sintetizează componentele majore.
+
+\begin{table}[!htb]
+\centering
+\caption{Stiva tehnologică a aplicației și a suitei de teste.}
+\label{tab:stack}
+\begin{tabular}{lll}
+\toprule
+\textbf{Categorie} & \textbf{Tool / framework} & \textbf{Versiune} \\
+\midrule
+Limbaj & Java (OpenJDK) & 17 \\
+Framework principal & Spring Boot & 3.3.4 \\
+ORM & Hibernate (prin Spring Data JPA) & 6.5.x \\
+Templating & Thymeleaf & 3.1.2 \\
+Bază de date (prod) & PostgreSQL & 16 \\
+Bază de date (dev) & H2 in-memory & 2.x \\
+Build tool & Maven & 3.9.11 (prin wrapper) \\
+Generare cod & Lombok & 1.18.42 \\
+\midrule
+Test framework & JUnit Jupiter & 5.10.3 \\
+Mocking & Mockito (\texttt{mockito-junit-jupiter}) & 5.11.0 \\
+Coverage & JaCoCo (Maven plugin) & 0.8.11 \\
+Mutation Testing & PITest (\texttt{pitest-maven}) & 1.16.3 \\
+\midrule
+IDE & IntelliJ IDEA Ultimate & 2024.3.5 \\
+Sistem de control versiuni & Git & 2.45.x \\
+Hosting repo & GitHub & N/A \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Justificarea alegerii instrumentelor de testare}
+
+Stiva \textit{JUnit 5 + Mockito + JaCoCo + PITest} este, de facto, standardul pentru testare unitară pe ecosistemul Java în 2026. Câteva motive concrete pentru fiecare alegere:
+
+\paragraph{JUnit 5 (Jupiter)} este versiunea modernă, modulară, a JUnit-ului. Față de JUnit 4 oferă: metode de test \texttt{package-private} (nu mai trebuie \texttt{public}), un sistem de extensii curat prin \texttt{@ExtendWith}, asserțiuni îmbunătățite (\texttt{assertThrows}, \texttt{assertAll}), suport nativ pentru parametrizate. Vine implicit prin \texttt{spring-boot-starter-test}, deci nu trebuie adăugat manual.
+
+\paragraph{Mockito} este alegerea standard pentru mock-uri în Java, cu o sintaxă fluentă (\texttt{when(...).thenReturn(...)}) și integrare elegantă cu JUnit 5. Alternativele - EasyMock, PowerMock - sunt fie mai vechi, fie au probleme cu noile versiuni de Java.
+
+\paragraph{JaCoCo} este, de asemenea, instrumentul standard în ecosistemul Java, integrat cu Maven, Gradle și majoritatea IDE-urilor. Generează rapoarte HTML interactive în care fiecare linie e colorată în verde (acoperită), galben (parțial acoperită) sau roșu (neatinsă).
+
+\paragraph{PITest} este instrumentul lider pentru Mutation Testing pe Java, cu performanță bună și un set bogat de mutatori. Alternativele (\textit{MuJava}, \textit{Major}) sunt mai academice, mai puțin întreținute și mai dificil de integrat cu Maven.
+
+\section{Arhitectura proiectului}
+
+Aplicația respectă structura clasică \textit{layered} a unui proiect Spring Boot, vizibilă în figura \ref{fig:architecture}:
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.9\linewidth]{01-architecture.png}
+    \caption{Arhitectura aplicației \textit{Călătorii} pe trei straturi (prezentare, business, persistență), cu evidențierea clasei testate \texttt{WalletServiceImpl}.}
+    \label{fig:architecture}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Stratul de prezentare} - controllere Spring MVC + template-uri Thymeleaf. Pentru wallet, există un singur \texttt{WalletController} care expune endpoint-urile HTTP.
+    \item \textbf{Stratul de business} - serviciile cu logica aplicativă. \texttt{WalletServiceImpl} e implementarea concretă a interfeței \texttt{WalletService} și e clasa pe care o testăm în acest proiect.
+    \item \textbf{Stratul de persistență} - patru repository-uri JPA pe care \texttt{WalletServiceImpl} le folosește prin injecție de dependențe: \texttt{TripRepository}, \texttt{TripWalletRepository}, \texttt{UserRepository}, \texttt{WalletTransactionRepository}.
+    \item \textbf{Baza de date} - PostgreSQL pentru rularea efectivă a aplicației.
+\end{itemize}
+
+În testele unitare, întreg stratul de persistență e mock-uit, ceea ce face ca testele să fie rapide și deterministe.
+
+\section{Configurarea Maven (pom.xml)}
+
+Plugin-urile principale relevante pentru testare sunt configurate în \texttt{pom.xml} astfel.
+
+Pentru \textbf{JaCoCo}:
+
+\begin{lstlisting}[language=XML, caption={Configurarea pluginului JaCoCo în pom.xml.}]
+<plugin>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>0.8.11</version>
+    <executions>
+        <execution>
+            <id>prepare-agent</id>
+            <goals>
+                <goal>prepare-agent</goal>
+            </goals>
+        </execution>
+        <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+                <goal>report</goal>
+            </goals>
+            <configuration>
+                <includes>
+                    <include>echipa13/calatorii/service/impl/WalletServiceImpl.class</include>
+                </includes>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+\end{lstlisting}
+
+Filtrul \texttt{includes} limitează raportul JaCoCo la o singură clasă - \texttt{WalletServiceImpl}. Decizia e deliberată: cerința proiectului e să testăm o singură clasă reprezentativă, iar dacă raportul ar include toată aplicația, procentele ar fi diluate de codul netestat din celelalte module.
+
+Pentru \textbf{PITest}:
+
+\begin{lstlisting}[language=XML, caption={Configurarea pluginului PITest în pom.xml.}]
+<plugin>
+    <groupId>org.pitest</groupId>
+    <artifactId>pitest-maven</artifactId>
+    <version>1.16.3</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-junit5-plugin</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+    </dependencies>
+    <configuration>
+        <targetClasses>
+            <param>echipa13.calatorii.service.impl.WalletServiceImpl</param>
+        </targetClasses>
+        <targetTests>
+            <param>echipa13.calatorii.service.impl.WalletServiceImpl*Test</param>
+        </targetTests>
+        <outputFormats>
+            <outputFormat>HTML</outputFormat>
+            <outputFormat>XML</outputFormat>
+        </outputFormats>
+        <mutators>
+            <mutator>STRONGER</mutator>
+        </mutators>
+    </configuration>
+</plugin>
+\end{lstlisting}
+
+Setul de mutatori \texttt{STRONGER} extinde setul implicit (\texttt{DEFAULTS}) cu mutatori suplimentari: \textit{InlineConstantMutator}, \textit{NonVoidMethodCallMutator}, \textit{ExperimentalSwitchMutator} etc. Decizia de a folosi setul mai complet a fost luată pentru că vrem un raport care să stresseze cât mai mult suita.
+
+Plugin-ul \texttt{pitest-junit5-plugin} e necesar deoarece varianta de bază a PITest înțelege doar JUnit 4. Trebuie declarat ca dependență internă a plugin-ului.
+
+\section{Versiunea de Java și note de compatibilitate}
+
+Proiectul rulează pe \textbf{Java 17} (LTS), care este versiunea minimă cerută de Spring Boot 3.x. Pe stațiile de dezvoltare, JDK-ul efectiv folosit a fost \textbf{OpenJDK 24}, care e backwards-compatible cu Java 17.
+
+O incompatibilitate pe care am întâlnit-o în timpul setup-ului: versiunea standard de Lombok (1.18.32) nu funcționa cu OpenJDK 24, returnând erori de \textit{annotation processing}. Soluția a fost să forțăm explicit Lombok 1.18.42 (ultima versiune stabilă la momentul predării proiectului) prin \texttt{annotationProcessorPaths} în \texttt{maven-compiler-plugin}.
+
+În capitolul următor descriem aplicația \textit{Călătorii} și clasa \texttt{WalletServiceImpl}, înainte de a intra în detaliile testării propriu-zise.

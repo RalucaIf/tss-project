@@ -1,0 +1,32 @@
+digraph classes {
+    rankdir=LR;
+    bgcolor="white";
+    node [shape=record, fontname="Arial", fontsize=10, style=filled, fillcolor="#F5F5F5"];
+    edge [fontname="Arial", fontsize=9];
+
+    WalletService [label="{\<\<interface\>\>\nWalletService|+ getOrCreateWalletOwnedByUser(...)\l+ updateBudgetOwnedByUser(...)\l+ addExpenseOwnedByUser(...)\l+ deleteTransactionOwnedByUser(...)\l+ listTransactionsOwnedByUser(...)\l+ computeSummaryOwnedByUser(...)\l+ computeInsightsOwnedByUser(...)\l+ computeSmartBudgetAdviceOwnedByUser(...)\l}", fillcolor="#FFE0B2", color="#E65100"];
+
+    WalletServiceImpl [label="{WalletServiceImpl|- tripRepository: TripRepository\l- tripWalletRepository: TripWalletRepository\l- userRepository: UserRepository\l- walletTransactionRepository: WalletTransactionRepository\l- WARNING\\_THRESHOLD: 75\l- CRITICAL\\_THRESHOLD: 90\l|+ toate metodele din interfață\l- getTripOwnedByUser(...): Trip\l- findUserByUsernameOrEmail(...): Optional\\<UserEntity\\>\l- createWallet(...): TripWallet\l- buildRiskUi(...): RiskUi\l- buildRecommendation(...): String\l- computeDaysRemainingSafe(...): Integer\l}", fillcolor="#BBDEFB", color="#0D47A1", penwidth=2];
+
+    TripWallet [label="{TripWallet|- id: Long\l- trip: Trip\l- budgetTotal: BigDecimal\l- currency: String\l- createdAt: LocalDateTime\l- updatedAt: LocalDateTime\l}", fillcolor="#E1BEE7"];
+
+    Trip [label="{Trip|- id: Long\l- user: UserEntity\l- title: String\l- startDate: LocalDate\l- endDate: LocalDate\l- category: String\l}", fillcolor="#E1BEE7"];
+
+    WalletTransaction [label="{WalletTransaction|- id: Long\l- wallet: TripWallet\l- amount: BigDecimal\l- category: WalletCategory\l- title: String\l- spentAt: LocalDate\l- dayIndex: Integer\l}", fillcolor="#E1BEE7"];
+
+    UserEntity [label="{UserEntity|- id: Long\l- username: String\l- email: String\l- enabled: boolean\l}", fillcolor="#E1BEE7"];
+
+    WalletCategory [label="{\<\<enum\>\>\nWalletCategory|FOOD\lTRANSPORT\lLODGING\lACTIVITIES\lSOUVENIRS\lOTHER\l}", fillcolor="#FFCCBC"];
+
+    WalletServiceImpl -> WalletService [arrowhead=onormal, style=dashed, label="implements"];
+
+    WalletServiceImpl -> TripWallet [arrowhead=odiamond, label="utilizează"];
+    WalletServiceImpl -> Trip [arrowhead=odiamond];
+    WalletServiceImpl -> WalletTransaction [arrowhead=odiamond];
+    WalletServiceImpl -> UserEntity [arrowhead=odiamond];
+
+    TripWallet -> Trip [arrowhead=onormal, label="1..1"];
+    WalletTransaction -> TripWallet [arrowhead=onormal, label="N..1"];
+    WalletTransaction -> WalletCategory [arrowhead=onormal];
+    Trip -> UserEntity [arrowhead=onormal, label="N..1"];
+}

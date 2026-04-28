@@ -1,0 +1,230 @@
+\chapter{Suita generată de AI - experiment și comparație}
+\label{ch:ai}
+
+\section{Scopul experimentului}
+
+Una dintre cerințele explicite ale proiectului T3 \cite{tss_assignment} a fost folosirea unui instrument AI pentru generarea automată de teste, urmată de o comparație cu suita proprie. Experimentul l-am gândit ca un scenariu \enquote{realist} pentru un dezvoltator obișnuit: îi dăm AI-ului o descriere succintă a clasei (numele metodelor publice și al repository-urilor folosite), fără să copiem codul sursă efectiv. Asta simulează modul în care, în proiectele mari, e adesea imposibil sau impractic să oferi întreg contextul.
+
+Tool-ul ales a fost \textbf{ChatGPT} (modelul GPT-4, disponibil prin interfața web la \url{https://chat.openai.com}), folosit într-o sesiune nouă, fără context prealabil din alte conversații.
+
+\section{Promptul folosit}
+
+Promptul final, după ce am eliminat detalii care ar fi putut da AI-ului \enquote{prea mult ajutor}, a fost următorul:
+
+\begin{lstlisting}[style=plainstyle]
+Generează teste JUnit 5 complete pentru clasa WalletServiceImpl
+din proiectul meu Spring Boot.
+Clasa are metodele: computeSummaryOwnedByUser, computeInsightsOwnedByUser,
+addExpenseOwnedByUser, updateBudgetOwnedByUser, getOrCreateWalletOwnedByUser.
+Folosește Mockito pentru mock-uri pe repository-uri
+(TripRepository, TripWalletRepository, UserRepository, WalletTransactionRepository).
+Clasa de test se numește WalletServiceImplAITest.
+\end{lstlisting}
+
+Captura de ecran a promptului trimis e prezentată în figura \ref{fig:ai-prompt}.
+
+\begin{figure}[!htb]
+    \centering
+    \fbox{\includegraphics[width=0.85\linewidth]{ss1.png}}
+    \caption{Captură de ecran cu promptul trimis în ChatGPT.}
+    \label{fig:ai-prompt}
+\end{figure}
+
+\section{Răspunsul generat}
+
+ChatGPT a returnat în aproximativ 30 de secunde o clasă de test cu adnotări corecte de Mockito (\texttt{@ExtendWith(MockitoExtension.class)}, \texttt{@Mock}, \texttt{@InjectMocks}) și aproximativ 10 metode de test, una pentru fiecare metodă publică pe care i-am menționat-o. Răspunsul complet e ilustrat în figurile \ref{fig:ai-response-1}, \ref{fig:ai-response-2} și \ref{fig:ai-response-3}.
+
+\begin{figure}[!htb]
+    \centering
+    \fbox{\includegraphics[width=0.85\linewidth]{ss2.png}}
+    \caption{Răspunsul ChatGPT - prima parte a codului generat.}
+    \label{fig:ai-response-1}
+\end{figure}
+
+\begin{figure}[!htb]
+    \centering
+    \fbox{\includegraphics[width=0.85\linewidth]{ss3.png}}
+    \caption{Răspunsul ChatGPT - partea a doua a codului generat.}
+    \label{fig:ai-response-2}
+\end{figure}
+
+\begin{figure}[!htb]
+    \centering
+    \fbox{\includegraphics[width=0.85\linewidth]{ss4.png}}
+    \caption{Răspunsul ChatGPT - partea finală a codului generat.}
+    \label{fig:ai-response-3}
+\end{figure}
+
+\textit{Notă: imaginile \texttt{ss1.png} - \texttt{ss4.png} și \texttt{erori1.png} se află în folderul \texttt{Screenshots/} din repository și trebuie copiate în \texttt{images/} pentru ca documentul să compileze corect.}
+
+Codul generat l-am salvat aproape neschimbat în \texttt{src/test/java/echipa13/calatorii/service/impl/WalletServiceImplAITest.java}. Singura modificare a fost adăugarea de import-uri lipsă, ca să încercăm măcar să-l compilăm. Și chiar cu import-urile adăugate, codul tot nu compilează - ceea ce e exact punctul interesant al experimentului.
+
+\section{Rezultatul rulării: Build Failed}
+
+\subsection{47 de erori de compilare}
+
+Suita generată a produs \textbf{Build Failed} cu peste 40 de erori. Pentru claritate, am grupat erorile în 5 categorii distincte. Captura cu eroarea efectivă din IDE e prezentată în figura \ref{fig:ai-errors}.
+
+\begin{figure}[!htb]
+    \centering
+    \fbox{\includegraphics[width=0.85\linewidth]{erori1.png}}
+    \caption{Captură din IntelliJ IDEA cu erorile de compilare ale suitei generate de AI.}
+    \label{fig:ai-errors}
+\end{figure}
+
+\subsection{Categoria 1: Clase inventate, inexistente în proiect}
+
+\begin{table}[!htb]
+\centering
+\caption{Clase folosite de AI vs. clasele reale din proiect.}
+\label{tab:ai-classes}
+\begin{tabularx}{\linewidth}{XX}
+\toprule
+\textbf{Clasă folosită de AI} & \textbf{Clasa reală} \\
+\midrule
+\texttt{WalletSummaryDto} & \texttt{WalletSummary} \\
+\texttt{WalletInsightsDto} & \texttt{WalletInsights} \\
+\texttt{TransactionCategory} & \texttt{WalletCategory} \\
+\texttt{WalletTransaction} (cu pachet greșit) & \texttt{echipa13.calatorii.models.WalletTransaction} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+AI-ul a presupus că DTO-urile au sufixul \texttt{Dto}, conform unor convenții comune în proiectele Spring, dar în proiectul nostru nu folosim acest sufix. La fel, a inventat \texttt{TransactionCategory} pe baza unui pattern frecvent, în loc de \texttt{WalletCategory} (care e termenul real folosit de modul).
+
+\subsection{Categoria 2: Metode inventate pe modele}
+
+\begin{table}[!htb]
+\centering
+\caption{Metode inventate de AI pe entitățile JPA.}
+\label{tab:ai-methods}
+\begin{tabularx}{\linewidth}{XX}
+\toprule
+\textbf{Metodă folosită de AI} & \textbf{Metoda reală} \\
+\midrule
+\texttt{setId(UUID)} & id-ul e gestionat de JPA, e \texttt{Long} nu \texttt{UUID} \\
+\texttt{setOwner(User)} & nu există \\
+\texttt{setCurrentBalance(BigDecimal)} & \texttt{setBudgetTotal(BigDecimal)} \\
+\texttt{getCurrentBalance()} & \texttt{getBudgetTotal()} \\
+\texttt{setCreatedAt(LocalDateTime)} & nu există ca setter public \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+AI-ul a presupus o convenție de naming \enquote{generică} pentru un wallet financiar (\texttt{currentBalance}), dar în domeniul nostru aplicativ termenul e \texttt{budgetTotal} - un buget alocat pentru o călătorie. Asta e o diferență semantică importantă, nu doar de naming.
+
+\subsection{Categoria 3: Metode inventate pe repository-uri}
+
+\begin{table}[!htb]
+\centering
+\caption{Metode inventate de AI pe repository-urile JPA.}
+\label{tab:ai-repos}
+\begin{tabularx}{\linewidth}{XX}
+\toprule
+\textbf{Metodă folosită de AI} & \textbf{Metoda reală} \\
+\midrule
+\texttt{findByTripId(Long)} (apare de 6 ori) & \texttt{findByTrip\_Id(Long)} \\
+\texttt{findByWalletId(Long)} & \texttt{findByWallet\_IdOrderBySpentAtDescIdDesc(Long)} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Diferența pare minoră (un underscore), dar în Spring Data JPA contează: convenția cu \texttt{\_} indică explicit că ne referim la un câmp imbricat (proprietatea \texttt{id} a entității asociate \texttt{trip}). AI-ul a presupus convenția simplă fără underscore, care nu există în proiectul nostru.
+
+\subsection{Categoria 4: Tipuri de date incompatibile}
+
+AI-ul a folosit \texttt{UUID} pentru id-uri care în proiect sunt \texttt{Long}, și \texttt{double} pentru sume care în proiect sunt \texttt{BigDecimal}. A doua chestie e mai gravă pentru că \texttt{BigDecimal} e folosit explicit pentru a evita erorile de rotunjire la calcule monetare \cite{martin2008}. Înlocuirea cu \texttt{double} ar însemna o schimbare semantică reală, nu doar sintactică.
+
+\subsection{Categoria 5: Import greșit critic}
+
+Cea mai amuzantă eroare a fost:
+
+\begin{lstlisting}[style=plainstyle]
+org.apache.catalina.User is abstract; cannot be instantiated
+\end{lstlisting}
+
+AI-ul a importat \texttt{org.apache.catalina.User} - clasa \texttt{User} din serverul Tomcat - în locul \texttt{echipa13.calatorii.models.UserEntity} din proiect. E genul de eroare care apare când IDE-ul îți sugerează \enquote{User} și autocomplet-ul ia primul rezultat din classpath, dar AI-ul nu are acces la classpath-ul proiectului, deci a tras la sorți. A nimerit o clasă abstractă, ceea ce face și mai amuzantă situația - codul nici măcar nu se poate instanția.
+
+\section{Comparație cantitativă suita proprie vs. suita AI}
+
+Tabelul \ref{tab:comparison} prezintă comparația detaliată, iar figura \ref{fig:ai-vs-ours} oferă vizualizarea grafică.
+
+\begin{table}[!htb]
+\centering
+\caption{Comparație detaliată suita proprie vs. suita generată de AI.}
+\label{tab:comparison}
+\begin{tabularx}{\linewidth}{Xll}
+\toprule
+\textbf{Criteriu} & \textbf{Suita proprie} & \textbf{Suita AI} \\
+\midrule
+Număr teste totale & $\sim$40 & $\sim$10 \\
+Compilează & Da & \textbf{Nu} \\
+Rulează fără erori & Da & Nu compilează \\
+Statement coverage & 91\% & 0\% \\
+Branch coverage & 80\% & 0\% \\
+Mutation score & 60\% & 0\% \\
+Ownership check acoperit & Da & \textbf{Nu} \\
+Tipuri corecte (BigDecimal) & Da & folosește \texttt{double} \\
+Tipuri id corecte (Long) & Da & folosește \texttt{UUID} \\
+Semnături metode corecte & Da & toate greșite \\
+Teste BVA (74, 75, 99, 100\%) & Da & Lipsesc \\
+Teste null / invalid input & Da & Lipsesc \\
+Teste circuite independente & Da & Lipsesc \\
+Clase model corecte & Da & Inventate \\
+API repository corect & Da & Inventat \\
+Import-uri corecte & Da & \texttt{org.apache.catalina.User} \\
+Duplicate / redundante & 0 & prezente \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.85\linewidth]{10-ai-vs-ours.png}
+    \caption{Comparația vizuală suita proprie vs. suita AI pe metricile principale.}
+    \label{fig:ai-vs-ours}
+\end{figure}
+
+\section{Analiza diferențelor}
+
+\subsection{Unde AI-ul ajută}
+
+În ciuda eșecului total la nivel de compilare, AI-ul nu e complet nefolositor. Câteva aspecte unde s-a descurcat bine:
+
+\begin{itemize}
+    \item \textbf{Boilerplate rapid.} Structura de bază a clasei de test - adnotările \texttt{@ExtendWith(MockitoExtension.class)}, \texttt{@Mock}, \texttt{@InjectMocks}, metoda \texttt{@BeforeEach} - este generată corect și convențional. Dacă pornești de la zero, primești scheletul în 30 de secunde.
+
+    \item \textbf{Identifică metodele care merită testate.} AI-ul a recunoscut corect care sunt metodele publice principale și a încercat să facă teste pentru fiecare.
+
+    \item \textbf{Convențiile generale de naming.} Numele testelor (gen \texttt{shouldReturnSummaryWhenBudgetIsSet}) sunt rezonabile și aliniate cu stilul JUnit modern.
+\end{itemize}
+
+\subsection{Unde AI-ul greșește}
+
+\begin{itemize}
+    \item \textbf{Inventează API.} Cea mai gravă problemă: AI-ul nu cunoaște codul real, dar trebuie să producă ceva, deci \enquote{presupune} cum ar trebui să arate metodele. Ghicește pe baza unor proiecte similare pe care le-a văzut în training. Rezultatul e un cod care arată plauzibil din afară, dar nu compilează în proiectul nostru.
+
+    \item \textbf{Ratează logica de securitate.} Toate metodele din \texttt{WalletServiceImpl} au un ownership check care aruncă \texttt{IllegalStateException} dacă userul curent încearcă să acceseze itinerariul altcuiva. AI-ul a ignorat complet acest aspect. Practic, dacă rulam codul lui pe modelul nostru real (cu ownership check), absolut toate testele ar fi aruncat \enquote{Nu ai acces la acest itinerariu}.
+
+    \item \textbf{Confundă tipurile de date.} \texttt{Long} cu \texttt{UUID}, \texttt{BigDecimal} cu \texttt{double}. Sunt erori care la o privire rapidă par \enquote{aproape corecte}, dar care în practică schimbă semantica.
+
+    \item \textbf{Nu aplică deloc strategii de testare structurate.} Nu există BVA, EP, Basis Path, Mutation Testing - zero. Doar câteva teste happy-path, plus unul-două cu input invalid.
+
+    \item \textbf{Import-uri greșite.} Aici e clar că AI-ul \enquote{ghicește} pe baza numelui scurt al clasei, fără să aibă vizibilitate pe classpath-ul real.
+\end{itemize}
+
+\subsection{O observație colaterală}
+
+Un detaliu interesant: codul generat e suficient de bine structurat încât arată ca un test bun la o privire rapidă. Dacă l-ai scana fără să-l rulezi, ai putea să crezi că e perfect funcțional. Asta e probabil cea mai mare capcană a folosirii AI-ului în testare - nu e că nu produce nimic, ci că produce ceva care pare bun fără să fie.
+
+Rezultatul concret: dacă cineva ar fi pus codul în repository și ar fi spus \enquote{done}, build-ul s-ar fi rupt la primul \texttt{mvn compile}, iar timpul \enquote{economisit} cu AI-ul s-ar fi pierdut imediat la debug.
+
+\section{Concluzia experimentului}
+
+AI-ul a generat în 30 de secunde un schelet plauzibil dar nefuncțional. Codul nu compilează și nu poate fi rulat fără rescriere semnificativă. În contrast, suita proprie - care a luat câteva zile de muncă efectivă - a necesitat înțelegerea reală a implementării, alegerea deliberată a strategiilor (EP, BVA, Statement, Decision, Condition, Basis Path, Mutation) și iterare progresivă până la 91\% statement coverage și 60\% mutation score.
+
+Concluzia principală: AI-ul e un instrument complementar, util pentru boilerplate și pentru a-ți da un punct de pornire, dar nu poate înlocui raționamentul de testare. Fără cunoașterea concretă a codului sursă și fără aplicarea conștientă a strategiilor structurate, codul generat e impresionant la suprafață și inutilizabil în practică.
+
+Pentru viitor, scenariul realist de folosire ar fi: AI-ul îți dă scheletul + o primă rundă de teste happy-path, iar tu, ca dezvoltator, completezi BVA, edge cases, ownership checks și mutation kills. Adică AI-ul îți face partea \enquote{plicticoasă}, iar tu rezolvi partea \enquote{grea}.
+
+Pentru completitudine, am folosit într-o oarecare măsură și \textbf{Claude} \cite{claude_ref} ca asistent în timpul dezvoltării proiectului - nu pentru a genera teste de la zero, ci pentru debug pe Mockito (când o eroare obscură pe stub-uri ne luase mai mult timp decât ne convenea), explicații pe mutanți specifici PITest și pentru recapitularea unor detalii teoretice. Asta intră tot la \enquote{AI complementar}, dar pe alt vector: ca asistent în lucrul cu suita, nu ca generator de teste.

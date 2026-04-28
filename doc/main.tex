@@ -1,0 +1,190 @@
+% Documentație proiect TSS - Echipa 13
+% Modul Wallet - WalletServiceImpl
+% Bazat pe șablonul GabrielMajeri/bachelors-thesis (CC BY 4.0)
+
+\documentclass[12pt, a4paper]{report}
+
+% ===================== Pachete =====================
+
+% Suport pentru diacritice și UTF-8
+\usepackage{fontspec}
+\usepackage{times}
+
+% Suport pentru limbi
+\usepackage{polyglossia}
+\setdefaultlanguage{romanian}
+\setotherlanguages{english}
+\SetLanguageKeys{romanian}{indentfirst=true}
+
+% Ghilimele
+\usepackage{csquotes}
+\DeclareQuoteStyle{romanian}
+  {\quotedblbase}{\textquotedblright}
+  {\guillemotleft}{\guillemotright}
+
+% Bibliografie - bibtex clasic (compatibil pe orice TeX Live / MiKTeX)
+% NU folosim biblatex (necesita biber/biblatex care lipsesc pe sistemele minimale)
+% Comanda de compilare: xelatex, bibtex, xelatex, xelatex
+
+% Spațiere
+\usepackage{setspace}
+\onehalfspacing
+
+% Geometrie pagină
+\usepackage[margin=2.5cm]{geometry}
+
+% Imagini
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+
+% Tabele frumoase
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
+
+% Matematica
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Culori
+\usepackage[table,xcdraw]{xcolor}
+\definecolor{codebg}{RGB}{248, 248, 248}
+\definecolor{codeborder}{RGB}{220, 220, 220}
+\definecolor{codekw}{RGB}{0, 0, 180}
+\definecolor{codestr}{RGB}{180, 0, 0}
+\definecolor{codecomment}{RGB}{0, 130, 0}
+\definecolor{codenum}{RGB}{120, 120, 120}
+\definecolor{linkcol}{RGB}{0, 60, 145}
+
+% Listing-uri de cod (Java)
+\usepackage{listings}
+\lstdefinestyle{javastyle}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codecomment}\itshape,
+    keywordstyle=\color{codekw}\bfseries,
+    numberstyle=\tiny\color{codenum},
+    stringstyle=\color{codestr},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=8pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    frame=single,
+    rulecolor=\color{codeborder},
+    framesep=4pt,
+    framerule=0.5pt,
+    xleftmargin=15pt,
+    language=Java,
+    morekeywords={var, record},
+}
+\lstset{style=javastyle}
+
+% Listing-uri pentru shell/text
+\lstdefinestyle{plainstyle}{
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    keepspaces=true,
+    showspaces=false,
+    showstringspaces=false,
+    frame=single,
+    rulecolor=\color{codeborder},
+    framesep=4pt,
+    framerule=0.5pt,
+    xleftmargin=10pt,
+}
+
+% Hyperlink-uri
+\usepackage[
+    colorlinks,
+    linkcolor={black},
+    menucolor={black},
+    citecolor={linkcol},
+    urlcolor={linkcol}
+]{hyperref}
+
+% Rezumat în două limbi
+\newenvironment{abstractpage}
+  {\cleardoublepage\vspace*{\fill}\thispagestyle{empty}}
+  {\vfill\cleardoublepage}
+\renewenvironment{abstract}[1]
+  {\bigskip\selectlanguage{#1}%
+   \begin{center}\bfseries\abstractname\end{center}}
+  {\par\bigskip}
+
+% Anexe
+\usepackage{appendix}
+
+% Header / footer
+\usepackage{fancyhdr}
+
+% Captions mai rafinate
+\usepackage{caption}
+\captionsetup{font=small, labelfont=bf, textfont=it}
+
+% Comenzi utile
+\newcommand{\code}[1]{\texttt{\small #1}}
+\newcommand{\classname}[1]{\textit{\textbf{#1}}}
+
+% ===================== Metadate =====================
+\title{Documentație proiect: Testarea unitară a modulului Wallet din aplicația \textit{Călătorii}}
+\author{Iftime Raluca, Lupeș Ioan-Marian, Denisa Gheorghe}
+\date{Aprilie 2026}
+
+\makeatletter
+
+% ===================== Document =====================
+\begin{document}
+
+\cleardoublepage
+\let\ps@plain
+
+\include{sections/0-title}
+
+\restoregeometry
+\newgeometry{margin=2.5cm}
+
+\fancypagestyle{main}{
+  \fancyhf{}
+  \renewcommand\headrulewidth{0pt}
+  \fancyhead[C]{}
+  \fancyfoot[C]{\thepage}
+}
+
+\addtocounter{page}{1}
+
+\include{sections/0-abstract}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\cleardoublepage
+\pagestyle{main}
+\let\ps@plain\ps@main
+
+\include{sections/1-introducere}
+\include{sections/2-preliminarii}
+\include{sections/3-configurare}
+\include{sections/4-aplicatia}
+\include{sections/5-strategii}
+\include{sections/6-jacoco}
+\include{sections/7-pitest}
+\include{sections/8-comparatie-ai}
+\include{sections/9-concluzii}
+
+\bibliographystyle{plain}
+\bibliography{bibliography}
+\addcontentsline{toc}{chapter}{Bibliografie}
+
+\appendix
+\include{sections/A-anexe}
+
+\end{document}

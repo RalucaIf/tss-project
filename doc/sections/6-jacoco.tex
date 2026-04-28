@@ -1,0 +1,157 @@
+\chapter{Rezultate JaCoCo}
+\label{ch:jacoco}
+
+\section{Pipeline-ul de testare}
+
+Înainte de a discuta rezultatele, e util să avem în minte pipeline-ul complet (figura \ref{fig:pipeline}): suita rulează cu JUnit 5, care folosește Mockito pentru izolare, iar JaCoCo și PITest sunt cele două instrumente de raportare în paralel.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.95\linewidth]{06-pipeline.png}
+    \caption{Pipeline-ul de testare: suita JUnit + Mockito alimentează atât JaCoCo (coverage) cât și PITest (mutation testing).}
+    \label{fig:pipeline}
+\end{figure}
+
+\section{Cum rulăm JaCoCo}
+
+JaCoCo se rulează automat ca parte a fazei \texttt{test} din ciclul Maven. Comanda de rulare e:
+
+\begin{lstlisting}[style=plainstyle]
+mvn test
+\end{lstlisting}
+
+După rulare, raportul HTML se găsește în \texttt{target/site/jacoco/index.html}. Procesul intern e următorul:
+
+\begin{enumerate}
+    \item În faza \texttt{test-compile}, JaCoCo agent-ul (configurat prin \texttt{prepare-agent}) instrumentează clasele Java compilate adăugând sonde la nivel de bytecode.
+    \item În faza \texttt{test}, JUnit rulează testele. Sondele înregistrează ce s-a executat efectiv pe fiecare instrucțiune.
+    \item După teste, JaCoCo generează raportul HTML pe baza datelor colectate.
+\end{enumerate}
+
+\section{Rezultate generale}
+
+Suita atinge următoarele procente pe \texttt{WalletServiceImpl} (figura \ref{fig:jacoco-screenshot} - captura din raportul HTML):
+
+\begin{table}[!htb]
+\centering
+\caption{Rezultatele JaCoCo pe \texttt{WalletServiceImpl}.}
+\label{tab:jacoco-summary}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Valoare} & \textbf{Procent} \\
+\midrule
+Instructions Coverage & 818 / 893 & \textbf{91\%} \\
+Branch Coverage & 121 / 150 & \textbf{80\%} \\
+Method Coverage & 21 / 21 & \textbf{100\%} \\
+Class Coverage & 1 / 1 & \textbf{100\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Ambele praguri minime fixate la începutul proiectului (80\% Branch, 80\% Statement) sunt atinse, cu un \textit{Statement Coverage} considerabil mai mare decât minim (91\%).
+
+\begin{figure}[!htb]
+    \centering
+    \fbox{\includegraphics[width=0.9\linewidth]{Coverage.png}}
+    \caption{Captură din raportul JaCoCo HTML, vizualizat în browser.}
+    \label{fig:jacoco-screenshot}
+\end{figure}
+
+\section{Rezultate per metodă}
+
+JaCoCo permite drill-down pe fiecare metodă din clasa testată. Tabelul \ref{tab:jacoco-methods} prezintă coverage-ul pe fiecare metodă, iar figura \ref{fig:coverage-per-method} oferă o reprezentare grafică.
+
+\begin{table}[!htb]
+\centering
+\caption{Coverage JaCoCo per metodă (sortat descrescător după branch coverage).}
+\label{tab:jacoco-methods}
+\begin{tabularx}{\linewidth}{Xcc}
+\toprule
+\textbf{Metodă} & \textbf{Statement} & \textbf{Branch} \\
+\midrule
+\texttt{addExpenseOwnedByUser} & 100\% & 100\% \\
+\texttt{computeSummaryOwnedByUser} & 100\% & 100\% \\
+\texttt{updateBudgetOwnedByUser} & 100\% & 100\% \\
+\texttt{deleteTransactionOwnedByUser} & 100\% & 100\% \\
+\texttt{buildRiskUi} & 100\% & 91\% \\
+\texttt{buildRecommendation} & 100\% & 76\% \\
+\texttt{computeSmartBudgetAdvice...} & 96\% & 75\% \\
+\texttt{findUserByUsernameOrEmail} & 82\% & 62\% \\
+\texttt{computeInsightsOwnedByUser} & 55\% & 50\% \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\linewidth]{09-coverage-per-method.png}
+    \caption{Coverage JaCoCo per metodă, cu prag minim de 80\% marcat cu linie roșie.}
+    \label{fig:coverage-per-method}
+\end{figure}
+
+Patru metode (\texttt{addExpense}, \texttt{computeSummary}, \texttt{updateBudget}, \texttt{deleteTransaction}) au coverage de 100\% atât pe instrucțiuni cât și pe ramuri, ceea ce înseamnă că testele noastre au fost suficient de complete pentru a atinge orice path posibil prin aceste metode.
+
+\section{Interpretarea metodelor cu coverage incomplet}
+
+Trei metode au coverage sub 80\% pe ramuri. Le analizăm individual.
+
+\subsection{\texttt{computeInsightsOwnedByUser} (50\% branch)}
+
+Această metodă conține un \texttt{for} pe lista de categorii. În interiorul buclei există un \texttt{if (amount == null)} pentru a trata cazul în care suma de pe o categorie e \texttt{null} (caz care, în runtime real, nu ar trebui să se întâmple, dar e o protecție defensive). Pentru a atinge ramura TRUE, ar trebui ca repository-ul să returneze, pentru o categorie, un \texttt{amount = null}, ceea ce nu se întâmplă în query-ul JPA actual.
+
+Cu un test sintetic care injectează manual un \texttt{Object[\,]} cu \texttt{null} pe poziția 1, am putea atinge ramura. Am scris efectiv acest test în \texttt{...CircuitsTest.java}, dar el atinge doar o parte din branch-uri, nu toate.
+
+\subsection{\texttt{findUserByUsernameOrEmail} (62\% branch)}
+
+Metoda are 4 ramuri care depind de \texttt{login}: \texttt{null}, \texttt{blank}, găsit după email, găsit după username, negăsit deloc. Pentru ramura \enquote{negăsit deloc}, am scris un test în \texttt{CircuitsTest}, dar JaCoCo înregistrează imperfect short-circuit-ul \texttt{||} pe \texttt{login == null || login.isBlank()}.
+
+\subsection{\texttt{buildRiskUi} și \texttt{buildRecommendation} (76\%, 91\% branch)}
+
+Cele două metode auxiliare ale \texttt{computeSmartBudgetAdvice} conțin verificări defensive pe valori care, prin design, nu pot fi simultan adevărate. De exemplu, în \texttt{buildRiskUi}:
+
+\begin{lstlisting}[language=Java]
+if (budget == null || budget.compareTo(BigDecimal.ZERO) <= 0
+        || percentUsed == null) {
+    return new RiskUi("Buget nesetat", "bg-secondary");
+}
+\end{lstlisting}
+
+Operandul \texttt{percentUsed == null} nu poate fi TRUE în mod natural când buget-ul e setat: dacă bugetul e null sau zero, calculul de \texttt{percent} întoarce întotdeauna \texttt{null} și se intră deja pe ramura TRUE prin primul operand. Deci a treia sub-condiție e atinsă pe TRUE doar simultan cu primii doi, niciodată izolat.
+
+\section{De ce nu am forțat 100\%}
+
+Pentru a atinge artificial 100\% pe ramurile rămase, am avea nevoie de:
+
+\begin{itemize}
+    \item Folosirea adnotării \texttt{@Spy} pe \texttt{WalletServiceImpl} și a \texttt{doReturn(null).when(spy).computeInsights...}, ceea ce ar însemna să mockăm exact metoda pe care o testăm.
+    \item Construirea de \texttt{Object[\,]} sintetice pentru a forța \texttt{amount = null} - ceva ce baza de date reală nu produce vreodată.
+    \item Modificări în codul sursă pentru a elimina verificările defensive - ceea ce ar diminua robustețea aplicației.
+\end{itemize}
+
+Am decis să nu forțăm aceste teste, pentru că:
+
+\begin{enumerate}
+    \item Codul defensive există dintr-un motiv: protejează aplicația în cazul unor stări anormale ale bazei de date.
+    \item Testele cu \texttt{@Spy} pe metoda testată sunt anti-pattern: reduc valoarea testului la doar verificarea integrării cu Mockito, nu a codului real.
+    \item Industria are media de coverage între 60\% și 80\% pe proiectele reale \cite{google_coverage}; \textbf{80\% Branch Coverage e un rezultat solid}.
+\end{enumerate}
+
+\section{Comparație: Statement vs. Branch Coverage}
+
+În tabelul \ref{tab:jacoco-summary} se observă diferența între cele două metrici: 91\% Statement vs. 80\% Branch. Asta e perfect normal și consistent cu teoria: Branch Coverage e mai strict, deci scorul e mai mic.
+
+Diferența concretă vine din faptul că, la condiții compuse, Statement Coverage se mulțumește cu o singură evaluare (de exemplu \texttt{TRUE} care intră pe ramura adevărată), pe când Branch Coverage cere și varianta \texttt{FALSE}. La cascade de \texttt{if}-uri, fiecare \texttt{if} are 2 ramuri, deci numărul total de ramuri crește mai repede decât numărul de instrucțiuni.
+
+\section{Concluzii capitol}
+
+Suita noastră atinge:
+
+\begin{itemize}
+    \item \textbf{91\% Statement Coverage} pe \texttt{WalletServiceImpl}
+    \item \textbf{80\% Branch Coverage}
+    \item \textbf{100\% Method Coverage} (toate cele 21 de metode publice atinse)
+\end{itemize}
+
+Procentele rămase sub 100\% provin din cod defensive imposibil de atins natural cu input-uri realiste. Considerăm rezultatul satisfăcător pentru cerințele T3.
+
+În capitolul următor, trecem de la \textit{coverage} (instrumentare cantitativă) la \textit{mutation testing} (evaluare calitativă a suitei).

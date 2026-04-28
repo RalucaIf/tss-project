@@ -1,0 +1,289 @@
+\chapter{Cod sursă relevant}
+\label{ch:anexe}
+
+În această anexă sunt incluse fragmente de cod din \texttt{WalletServiceImpl} și din suita de teste, la care se face referire pe parcursul documentației. Codul complet se găsește în repository-ul GitHub al proiectului.
+
+\section{Fragmente din \texttt{WalletServiceImpl}}
+
+\subsection{Constructorul cu injecție de dependențe}
+
+\begin{lstlisting}[language=Java]
+@Service
+public class WalletServiceImpl implements WalletService {
+
+    private static final int WARNING_THRESHOLD_PERCENT  = 75;
+    private static final int CRITICAL_THRESHOLD_PERCENT = 90;
+    private static final Set<String> ALLOWED_CURRENCIES =
+        Set.of("RON", "EUR");
+
+    private final TripRepository tripRepository;
+    private final TripWalletRepository tripWalletRepository;
+    private final UserRepository userRepository;
+    private final WalletTransactionRepository walletTransactionRepository;
+
+    public WalletServiceImpl(TripRepository tripRepository,
+                             TripWalletRepository tripWalletRepository,
+                             UserRepository userRepository,
+                             WalletTransactionRepository walletTransactionRepository) {
+        this.tripRepository = tripRepository;
+        this.tripWalletRepository = tripWalletRepository;
+        this.userRepository = userRepository;
+        this.walletTransactionRepository = walletTransactionRepository;
+    }
+    // ... metodele clasei
+}
+\end{lstlisting}
+
+\subsection{Metoda \texttt{addExpenseOwnedByUser}}
+
+\begin{lstlisting}[language=Java]
+@Override
+@Transactional
+public WalletTransaction addExpenseOwnedByUser(
+        Long tripId, String usernameOrEmail,
+        BigDecimal amount, WalletCategory category,
+        String title, String note,
+        LocalDate spentAt, Integer dayIndex) {
+
+    TripWallet wallet = getOrCreateWalletOwnedByUser(tripId, usernameOrEmail);
+
+    if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+        throw new IllegalArgumentException("Suma trebuie sa fie > 0.");
+    }
+    String safeTitle = (title == null) ? "" : title.trim();
+    if (safeTitle.isBlank()) {
+        throw new IllegalArgumentException("Titlul este obligatoriu.");
+    }
+    if (dayIndex != null && dayIndex <= 0) {
+        throw new IllegalArgumentException("Ziua trebuie sa fie >= 1.");
+    }
+
+    WalletTransaction tx = new WalletTransaction();
+    tx.setWallet(wallet);
+    tx.setAmount(amount);
+    tx.setCategory(category != null ? category : WalletCategory.OTHER);
+    tx.setTitle(safeTitle);
+    tx.setNote(note);
+    tx.setSpentAt(spentAt != null ? spentAt : LocalDate.now());
+    tx.setDayIndex(dayIndex);
+
+    return walletTransactionRepository.save(tx);
+}
+\end{lstlisting}
+
+\subsection{Metoda \texttt{computeDaysRemainingSafe}}
+
+\begin{lstlisting}[language=Java]
+private Integer computeDaysRemainingSafe(Trip trip) {
+    LocalDate start = trip.getStartDate();
+    LocalDate end = trip.getEndDate();
+
+    if (start == null || end == null || end.isBefore(start)) {
+        return null;
+    }
+
+    LocalDate today = LocalDate.now();
+    if (today.isAfter(end)) {
+        return 0;
+    }
+    if (today.isBefore(start)) {
+        return (int) (ChronoUnit.DAYS.between(start, end) + 1);
+    }
+    return (int) (ChronoUnit.DAYS.between(today, end) + 1);
+}
+\end{lstlisting}
+
+\section{Fragmente din suita de teste}
+
+\subsection{Configurare comună}
+
+\begin{lstlisting}[language=Java, caption={Schelet din \texttt{...EquivalenceTest.java}}]
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+public class WalletServiceImplEquivalenceTest {
+
+    @Mock private TripRepository tripRepo;
+    @Mock private TripWalletRepository walletRepo;
+    @Mock private UserRepository userRepo;
+    @Mock private WalletTransactionRepository txRepo;
+
+    @InjectMocks private WalletServiceImpl service;
+
+    private TripWallet wallet;
+    private Trip trip;
+    private final Long tripId = 10L;
+    private final String login = "user@test.com";
+
+    @BeforeEach
+    public void setUp() {
+        UserEntity user = new UserEntity();
+        user.setId(1L);
+        user.setEmail(login);
+
+        trip = new Trip();
+        trip.setId(tripId);
+        trip.setUser(user);
+        trip.setStartDate(LocalDate.of(2026, 4, 15));
+        trip.setEndDate(LocalDate.of(2026, 4, 22));
+
+        wallet = new TripWallet();
+        wallet.setId(100L);
+        wallet.setTrip(trip);
+        wallet.setBudgetTotal(new BigDecimal("1000"));
+        wallet.setCurrency("RON");
+
+        when(userRepo.findByEmail(login)).thenReturn(user);
+        when(tripRepo.findById(tripId)).thenReturn(Optional.of(trip));
+        when(walletRepo.findByTrip_Id(tripId))
+            .thenReturn(Optional.of(wallet));
+    }
+}
+\end{lstlisting}
+
+\subsection{Test pentru clasa de echivalență P4 (sumă invalidă)}
+
+\begin{lstlisting}[language=Java]
+@Test
+public void testAdaugaCheltuiala_SumaNegativa_AruncaExceptie() {
+    BigDecimal sumaNegativa = new BigDecimal("-10");
+    assertThrows(IllegalArgumentException.class, () ->
+        service.addExpenseOwnedByUser(tripId, login,
+            sumaNegativa, WalletCategory.FOOD,
+            "Pranz", null, LocalDate.now(), 1));
+
+    verify(txRepo, never()).save(any());
+}
+\end{lstlisting}
+
+\subsection{Test pentru BVA pe pragul de 75\%}
+
+\begin{lstlisting}[language=Java]
+@Test
+public void testSumar_ExactPragAtentie_75LaSuta() {
+    wallet.setBudgetTotal(new BigDecimal("100"));
+    when(txRepo.sumAmountByWalletId(any()))
+        .thenReturn(new BigDecimal("75"));
+
+    WalletSummary summary =
+        service.computeSummaryOwnedByUser(tripId, login);
+
+    assertEquals(75, summary.getPercent());
+    assertEquals(WalletSummary.Status.ATENTIE, summary.getStatus());
+    assertEquals(new BigDecimal("25.00"),
+        summary.getRemaining().setScale(2));
+}
+\end{lstlisting}
+
+\subsection{Test pentru Condition Coverage cu 3 operanzi OR}
+
+\begin{lstlisting}[language=Java]
+@Test
+public void testStergere_OwnershipCheck_ConditionCoverage() {
+    Long txId = 42L;
+
+    // Caz 1: tranzactie cu wallet null -> primul operand TRUE
+    WalletTransaction txCuWalletNull = new WalletTransaction();
+    txCuWalletNull.setId(txId);
+    txCuWalletNull.setWallet(null);
+    when(txRepo.findById(txId)).thenReturn(Optional.of(txCuWalletNull));
+    assertThrows(IllegalStateException.class, () ->
+        service.deleteTransactionOwnedByUser(tripId, login, txId));
+
+    // Caz 2: tranzactie cu id null -> al doilea operand TRUE
+    WalletTransaction txCuIdNull = new WalletTransaction();
+    txCuIdNull.setWallet(wallet);
+    when(txRepo.findById(txId)).thenReturn(Optional.of(txCuIdNull));
+    assertThrows(IllegalStateException.class, () ->
+        service.deleteTransactionOwnedByUser(tripId, login, txId));
+
+    // Caz 3: id-uri diferite -> al treilea operand TRUE
+    TripWallet altWallet = new TripWallet();
+    altWallet.setId(999L);
+    WalletTransaction txCuIdGresit = new WalletTransaction();
+    txCuIdGresit.setId(txId);
+    txCuIdGresit.setWallet(altWallet);
+    when(txRepo.findById(txId)).thenReturn(Optional.of(txCuIdGresit));
+    assertThrows(IllegalStateException.class, () ->
+        service.deleteTransactionOwnedByUser(tripId, login, txId));
+
+    // Caz 4: toate operandele FALSE -> stergere reusita
+    WalletTransaction txValid = new WalletTransaction();
+    txValid.setId(txId);
+    txValid.setWallet(wallet);
+    when(txRepo.findById(txId)).thenReturn(Optional.of(txValid));
+    service.deleteTransactionOwnedByUser(tripId, login, txId);
+    verify(txRepo).delete(txValid);
+}
+\end{lstlisting}
+
+\subsection{Test țintit pentru mutantul \textsc{MathMutator}}
+
+\begin{lstlisting}[language=Java]
+@Test
+public void should_kill_percent_math_mutations() {
+    wallet.setBudgetTotal(new BigDecimal("200"));
+    when(txRepo.sumAmountByWalletId(any()))
+        .thenReturn(new BigDecimal("50"));
+
+    WalletSummary s = service.computeSummaryOwnedByUser(tripId, login);
+
+    // 50 / 200 * 100 = 25%. Daca multiply si divide
+    // sunt schimbate intre ele, calculul va da o valoare
+    // diferita (in particular, 0 dupa rotunjire).
+    assertEquals(25, s.getPercent());
+}
+\end{lstlisting}
+
+\subsection{Test pentru Circuits pe \texttt{computeDaysRemainingSafe}}
+
+\begin{lstlisting}[language=Java]
+@Test
+public void testCircuiteIndependente_computeDaysRemainingSafe() {
+    // C1: start = null
+    trip.setStartDate(null);
+    trip.setEndDate(LocalDate.now().plusDays(5));
+    WalletInsights i1 = service.computeInsightsOwnedByUser(tripId, login);
+    assertNull(i1.getDaysRemaining());
+
+    // C2: end = null
+    trip.setStartDate(LocalDate.now());
+    trip.setEndDate(null);
+    WalletInsights i2 = service.computeInsightsOwnedByUser(tripId, login);
+    assertNull(i2.getDaysRemaining());
+
+    // C3: end < start (interval invalid)
+    trip.setStartDate(LocalDate.now().plusDays(10));
+    trip.setEndDate(LocalDate.now().plusDays(5));
+    WalletInsights i3 = service.computeInsightsOwnedByUser(tripId, login);
+    assertNull(i3.getDaysRemaining());
+
+    // C4: today > end (calatorie incheiata)
+    trip.setStartDate(LocalDate.now().minusDays(20));
+    trip.setEndDate(LocalDate.now().minusDays(10));
+    WalletInsights i4 = service.computeInsightsOwnedByUser(tripId, login);
+    assertEquals(0, i4.getDaysRemaining());
+
+    // C5: today < start (calatorie viitoare)
+    trip.setStartDate(LocalDate.now().plusDays(3));
+    trip.setEndDate(LocalDate.now().plusDays(9));
+    WalletInsights i5 = service.computeInsightsOwnedByUser(tripId, login);
+    assertEquals(7, i5.getDaysRemaining());
+
+    // C6: caz normal (calatorie in desfasurare)
+    trip.setStartDate(LocalDate.now().minusDays(2));
+    trip.setEndDate(LocalDate.now().plusDays(4));
+    WalletInsights i6 = service.computeInsightsOwnedByUser(tripId, login);
+    assertEquals(5, i6.getDaysRemaining());
+}
+\end{lstlisting}
+
+\section{CFG pentru \texttt{addExpenseOwnedByUser}}
+
+Pentru completitudine, mai jos e prezentat și CFG-ul pentru \texttt{addExpenseOwnedByUser} (figura \ref{fig:cfg-addExpense}), care e cea mai testată metodă din clasa noastră.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\linewidth]{03-cfg-addExpense.png}
+    \caption{CFG pentru \texttt{addExpenseOwnedByUser}: trei decizii principale (sumă, titlu, dayIndex) cu trei branch-uri de eroare și o cale de succes.}
+    \label{fig:cfg-addExpense}
+\end{figure}

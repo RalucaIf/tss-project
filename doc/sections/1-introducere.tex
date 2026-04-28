@@ -1,0 +1,56 @@
+\chapter{Introducere}
+\label{ch:intro}
+
+\section{Context și motivație}
+
+Testarea software a devenit una dintre activitățile esențiale în ingineria modernă a aplicațiilor. Costul unui defect descoperit târziu, în producție, poate fi de mai multe ori mai mare decât costul unui defect identificat în timpul dezvoltării \cite{myers2011}. Mai mult, în domeniile sensibile - financiar, medical, sau în servicii care manipulează date personale - bug-urile pot duce la pierderi materiale concrete și la deteriorarea încrederii utilizatorilor. Practic, software-ul fără teste e o promisiune care nu se poate verifica.
+
+În contextul disciplinei \textit{Testarea Sistemelor Software}, proiectul nostru are ca scop aplicarea practică a strategiilor de testare unitară pe o clasă dintr-o aplicație reală. Nu pe un exemplu didactic simplificat, ci pe cod care funcționează efectiv într-o aplicație web și care prezintă toate caracteristicile incomode ale codului real: dependențe multiple, interacțiuni cu o bază de date, validări complexe, calcule monetare cu \texttt{BigDecimal}, condiții logice compuse cu trei sau patru operanzi.
+
+Aplicația aleasă pentru studiul de caz se numește \textit{Călătorii} și e un planificator de vacanțe dezvoltat de noi pe stiva Spring Boot 3 + JPA + Thymeleaf. Are funcționalități multiple: gestiune călătorii, jurnal de călătorie, achiziție de tururi, leaderboard, hartă interactivă a țărilor vizitate, chatbot. Modulul pe care l-am ales pentru testare unitară este modulul \textit{Wallet}, mai precis clasa \texttt{WalletServiceImpl}, care răspunde de logica financiară a fiecărei călătorii.
+
+\section{Obiectivele proiectului}
+
+Cerințele proiectului T3 stabilesc, pentru fiecare echipă, următoarele obiective \cite{tss_assignment}:
+
+\begin{itemize}
+    \item Alegerea unei singure clase relevante și aplicarea unor teste unitare pe ea, ilustrând cele șase strategii fundamentale: partiționare în clase de echivalență, analiza valorilor de frontieră, acoperire la nivel de instrucțiune, decizie, condiție și pe circuite independente.
+    \item Generarea unui raport de mutanți cu un instrument dedicat (\textsc{PITest} pentru Java) și omorârea explicită a cel puțin doi mutanți neechivalenți.
+    \item Realizarea unui experiment cu un instrument AI care generează teste automat (ChatGPT, GitHub Copilot etc.), urmat de o comparație detaliată cu suita proprie.
+    \item Documentarea completă a procesului, cu strategii, diagrame, configurația software și hardware, capturi de ecran cu rularea testelor, comparații tabelare și interpretări.
+\end{itemize}
+
+În plus, ne-am setat și câteva obiective interne, care depășesc strict cerințele:
+
+\begin{itemize}
+    \item Să atingem cel puțin 80\% pe \textit{branch coverage} măsurat cu JaCoCo, ca prag minim pentru o suită considerată solidă.
+    \item Să atingem cel puțin 60\% mutation score, ținând cont de complexitatea ridicată a clasei alese.
+    \item Să demonstrăm că aplicăm strategiile cu rigoare - nu doar din punct de vedere cantitativ, ci și conceptual, justificând în documentație de ce a fost ales fiecare test în parte.
+\end{itemize}
+
+\section{Echipa și diviziunea muncii}
+
+Proiectul a fost realizat de o echipă de trei studenți. Munca a fost împărțită astfel încât fiecare membru să contribuie la fiecare etapă majoră:
+
+\begin{itemize}
+    \item \textbf{Iftime Raluca} (șef echipă) - dezvoltarea aplicației \textit{Călătorii}, integrarea modulului wallet, configurarea instrumentelor de testare (Maven, JaCoCo, PITest), redactarea documentației.
+    \item \textbf{Lupeș Ioan-Marian} - dezvoltarea aplicației, integrarea funcționalităților secundare (chatbot, hartă), generarea capturilor de ecran și a videoclipurilor pentru livrabile.
+    \item \textbf{Denisa Gheorghe} - dezvoltarea aplicației, contribuții la modulul wallet, suport pentru integrarea testelor și pentru experimentul cu AI.
+\end{itemize}
+
+\section{Structura lucrării}
+
+Lucrarea este organizată în nouă capitole, urmate de o secțiune de bibliografie și o anexă cu fragmente de cod relevante. Pe scurt:
+
+\begin{itemize}
+    \item \textbf{Capitolul \ref{ch:preliminarii}} - prezentarea fundamentelor teoretice ale testării software, cu accent pe strategiile aplicate (Black Box / White Box / Mutation).
+    \item \textbf{Capitolul \ref{ch:configurare}} - configurația de lucru: hardware, sistem de operare, versiunile instrumentelor folosite.
+    \item \textbf{Capitolul \ref{ch:aplicatia}} - descrierea aplicației \textit{Călătorii} și a clasei \texttt{WalletServiceImpl}, cu motivarea alegerii.
+    \item \textbf{Capitolul \ref{ch:strategii}} - aplicarea celor șase strategii pe clasa noastră, cu exemple, tabele, diagrame de control flow și fragmente de cod.
+    \item \textbf{Capitolul \ref{ch:jacoco}} - rezultate JaCoCo (statement coverage și branch coverage), capturi de ecran, interpretarea procentelor neacoperite.
+    \item \textbf{Capitolul \ref{ch:pitest}} - rezultate PITest, analiza mutanților supraviețuitori, mutanții neechivalenți pe care i-am omorât explicit.
+    \item \textbf{Capitolul \ref{ch:ai}} - raport asupra folosirii unui tool AI (ChatGPT) pentru generarea automată de teste, cu prompt, răspuns, capturi de ecran și comparație cantitativă cu suita proprie.
+    \item \textbf{Capitolul \ref{ch:concluzii}} - concluzii finale și direcții viitoare.
+\end{itemize}
+
+Anexa A conține fragmente de cod folosite ca referință pe parcursul documentației, iar bibliografia conține toate sursele consultate, inclusiv documentațiile oficiale ale instrumentelor folosite și articolele didactice de la curs.

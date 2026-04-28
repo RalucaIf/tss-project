@@ -1,0 +1,33 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Configurația hardware folosită pentru dezvoltare și testare.}}{22}{table.caption.5}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Stiva tehnologică a aplicației și a suitei de teste.}}{23}{table.caption.6}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Metodele publice din \texttt {WalletServiceImpl}, ordonate după complexitate.}}{30}{table.caption.13}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Compararea claselor candidat pentru testare unitară.}}{32}{table.caption.14}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Organizarea suitei de teste, pe strategii.}}{34}{table.caption.15}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Strategia aplicată și metoda principală țintită.}}{36}{table.caption.17}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Clase de echivalență pentru \texttt {addExpenseOwnedByUser}.}}{37}{table.caption.18}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Valorile de frontieră testate pentru \texttt {addExpenseOwnedByUser}.}}{38}{table.caption.19}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Valorile testate pentru cascada de praguri.}}{38}{table.caption.21}%
+\contentsline {table}{\numberline {5.6}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Ramurile din \texttt {buildRiskUi} și valorile de input care le activează.}}{42}{table.caption.23}%
+\contentsline {table}{\numberline {5.7}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Condițiile compuse din \texttt {WalletServiceImpl} și operatorii.}}{42}{table.caption.24}%
+\contentsline {table}{\numberline {5.8}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Condition Coverage pentru C3 (3 operanzi OR cu short-circuit).}}{42}{table.caption.25}%
+\contentsline {table}{\numberline {5.9}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Metodele țintite pentru Basis Path Coverage.}}{43}{table.caption.26}%
+\contentsline {table}{\numberline {5.10}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Circuitele independente pentru \texttt {computeDaysRemainingSafe}.}}{45}{table.caption.28}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Rezultatele JaCoCo pe \texttt {WalletServiceImpl}.}}{47}{table.caption.30}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Coverage JaCoCo per metodă (sortat descrescător după branch coverage).}}{48}{table.caption.32}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {7.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Rezultate generale PITest pe \texttt {WalletServiceImpl}.}}{52}{table.caption.34}%
+\contentsline {table}{\numberline {7.2}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Distribuția mutanților pe tipuri de mutatori.}}{53}{table.caption.36}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {8.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Clase folosite de AI vs. clasele reale din proiect.}}{61}{table.caption.43}%
+\contentsline {table}{\numberline {8.2}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Metode inventate de AI pe entitățile JPA.}}{62}{table.caption.44}%
+\contentsline {table}{\numberline {8.3}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Metode inventate de AI pe repository-urile JPA.}}{62}{table.caption.45}%
+\contentsline {table}{\numberline {8.4}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Comparație detaliată suita proprie vs. suita generată de AI.}}{63}{table.caption.46}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {9.1}{\ignorespaces \xpg@aux {}{romanian}\ignorespaces Obiectivele proiectului și realizarea lor.}}{66}{table.caption.48}%
+\addvspace {10\p@ }

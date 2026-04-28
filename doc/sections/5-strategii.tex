@@ -1,0 +1,456 @@
+\chapter{Strategiile de testare aplicate}
+\label{ch:strategii}
+
+În acest capitol prezentăm aplicarea efectivă a celor șase strategii de testare pe \texttt{WalletServiceImpl}, cu exemple de cod, tabele de partiții/frontiere/circuite și interpretări.
+
+\section{Organizarea suitei}
+
+Am ales să organizăm suita pe \textbf{șapte fișiere de test}, câte unul pentru fiecare strategie (plus unul pentru Mutation Testing):
+
+\begin{table}[!htb]
+\centering
+\caption{Organizarea suitei de teste, pe strategii.}
+\label{tab:test-files}
+\begin{tabular}{lcl}
+\toprule
+\textbf{Fișier} & \textbf{Nr. teste} & \textbf{Strategie} \\
+\midrule
+\texttt{...EquivalenceTest.java} & 9 & Equivalence Partitioning \\
+\texttt{...BoundaryTest.java} & 10 & Boundary Value Analysis \\
+\texttt{...StatementTest.java} & 3 & Statement Coverage \\
+\texttt{...DecisionTest.java} & 2 & Decision Coverage \\
+\texttt{...ConditionTest.java} & 7 & Condition Coverage \\
+\texttt{...CircuitsTest.java} & 3 & Basis Path / Circuits \\
+\texttt{...MutationTest.java} & 5+ & Mutation Testing \\
+\midrule
+\textbf{Total} & \textbf{$\sim$40} & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Distribuția vizuală e prezentată în figura \ref{fig:test-distribution}.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.7\linewidth]{12-test-distribution.png}
+    \caption{Distribuția testelor pe cele șase strategii + Mutation. Culorile evidențiază clasificarea Black Box / White Box / Mutation.}
+    \label{fig:test-distribution}
+\end{figure}
+
+\subsection{Decizia de a aplica strategiile pe metode diferite}
+
+O decizie importantă în planificarea suitei a fost dacă să aplicăm \textit{toate} cele șase strategii pe \textit{aceeași} metodă, sau dacă să distribuim strategiile pe metodele cele mai potrivite. Am ales a doua variantă, din mai multe motive:
+
+\begin{itemize}
+    \item Nu toate metodele au sens pentru toate strategiile. \texttt{listTransactionsOwnedByUser}, de exemplu, are V(G) = 1 și o singură instrucțiune relevantă. Statement Coverage și Decision Coverage sunt triviale pe ea, iar Condition Coverage nu se aplică (nu există condiții compuse).
+    \item Reflectă mai fidel practica profesională: un test bun se aplică acolo unde se aplică natural. Forțarea unei strategii pe un cod care nu o cere produce teste artificiale, care nu adaugă valoare.
+    \item Distribuția a permis să acoperim 21 din 21 de metode publice ale clasei la coverage de 100\% (vezi capitolul \ref{ch:jacoco}), față de a ne fi concentrat pe 1-2 metode.
+\end{itemize}
+
+Tabelul \ref{tab:strategy-method} arată maparea strategie - metodă principal țintită.
+
+\begin{table}[!htb]
+\centering
+\caption{Strategia aplicată și metoda principală țintită.}
+\label{tab:strategy-method}
+\begin{tabularx}{\linewidth}{lX}
+\toprule
+\textbf{Strategie} & \textbf{Metoda principală} \\
+\midrule
+Equivalence Partitioning & \texttt{addExpenseOwnedByUser} \\
+Boundary Value Analysis & \texttt{addExpense...} + \texttt{computeSummary...} \\
+Statement Coverage & \texttt{updateBudget...} + \texttt{deleteTransaction...} \\
+Decision Coverage & \texttt{computeSmartBudgetAdvice...} \\
+Condition Coverage & multiple metode cu condiții compuse \\
+Circuits & \texttt{findUserBy...} + \texttt{computeDaysRemainingSafe} + \texttt{computeInsights...} \\
+Mutation Testing & raport general + teste țintite pe mutanți \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Echipamentul comun de test (test fixture)}
+
+Toate cele șapte fișiere folosesc o structură similară, cu mock-uri pe cele patru repository-uri și un fixture comun de utilizator + călătorie + portofel:
+
+\begin{lstlisting}[language=Java, caption={Schelet comun pentru fișierele de test.}]
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+public class WalletServiceImplXxxTest {
+
+    @Mock private TripRepository tripRepo;
+    @Mock private TripWalletRepository walletRepo;
+    @Mock private UserRepository userRepo;
+    @Mock private WalletTransactionRepository txRepo;
+
+    @InjectMocks private WalletServiceImpl service;
+
+    private TripWallet wallet;
+    private Trip trip;
+    private final Long tripId = 10L;
+    private final String login = "user@test.com";
+
+    @BeforeEach
+    public void setUp() {
+        UserEntity user = new UserEntity();
+        user.setId(1L);
+
+        trip = new Trip();
+        trip.setId(tripId);
+        trip.setUser(user);
+
+        wallet = new TripWallet();
+        wallet.setTrip(trip);
+
+        when(userRepo.findByEmail(login)).thenReturn(user);
+        when(tripRepo.findById(tripId)).thenReturn(Optional.of(trip));
+        when(walletRepo.findByTrip_Id(tripId)).thenReturn(Optional.of(wallet));
+    }
+
+    // teste specifice strategiei...
+}
+\end{lstlisting}
+
+Adnotarea \texttt{@MockitoSettings(strictness = Strictness.LENIENT)} permite ca stub-urile declarate în \texttt{@BeforeEach} să nu fie folosite în fiecare test individual, fără ca Mockito să arunce eroarea \texttt{UnnecessaryStubbingException}. Asta e util pentru fixture-urile comune, care sunt folosite selectiv.
+
+% --------------------------------------------------------------------
+\section{Equivalence Partitioning}
+\label{sec:ep}
+
+\textit{Equivalence Partitioning} (EP) împarte spațiul de input al unei metode în clase echivalente, în care comportamentul așteptat e identic. Apoi alegem un singur reprezentant pe clasă.
+
+\subsection{Metoda țintă: \texttt{addExpenseOwnedByUser}}
+
+Metoda primește 6 parametri: \texttt{amount}, \texttt{category}, \texttt{title}, \texttt{note}, \texttt{spentAt}, \texttt{dayIndex}. Pentru fiecare am identificat clasele relevante.
+
+\begin{table}[!htb]
+\centering
+\caption{Clase de echivalență pentru \texttt{addExpenseOwnedByUser}.}
+\label{tab:ep-classes}
+\begin{tabularx}{\linewidth}{clX}
+\toprule
+\textbf{Partiție} & \textbf{Condiție} & \textbf{Comportament așteptat} \\
+\midrule
+P1 & toate input-urile valide & \texttt{save()} pe \texttt{txRepo}, tranzacție creată corect \\
+P2 & \texttt{category = null} & fallback la \texttt{WalletCategory.OTHER} \\
+P3 & \texttt{spentAt = null} & fallback la \texttt{LocalDate.now()} \\
+P4 & \texttt{amount} \texttt{null}/negativă & \texttt{IllegalArgumentException} \\
+P5 & \texttt{title} blank/null & \texttt{IllegalArgumentException} \\
+P6 & \texttt{dayIndex <= 0} & \texttt{IllegalArgumentException} \\
+P7 & apel \texttt{listTransactions...} & lista sortată din repo \\
+P8 & \texttt{tripId} inexistent & \texttt{IllegalArgumentException} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Exemplu de test EP}
+
+\begin{lstlisting}[language=Java, caption={Test pentru P2 - categorie nulă.}]
+@Test
+public void testAdaugaCheltuiala_CategorieLipsa() {
+    // P2: categorie null -> fallback OTHER
+    service.addExpenseOwnedByUser(tripId, login,
+            new BigDecimal("25.00"), null, "Taxi", null,
+            LocalDate.of(2026, 4, 18), 2);
+
+    ArgumentCaptor<WalletTransaction> cap =
+        ArgumentCaptor.forClass(WalletTransaction.class);
+    verify(txRepo).save(cap.capture());
+    assertEquals(WalletCategory.OTHER, cap.getValue().getCategory());
+}
+\end{lstlisting}
+
+Folosim \texttt{ArgumentCaptor} pentru a captura argumentul cu care a fost apelată metoda \texttt{save()} pe mock, ca să verificăm că enum-ul a fost setat corect.
+
+\subsection{Numărul de teste pentru EP}
+
+În total, fișierul \texttt{...EquivalenceTest.java} conține \textbf{9 teste}, câte unul pentru fiecare partiție P1-P8, plus un test suplimentar care verifică că și \texttt{title = null} (nu doar \texttt{title} blank cu spații) e respins corect - o sub-partiție a P5.
+
+% --------------------------------------------------------------------
+\section{Boundary Value Analysis}
+\label{sec:bva}
+
+\textit{Boundary Value Analysis} (BVA) testează valori chiar pe granițe, nu doar reprezentanți tipici. Bug-urile cele mai frecvente apar exact la \texttt{<} vs. \texttt{<=}.
+
+\subsection{Frontiere pentru \texttt{addExpenseOwnedByUser}}
+
+\begin{table}[!htb]
+\centering
+\caption{Valorile de frontieră testate pentru \texttt{addExpenseOwnedByUser}.}
+\label{tab:bva-input}
+\begin{tabularx}{\linewidth}{lcXX}
+\toprule
+\textbf{Parametru} & \textbf{Val.} & \textbf{Validitate} & \textbf{Justificare} \\
+\midrule
+\texttt{amount} & 0 & invalid & exact pe pragul \texttt{<= 0} \\
+\texttt{amount} & 0.01 & valid & cea mai mică valoare validă \\
+\texttt{amount} & -10 & invalid & sub frontieră \\
+\texttt{title} & "" & invalid & string gol \\
+\texttt{title} & "a" & valid & cel mai scurt valid \\
+\texttt{dayIndex} & 0 & invalid & exact pe \texttt{<= 0} \\
+\texttt{dayIndex} & 1 & valid & primul valid \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Frontiere pentru cascada de praguri}
+
+Cea mai relevantă aplicare a BVA e pe metoda \texttt{computeSummaryOwnedByUser}, care folosește praguri la 75\% și 100\% pentru a stabili \texttt{Status}. Figura \ref{fig:thresholds} arată grafic cascada și valorile testate.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=\linewidth]{11-thresholds-cascade.png}
+    \caption{Cascada de praguri în \texttt{computeSummaryOwnedByUser} (75\% / 90\% / 100\%) și valorile testate prin BVA (74, 75, 99, 100). Triunghiurile albastre indică valorile efectiv folosite în teste.}
+    \label{fig:thresholds}
+\end{figure}
+
+\begin{table}[!htb]
+\centering
+\caption{Valorile testate pentru cascada de praguri.}
+\label{tab:bva-thresholds}
+\begin{tabularx}{\linewidth}{cXc}
+\toprule
+\textbf{Procent} & \textbf{Justificare} & \textbf{Status așteptat} \\
+\midrule
+74 & ultimul \texttt{OK}, chiar sub prag & OK \\
+75 & exact pe prag, primul \texttt{ATENTIE} & ATENTIE \\
+99 & ultimul \texttt{ATENTIE}, chiar sub depășire & ATENTIE \\
+100 & exact pe prag, primul \texttt{DEPASIT} & DEPASIT \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Numărul de teste pentru BVA}
+
+Fișierul \texttt{...BoundaryTest.java} conține \textbf{10 teste}: 6 teste pentru frontierele input (\texttt{amount}, \texttt{title}, \texttt{dayIndex}) și 4 teste pentru cascada de praguri (74, 75, 99, 100\%).
+
+% --------------------------------------------------------------------
+\section{Statement Coverage}
+\label{sec:stmt}
+
+\textit{Statement Coverage} cere ca fiecare instrucțiune să fie executată cel puțin o dată. E cel mai relaxat criteriu structural.
+
+\subsection{Metoda țintă: \texttt{updateBudgetOwnedByUser}}
+
+Metoda are 5 ramuri distincte (instrucțiuni distincte):
+
+\begin{lstlisting}[language=Java, caption={Metoda \texttt{updateBudgetOwnedByUser} - 5 ramuri.}]
+public TripWallet updateBudgetOwnedByUser(Long tripId, String login,
+        BigDecimal budgetTotal, String currency) {
+    TripWallet wallet = getOrCreateWalletOwnedByUser(tripId, login);
+
+    if (budgetTotal == null)
+        throw new IllegalArgumentException("Bugetul este obligatoriu.");
+    if (budgetTotal.compareTo(BigDecimal.ZERO) < 0)
+        throw new IllegalArgumentException("Bugetul nu poate fi negativ.");
+
+    String normalizedCurrency = (currency == null)
+        ? "RON"
+        : currency.trim().toUpperCase(Locale.ROOT);
+    if (!ALLOWED_CURRENCIES.contains(normalizedCurrency)) {
+        normalizedCurrency = "RON";
+    }
+
+    wallet.setBudgetTotal(budgetTotal);
+    wallet.setCurrency(normalizedCurrency);
+    return tripWalletRepository.save(wallet);
+}
+\end{lstlisting}
+
+Pentru a atinge fiecare instrucțiune, am scris un singur test cu cinci sub-cazuri:
+
+\begin{enumerate}
+    \item \texttt{budgetTotal = null} - linia \texttt{throw} 1
+    \item \texttt{budgetTotal = -10} - linia \texttt{throw} 2
+    \item \texttt{currency = null} - ramura ternary, fallback \texttt{"RON"}
+    \item \texttt{currency = "  usd  "} - ramura cu valută invalidă (după trim+upper, "USD" nu e în set), fallback la "RON"
+    \item \texttt{currency = "  eur  "} - ramura cu valută validă, setare normală
+\end{enumerate}
+
+\subsection{Numărul de teste pentru Statement}
+
+Fișierul \texttt{...StatementTest.java} conține \textbf{3 teste mari}, fiecare verificând o metodă diferită cu mai multe sub-cazuri:
+
+\begin{itemize}
+    \item \texttt{updateBudgetOwnedByUser} - 5 ramuri
+    \item \texttt{deleteTransactionOwnedByUser} - 3 ramuri
+    \item \texttt{getOrCreateWalletOwnedByUser} - 2 ramuri
+\end{itemize}
+
+% --------------------------------------------------------------------
+\section{Decision Coverage}
+\label{sec:dec}
+
+\textit{Decision Coverage} cere ca fiecare decizie să fie evaluată atât pe ramura TRUE cât și pe FALSE.
+
+\subsection{Metoda țintă: \texttt{computeSmartBudgetAdviceOwnedByUser}}
+
+Această metodă, cu V(G) = 18, apelează intern trei sub-metode private bogate în decizii:
+
+\begin{itemize}
+    \item \texttt{buildRiskUi} - cascadă de 4 \texttt{if}-uri pe praguri
+    \item \texttt{computeDaysRemainingSafe} - 5 ramuri pentru zile rămase
+    \item \texttt{buildRecommendation} - ramuri pentru status, ritm, prognoză, allowance
+\end{itemize}
+
+\subsection{CFG pentru \texttt{buildRiskUi}}
+
+Figura \ref{fig:cfg-buildRiskUi} arată CFG-ul metodei \texttt{buildRiskUi}, care e nucleul logicii de stare.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.65\linewidth]{05-cfg-buildRiskUi.png}
+    \caption{CFG pentru \texttt{buildRiskUi}: cascadă de 4 \texttt{if}-uri care decid label-ul de risc (Buget nesetat / Depășit / Critic / Atenție / OK).}
+    \label{fig:cfg-buildRiskUi}
+\end{figure}
+
+\subsection{Cele 5 ramuri testate}
+
+\begin{table}[!htb]
+\centering
+\caption{Ramurile din \texttt{buildRiskUi} și valorile de input care le activează.}
+\label{tab:dec-buildRiskUi}
+\begin{tabularx}{\linewidth}{cXc}
+\toprule
+\textbf{Ramură} & \textbf{Condiție evaluată TRUE} & \textbf{Rezultat} \\
+\midrule
+1 & \texttt{budget = null} (sau \texttt{<= 0}, sau \texttt{percent = null}) & "Buget nesetat" \\
+2 & \texttt{percent >= 100} & "Depășit" \\
+3 & \texttt{percent >= 90} (și < 100) & "Critic" \\
+4 & \texttt{percent >= 75} (și < 90) & "Atenție" \\
+5 & default (percent < 75) & "OK" \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Fișierul \texttt{...DecisionTest.java} conține \textbf{2 teste}: unul cu trei scenarii progresive ale bugetului (nesetat, fără consum, în consum), altul dedicat pentru toate cele 5 stări de risc din \texttt{buildRiskUi}.
+
+% --------------------------------------------------------------------
+\section{Condition Coverage}
+\label{sec:cond}
+
+\textit{Condition Coverage} cere ca fiecare sub-condiție individuală a unei expresii compuse să fie evaluată pe TRUE și pe FALSE.
+
+\subsection{Cele 6 condiții compuse țintite}
+
+Am identificat în \texttt{WalletServiceImpl} șase condiții compuse pe care merită să le testăm cu Condition Coverage:
+
+\begin{table}[!htb]
+\centering
+\caption{Condițiile compuse din \texttt{WalletServiceImpl} și operatorii.}
+\label{tab:conditions}
+\begin{tabularx}{\linewidth}{clX}
+\toprule
+\textbf{Cod} & \textbf{Operatori} & \textbf{Condiție} \\
+\midrule
+C1 & \texttt{||} (2) & \texttt{amount == null || amount <= 0} \\
+C2 & \texttt{\&\&} (2) & \texttt{dayIndex != null \&\& dayIndex <= 0} \\
+C3 & \texttt{||} (3) & \texttt{wallet==null || id==null || !equals(ids)} \\
+C4 & \texttt{||} (3) & \texttt{budget==null || budget<=0 || percent==null} \\
+C5 & \texttt{||} (2) & \texttt{user==null || !equals(ids)} \\
+C6 & simplă & \texttt{if (totalSpent == null)} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Exemplu detaliat: C3 cu trei operanzi OR}
+
+C3 e cea mai complexă condiție din clasă. Pentru ea, datorită short-circuit-ului Java, sunt necesare 4 cazuri distincte:
+
+\begin{table}[!htb]
+\centering
+\caption{Condition Coverage pentru C3 (3 operanzi OR cu short-circuit).}
+\label{tab:cond-c3}
+\begin{tabular}{cccc l}
+\toprule
+\textbf{Test} & \textbf{C1} & \textbf{C2} & \textbf{C3} & \textbf{Rezultat} \\
+\midrule
+1 & T & --- & --- & throw \texttt{IllegalState} \\
+2 & F & T & --- & throw \texttt{IllegalState} \\
+3 & F & F & T & throw \texttt{IllegalState} \\
+4 & F & F & F & \texttt{delete} efectuat \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+(Liniile \enquote{---} indică sub-condiții care nu sunt evaluate datorită short-circuit-ului.)
+
+Verificăm că:
+\begin{itemize}
+    \item C1 (\texttt{wallet==null}) e TRUE în testul 1, FALSE în testele 2-4.
+    \item C2 (\texttt{id==null}) e TRUE în testul 2, FALSE în testele 3-4 (în testul 1 nu se evaluează).
+    \item C3 (\texttt{!equals(ids)}) e TRUE în testul 3, FALSE în testul 4.
+\end{itemize}
+
+Fiecare operand e evaluat și TRUE și FALSE. Condition Coverage atins pentru C3.
+
+\subsection{Numărul de teste pentru Condition}
+
+Fișierul \texttt{...ConditionTest.java} conține \textbf{7 teste}, câte unul pentru fiecare condiție compusă plus un test pentru condiția simplă C6.
+
+% --------------------------------------------------------------------
+\section{Basis Path / Circuits Coverage}
+\label{sec:basis}
+
+\textit{Basis Path Coverage} (sau \textit{Independent Circuits Coverage}) parcurge toate căile independente prin Control Flow Graph-ul fiecărei metode.
+
+\subsection{Metode țintite}
+
+Pentru această strategie am ales 3 metode cu CFG-uri de complexitate medie, suficient de mici cât să fie desenabile clar.
+
+\begin{table}[!htb]
+\centering
+\caption{Metodele țintite pentru Basis Path Coverage.}
+\label{tab:circuits}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Metodă} & \textbf{Noduri} & \textbf{Muchii} & \textbf{V(G)} \\
+\midrule
+\texttt{findUserByUsernameOrEmail} & 9 & 12 & 5 \\
+\texttt{computeDaysRemainingSafe} & 8 & 12 & 6 \\
+\texttt{computeInsightsOwnedByUser} & 10 & 14 & 6 \\
+\midrule
+\textbf{Total} & & & \textbf{17} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Exemplu detaliat: \texttt{computeDaysRemainingSafe}}
+
+Figura \ref{fig:cfg-days} arată CFG-ul pentru metoda care calculează zilele rămase într-o călătorie.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.6\linewidth]{04-cfg-daysRemaining.png}
+    \caption{CFG pentru \texttt{computeDaysRemainingSafe}, cu 8 noduri și 12 muchii. V(G) = 6 indică numărul de circuite independente prin graf.}
+    \label{fig:cfg-days}
+\end{figure}
+
+Cele 6 circuite independente sunt:
+
+\begin{table}[!htb]
+\centering
+\caption{Circuitele independente pentru \texttt{computeDaysRemainingSafe}.}
+\label{tab:circuits-days}
+\begin{tabularx}{\linewidth}{cXl}
+\toprule
+\textbf{C\#} & \textbf{Scenariu} & \textbf{Return} \\
+\midrule
+C1 & \texttt{start = null} & \texttt{null} \\
+C2 & \texttt{end = null} & \texttt{null} \\
+C3 & \texttt{end < start} (interval invalid) & \texttt{null} \\
+C4 & \texttt{today > end} (călătorie încheiată) & \texttt{0} \\
+C5 & \texttt{today < start} (călătorie viitoare) & durata totală \\
+C6 & caz normal (călătorie în desfășurare) & zile de la azi la \texttt{end} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+În testele noastre, fiecare scenariu e instanțiat prin setarea relativă a datelor față de \texttt{LocalDate.now()}: \texttt{minusDays(10).minusDays(1)} pentru o călătorie încheiată, \texttt{plusDays(3).plusDays(9)} pentru una viitoare etc. Această abordare ne permite să testăm metoda fără să avem nevoie să mock-uim \texttt{LocalDate.now()}.
+
+\subsection{Numărul de teste pentru Circuits}
+
+Fișierul \texttt{...CircuitsTest.java} conține \textbf{3 teste}, fiecare aplicat pe câte o metodă, cu apeluri succesive în interiorul testului care parcurg toate cele V(G) circuite.
+
+\section{Concluzii capitol}
+
+Am acoperit cele șase strategii teoretice prin teste concrete pe \texttt{WalletServiceImpl}. În capitolele următoare prezentăm \textbf{rezultatele cantitative} obținute prin instrumentarea suitei: ce procent de coverage atinge JaCoCo (capitolul \ref{ch:jacoco}) și ce procent de mutanți omoară PITest (capitolul \ref{ch:pitest}).

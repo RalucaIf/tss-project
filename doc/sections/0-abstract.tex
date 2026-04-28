@@ -1,0 +1,29 @@
+\begin{abstractpage}
+
+\begin{abstract}{romanian}
+
+\noindent
+Lucrarea de față documentează aplicarea unui set de strategii consacrate de testare unitară pe o clasă reală dintr-o aplicație web Spring Boot. Clasa aleasă, \texttt{WalletServiceImpl}, gestionează portofelul fiecărei călătorii din aplicația \textit{Călătorii}: setarea unui buget, adăugarea și ștergerea cheltuielilor, calculul unor sumarizări KPI și generarea de recomandări inteligente bazate pe ritmul de consum.
+
+Asupra acestei clase au fost aplicate, în mod sistematic, șase strategii de testare: partiționare în clase de echivalență, analiza valorilor de frontieră, acoperire la nivel de instrucțiune, decizie, condiție și acoperire pe circuite independente (basis path). În plus, calitatea suitei a fost evaluată prin Mutation Testing folosind \textsc{PITest}, instrument care generează variante mutate ale codului sursă pentru a verifica dacă testele detectează modificările.
+
+Au fost scrise în total în jur de 40 de teste, organizate pe șapte fișiere distincte (câte unul pentru fiecare strategie), care au atins 91\% statement coverage și 80\% branch coverage măsurate cu JaCoCo, respectiv un mutation score de 60\% pe \textsc{PITest}. Am identificat și omorât în mod explicit doi mutanți neechivalenți (unul de tip \textsc{MathMutator}, unul de tip \textsc{ConditionalsBoundaryMutator}). Suplimentar, am realizat un experiment în care un model AI (ChatGPT) a fost rugat să genereze automat o suită echivalentă pentru aceeași clasă, fără context. Comparația cantitativă și calitativă a celor două suite e prezentată în finalul lucrării.
+
+\textbf{Cuvinte cheie:} testare software, testare unitară, JUnit 5, Mockito, JaCoCo, PITest, mutation testing, Equivalence Partitioning, Boundary Value Analysis, Spring Boot.
+
+\end{abstract}
+
+\begin{abstract}{english}
+
+\noindent
+This work documents the systematic application of a set of established unit testing strategies on a real class from a Spring Boot web application. The chosen class, \texttt{WalletServiceImpl}, manages the wallet of each trip in the \textit{Călătorii} application: setting a budget, adding and deleting expenses, computing KPI summaries and generating smart recommendations based on consumption rate.
+
+We applied six testing strategies on this class in a structured manner: equivalence partitioning, boundary value analysis, statement coverage, decision coverage, condition coverage and basis path (independent circuits) coverage. Additionally, the quality of the test suite was evaluated through Mutation Testing using \textsc{PITest}, a tool which generates mutated variants of the source code to verify whether the tests detect the changes.
+
+A total of around 40 tests were written, organized in seven separate files (one for each strategy), reaching 91\% statement coverage and 80\% branch coverage as measured by JaCoCo, and a mutation score of 60\% on \textsc{PITest}. We explicitly identified and killed two non-equivalent mutants (one of type \textsc{MathMutator}, one of type \textsc{ConditionalsBoundaryMutator}). As an additional experiment, we asked an AI model (ChatGPT) to automatically generate an equivalent test suite for the same class, without providing context. A quantitative and qualitative comparison of the two suites is presented at the end of this work.
+
+\textbf{Keywords:} software testing, unit testing, JUnit 5, Mockito, JaCoCo, PITest, mutation testing, Equivalence Partitioning, Boundary Value Analysis, Spring Boot.
+
+\end{abstract}
+
+\end{abstractpage}
