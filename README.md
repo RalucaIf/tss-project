@@ -954,9 +954,3 @@ Experimentul cu AI confirmă valoarea testării făcute manual cu acces la cod s
 6. Mockito Team. (2026). *Mockito Documentation*. Accesat la 17 mai 2026, la adresa https://site.mockito.org/
 7. JaCoCo Project. (2026). *JaCoCo Java Code Coverage Library*. Accesat la 17 mai 2026, la adresa https://www.jacoco.org/jacoco/
 8. PITest Team. (2026). *PITest Mutation Testing for Java*. Accesat la 17 mai 2026, la adresa https://pitest.org/
-
----
-
-## Licență
-
-Proiect academic realizat pentru disciplina TSS (Tehnici de Structurare a Software-ului), FMI București, semestrul II, anul universitar 2025-2026.
