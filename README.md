@@ -1,13 +1,14 @@
-# Proiect TSS — Testarea Sistemelor Software
-##  Clasa WalletServiceImpl
+# Proiect TSS - Testarea Sistemelor Software
+##  Tema 3 - Testare Unitara in Java
 
 ## Componența echipei
 
 | Nume | Rol |
 |------|-----|
-| Iftime Raluca | Șef echipă |
+| Gheorghe Denisa | Membru |
+| Iftime Raluca | Membru |
 | Lupeș Ioan-Marian | Membru |
-| Denisa Gheorghe | Membru |
+
 
 ## Cuprins
 
